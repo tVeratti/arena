@@ -1,19 +1,42 @@
 extends Camera2D
 
-# Anything above 1.0 zooms in, anything below 1.0 zooms out.
-var _zoom_in = Vector2(1.1, 1.1)
-var _zoom_out = Vector2(0.9, 0.9)
+# Target
+onready var _target:Vector2 = position
+var _speed:float = 5.0
+var _tolerance:float = 0.1
+
+
+# Zoom
+onready var _zoom_target:Vector2 = zoom
+var _zoom_speed:float = 3.0
+var _zoom_step:Vector2 = Vector2(0.3, 0.3)
+var _zoom_tolerance:float = 0.1
+
+
+func _process(delta):
     
-func _ready():
-    SignalManager.connect("tile_selected", self, "_on_Tile_selected")
+    # Move the camera to the target tile (x, y)
+    var distance = position.distance_to(_target)
+    if distance >= _tolerance:
+        position = Vector2(\
+        lerp(position.x, _target.x, _speed * delta),\
+        lerp(position.y, _target.y, _speed * delta))
+    
+    # Zoom the camera in/out (z)
+    var zoom_distance = zoom.distance_to(_zoom_target)
+    if zoom_distance >= _zoom_tolerance:
+        zoom = Vector2(\
+        lerp(zoom.x, _zoom_target.x, _zoom_speed * delta),\
+        lerp(zoom.y, _zoom_target.y, _zoom_speed * delta))
+
 
 func _input(event):
-    if event.is_pressed():
+    if event is InputEventMouse and event.is_pressed():
         if event.button_index == BUTTON_WHEEL_UP:
-            zoom = _zoom_in
+            _zoom_target = zoom - _zoom_step
         elif event.button_index == BUTTON_WHEEL_DOWN:
-            zoom = _zoom_out
-            
-func _on_Tile_selected(Tile):
-    pass #align(Tile)
-            
+            _zoom_target = zoom + _zoom_step
+
+
+func set_target(target):
+    _target = target   

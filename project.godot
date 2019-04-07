@@ -36,6 +36,10 @@ zoom_in={
  ]
 }
 
+[layer_names]
+
+2d_render/layer_3="mouse_events"
+
 [rendering]
 
 environment/default_environment="res://default_env.tres"
