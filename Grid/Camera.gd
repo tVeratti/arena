@@ -3,7 +3,7 @@ extends Camera2D
 # Target
 onready var _target:Vector2 = position
 var _speed:float = 5.0
-var _tolerance:float = 0.1
+var _tolerance:float = 0.2
 
 
 # Zoom
@@ -14,7 +14,6 @@ var _zoom_tolerance:float = 0.1
 
 
 func _process(delta):
-    
     # Move the camera to the target tile (x, y)
     var distance = position.distance_to(_target)
     if distance >= _tolerance:

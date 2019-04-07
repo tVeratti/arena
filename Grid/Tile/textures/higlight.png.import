@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/grass.png-dd4283e6b0f80ae9256cd073902a7021.stex"
+path="res://.import/higlight.png-eb3ac7d0688062a101581e8f05788094.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Grid/Tile/grass.png"
-dest_files=[ "res://.import/grass.png-dd4283e6b0f80ae9256cd073902a7021.stex" ]
+source_file="res://Grid/Tile/textures/higlight.png"
+dest_files=[ "res://.import/higlight.png-eb3ac7d0688062a101581e8f05788094.stex" ]
 
 [params]
 
@@ -30,5 +30,5 @@ process/HDR_as_SRGB=false
 process/invert_color=false
 stream=false
 size_limit=0
-detect_3d=true
+detect_3d=false
 svg/scale=1.0

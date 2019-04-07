@@ -1,6 +1,6 @@
 extends Node2D
 
-var speed:float = 100.0
+var speed:float = 200.0
 var path = PoolVector2Array() setget set_path
 
 func _ready():
@@ -16,17 +16,21 @@ func move_along_path(distance):
     var start = position
     
     for i in range(path.size()):
-        var distance_to_next = start.distance_to(path[0])
+        var current = path[0]
+        var distance_to_next = start.distance_to(current)
+        
         if distance <= distance_to_next and distance >= 0.0:
-            position = start.linear_interpolate(path[0], distance / distance_to_next)
+            position = start.linear_interpolate(current, distance / distance_to_next)
             break
         elif distance < 0.0:
-            position = path[0]
+            position = current
             set_process(false)
             break
+        
         distance -= distance_to_next
-        start = path[0]
+        start = current
         path.remove(0)
+
 
 func set_path(value:PoolVector2Array) -> void:
     path = value
