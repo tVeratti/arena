@@ -41,18 +41,6 @@ func _input(event):
             # Mouse OVER - Tile focus
             focus_tile(tile)
 
-func _draw():
-    if _tile_focused != null:
-        var tile_position = Map.map_to_world(_tile_focused)
-        var path = _pathfinder.find_path(Character.position, tile_position)
-        
-        if path.size() == 0:
-            return
-            
-            
-        
-        
-        
 
 func focus_tile(tile):
     if _tile_focused == tile:
