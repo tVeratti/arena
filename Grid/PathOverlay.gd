@@ -16,8 +16,6 @@ func _draw():
         return
     
     var point_start = _path[0]
-    var point_end = _path[_path.size() - 1]
-        
     var point_prev = point_start
     for point in _path:
         draw_line(point_prev, point, DRAW_COLOR, BASE_LINE_WIDTH, true)

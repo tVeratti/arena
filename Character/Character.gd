@@ -3,6 +3,8 @@ extends Node2D
 var speed:float = 200.0
 var path = PoolVector2Array() setget set_path
 
+var data
+
 func _ready():
     set_process(false)
 

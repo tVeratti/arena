@@ -21,20 +21,26 @@ func _init(map:TileMap, tiles:Array):
     _tiles = tiles 
 
 
-# If the map hasn't been loaded in for pathfinding,
-# get all tiles and create astar nodes & connections.
-func _get_map_data():
+func walkable_tiles():
     if _walkable_tiles.size() == 0:
         _walkable_bounds = _map.get_used_rect()
         _walkable_tiles = _map.get_used_cells_by_id(0)
+    
+    return _walkable_tiles
+
+# If the map hasn't been loaded in for pathfinding,
+# get all tiles and create astar nodes & connections.
+func _get_map_data():
+    walkable_tiles()
         
+    if _astar.get_points().empty():
         # Generate astar points & connections.
-        set_astar_points()
-        connect_astar_points()
+        _set_astar_points()
+        _connect_astar_points()
 
 
 # Loop through walkable tiles and create astar points for each.
-func set_astar_points():
+func _set_astar_points():
     for tile in _walkable_tiles:
         var index = _get_point_index(tile)
         _astar.add_point(index, Vector3(tile.x, tile.y, 0))
@@ -42,7 +48,7 @@ func set_astar_points():
 
 # Loop through walkable tiles and create connections to 
 # all adjacent tiles (including diagonal).
-func connect_astar_points():
+func _connect_astar_points():
     for tile in _walkable_tiles:
         var index = _get_point_index(tile)
         
