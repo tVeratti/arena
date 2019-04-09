@@ -8,28 +8,46 @@ onready var active_portrait = $Layout/Rows/Columns/MarginContainer/ActivePortrai
 
 onready var portraits = {}
 
+var _battle
+
 func _ready():
-    render_battle()
+    _battle = get_parent()
+    render_portraits(_battle.current_turn.characters_awaiting)
     
     SignalManager.connect("tile_focused", self, "_on_tile_focused")
     SignalManager.connect("tile_selected", self, "_on_tile_selected")
+    SignalManager.connect("turn_updated", self, "_on_turn_updated")
 
-func render_battle():
-    var battle = get_parent()
+func render_portraits(characters):
+    var character_ids = []
     
     # Render character portraits
-    for hero in battle.heroes:
+    for character in characters:
+        character_ids.append(character.id)
+        
+        if portraits.has(character.id):
+            continue
+        
+        # Create new portrait instance...
         var portrait = Portrait.instance()
-        portrait.setup(hero)
+        portrait.setup(character)
         frames.add_child(portrait)
         
         # Save a reference for future selections.
-        portraits[hero.id] = portrait
+        portraits[character.id] = portrait
+    
+    # Remove any frames tied to characters that are
+    # no longer in the list to be rendered.
+    for portrait in frames.get_children():
+        if not character_ids.has(portrait.character_id):
+            portraits.erase(portrait.character_id)
+            portrait.queue_free()
 
 
 func _on_tile_focused(tile, path):    
     pass
-    
+
+
 func _on_tile_selected(tile, unit):
     for id in portraits.keys():
         var portrait = portraits[id]
@@ -39,3 +57,10 @@ func _on_tile_selected(tile, unit):
         if is_active:
             active_portrait.setup(unit.character)
             
+
+func _on_turn_updated(turn):
+    render_portraits(turn.characters_awaiting)         
+            
+
+func _on_Turn_pressed():
+    _battle.next_turn()

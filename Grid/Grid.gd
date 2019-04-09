@@ -4,6 +4,11 @@ extends Node2D
 
 var _pathfinder:AStarPathfinder
 
+# Reference to the parent battle for checking if units
+# can take actions or not.
+var _battle
+
+
 # Tiles
 enum { TILE_NONE = -1, TILE_GRASS = 0 }
 var _tile_focused
@@ -21,8 +26,9 @@ var Unit = preload("res://Grid/Unit/Unit.tscn")
 var unit_selected
 var units = []
 
-
 func _ready():
+    _battle = get_parent()
+    
     # Initialize A* Pathfinder with the TileMap
     _pathfinder = AStarPathfinder.new(Map)
 
@@ -85,11 +91,12 @@ func select_tile(tile):
         unit_selected = unit_on_tile
     elif unit_selected != null:
         # If a unit is already selected, do pathfinding for that unit.
-        var new_path = _pathfinder.find_path(\
-        unit_selected.position,\
-        tile_position,\
-        unit_selected.character.speed)
-        unit_selected.path = new_path
+        if _battle.character_move(unit_selected.character):
+            var new_path = _pathfinder.find_path(\
+            unit_selected.position,\
+            tile_position,\
+            unit_selected.character.speed)
+            unit_selected.path = new_path
 
         
     SignalManager.emit_signal("tile_selected", tile, unit_selected)

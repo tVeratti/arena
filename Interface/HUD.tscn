@@ -27,6 +27,7 @@ margin_bottom = 90.0
 custom_constants/separation = 5
 
 [node name="MarginContainer" type="MarginContainer" parent="Layout/Rows/Columns"]
+editor/display_folded = true
 margin_right = 60.0
 margin_bottom = 90.0
 custom_constants/margin_right = 5
@@ -55,3 +56,14 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_constants/separation = 10
 
+[node name="Actions" type="HBoxContainer" parent="Layout/Rows"]
+margin_top = 94.0
+margin_right = 1004.0
+margin_bottom = 114.0
+
+[node name="Turn" type="Button" parent="Layout/Rows/Actions"]
+margin_right = 74.0
+margin_bottom = 20.0
+text = "Next Turn"
+
+[connection signal="pressed" from="Layout/Rows/Actions/Turn" to="." method="_on_Turn_pressed"]

@@ -15,13 +15,25 @@ _global_script_classes=[ {
 "path": "res://Grid/AStarPathfinder.gd"
 }, {
 "base": "Object",
+"class": "Action",
+"language": "GDScript",
+"path": "res://Battle/Action.gd"
+}, {
+"base": "Object",
 "class": "Character",
 "language": "GDScript",
 "path": "res://Character/Character.gd"
+}, {
+"base": "Object",
+"class": "Turn",
+"language": "GDScript",
+"path": "res://Battle/Turn.gd"
 } ]
 _global_script_class_icons={
 "AStarPathfinder": "",
-"Character": ""
+"Action": "",
+"Character": "",
+"Turn": ""
 }
 
 [application]

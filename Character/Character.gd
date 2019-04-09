@@ -5,6 +5,7 @@ class_name Character
 var id:String
 var name:String
 var speed:int = 1
+var reach:int = 1
 
 
 func _init(name):

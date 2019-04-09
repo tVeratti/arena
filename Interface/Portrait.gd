@@ -4,7 +4,10 @@ var outline_shader = preload("res://outline.shader")
 
 onready var Img = $Layout/Image
 
+var character_id:String
+
 func setup(character):
+    character_id = character.id
     $Layout/Name.text = String(character.name)
     
 func set_outline(value):
