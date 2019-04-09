@@ -68,13 +68,15 @@ func _connect_astar_points():
 
 # Take two world-based vectors and find a path between them.
 # Returns an array of centered Vector2 positions.
-func find_path(world_start, world_end):
+func find_path(world_start, world_end, max_distance = -1):
     var point_path = calculate_path(world_start, world_end)
-       
+    
     var path_world = []
-    for point in point_path:
-        var point_world = _map.map_to_world(Vector2(point.x, point.y)) + _half_cell_size
-        path_world.append(point_world)
+    for i in range(point_path.size()):
+        if max_distance == -1 or i <= max_distance:
+            var point = point_path[i]
+            var point_world = _map.map_to_world(Vector2(point.x, point.y)) + _half_cell_size
+            path_world.append(point_world)
     
     return path_world
 

@@ -18,8 +18,8 @@ onready var Selection = $Selection
 
 # Character Units
 var Unit = preload("res://Grid/Unit/Unit.tscn")
-var unit_positions = {}
 var unit_selected
+var units = []
 
 
 func _ready():
@@ -38,9 +38,7 @@ func add_characters(characters:Array):
         unit.character = character
         unit.position = Map.map_to_world(coords)
         add_child(unit)
-        
-        # Save the character instance for future reference
-        unit_positions[coords] = unit
+        units.append(unit)
 
 
 func _input(event):
@@ -75,20 +73,24 @@ func select_tile(tile):
     Cam.set_target(tile_position)
     Selection.position = tile_position
     
-    # Attempt to select a character if there is one on this tile.
-    if unit_positions.has(tile):
-        unit_selected = unit_positions[tile]
+    # Check if there is a unit occupying this tile...
+    var unit_on_tile
+    for unit in units:
+        if tile == Map.world_to_map(unit.position):
+            unit_on_tile = unit
+            break        
     
-    # If a character is already selected, fo pathfinding for that character.
+    if unit_on_tile != null:
+        # Select the unit and do not start pathfinding.
+        unit_selected = unit_on_tile
     elif unit_selected != null:
-        # Navigation
-        var new_path = _pathfinder.find_path(unit_selected.position, tile_position)
+        # If a unit is already selected, do pathfinding for that unit.
+        var new_path = _pathfinder.find_path(\
+        unit_selected.position,\
+        tile_position,\
+        unit_selected.character.speed)
         unit_selected.path = new_path
-        
-        # Update positions tracking for characters
-        var old_tile = Map.world_to_map(unit_selected.position)
-        unit_positions[tile] = unit_selected
-        unit_positions[old_tile] = null
+
         
     SignalManager.emit_signal("tile_selected", tile, unit_selected)
 
