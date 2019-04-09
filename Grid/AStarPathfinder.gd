@@ -4,21 +4,20 @@ extends Node
 # https://github.com/GDquest/Godot-engine-tutorial-demos/blob/master/2018/03-30-astar-pathfinding/pathfind_astar.gd
 # https://medium.com/kitschdigital/2d-path-finding-with-astar-in-godot-3-0-7810a355905a
 
+class_name AStarPathfinder
+
 var _astar:AStar
 
-var _tiles:Array
 var _map:TileMap
-
 var _half_cell_size = Vector2(0, 25)
 
 var _walkable_bounds:Rect2
 var _walkable_tiles:Array
 
 
-func _init(map:TileMap, tiles:Array):
+func _init(map:TileMap):
     _astar = AStar.new()
     _map = map
-    _tiles = tiles 
 
 
 func walkable_tiles():

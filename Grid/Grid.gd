@@ -2,42 +2,45 @@ extends Node2D
 
 # mjyiuykymhmkydkjyiky
 
-var Pathfinder = preload("res://Grid/AStarPathfinder.gd")
-var _pathfinder
+var _pathfinder:AStarPathfinder
 
+# Tiles
 enum { TILE_NONE = -1, TILE_GRASS = 0 }
-
-var _tile_map:Array = []
-
 var _tile_focused
 var _tile_selected
 
-# Cache nodes
+
+# Cache child nodes
 onready var Map = $TileMap
 onready var Cam = $Camera
 onready var Selection = $Selection
 
-var Character = preload("res://Character/Character.tscn")
-var character_positions = {}
-var character_selected
+
+# Character Units
+var Unit = preload("res://Grid/Unit/Unit.tscn")
+var unit_positions = {}
+var unit_selected
+
 
 func _ready():
     # Initialize A* Pathfinder with the TileMap
-    _pathfinder = Pathfinder.new(Map, _tile_map)
+    _pathfinder = AStarPathfinder.new(Map)
 
 
-func add_characters(characters):
+func add_characters(characters:Array):
     var walkable_tiles = _pathfinder.walkable_tiles()
     
-    for i in range(len(characters)):
-        var coords = walkable_tiles[i]
-        var character = Character.instance()
-        character.data = characters[i]
-        character.position = Map.map_to_world(coords)
-        add_child(character)
+    for i in range(characters.size()):
+        var coords:Vector2 = walkable_tiles[i]
+        var character:Character = characters[i]
+        
+        var unit = Unit.instance()
+        unit.character = character
+        unit.position = Map.map_to_world(coords)
+        add_child(unit)
         
         # Save the character instance for future reference
-        character_positions[coords] = character
+        unit_positions[coords] = unit
 
 
 func _input(event):
@@ -55,11 +58,11 @@ func _input(event):
 
 
 func focus_tile(tile):
-    if _tile_focused == tile or character_selected == null:
+    if _tile_focused == tile or unit_selected == null:
         return
     
     var tile_position = Map.map_to_world(tile)
-    var path = _pathfinder.find_path(character_selected.position, tile_position)
+    var path = _pathfinder.find_path(unit_selected.position, tile_position)
     SignalManager.emit_signal("tile_focused", tile, path)
     
     _tile_focused = tile
@@ -73,20 +76,20 @@ func select_tile(tile):
     Selection.position = tile_position
     
     # Attempt to select a character if there is one on this tile.
-    if character_positions.has(tile):
-        character_selected = character_positions[tile]
+    if unit_positions.has(tile):
+        unit_selected = unit_positions[tile]
     
     # If a character is already selected, fo pathfinding for that character.
-    elif character_selected != null:
+    elif unit_selected != null:
         # Navigation
-        var new_path = _pathfinder.find_path(character_selected.position, tile_position)
-        character_selected.path = new_path
+        var new_path = _pathfinder.find_path(unit_selected.position, tile_position)
+        unit_selected.path = new_path
         
         # Update positions tracking for characters
-        var old_tile = Map.world_to_map(character_selected.position)
-        character_positions[tile] = character_selected
-        character_positions[old_tile] = null
+        var old_tile = Map.world_to_map(unit_selected.position)
+        unit_positions[tile] = unit_selected
+        unit_positions[old_tile] = null
         
-    SignalManager.emit_signal("tile_selected", tile, character_selected)
+    SignalManager.emit_signal("tile_selected", tile, unit_selected)
 
     

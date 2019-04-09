@@ -30,12 +30,12 @@ func render_battle():
 func _on_tile_focused(tile, path):    
     pass
     
-func _on_tile_selected(tile, character):
+func _on_tile_selected(tile, unit):
     for id in portraits.keys():
         var portrait = portraits[id]
-        var is_active = character != null and character.data.id == id
+        var is_active = unit != null and unit.character.id == id
         portrait.set_outline(is_active)
         
         if is_active:
-            active_portrait.setup(character.data)
+            active_portrait.setup(unit.character)
             

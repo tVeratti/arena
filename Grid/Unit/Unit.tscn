@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=2]
 
-[ext_resource path="res://Character/Character.gd" type="Script" id=1]
-[ext_resource path="res://Character/textures/circle.png" type="Texture" id=2]
+[ext_resource path="res://Grid/Unit/Unit.gd" type="Script" id=1]
+[ext_resource path="res://Grid/Unit/textures/circle.png" type="Texture" id=2]
 
 [node name="Character" type="Node2D"]
 script = ExtResource( 1 )

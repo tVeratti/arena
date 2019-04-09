@@ -8,9 +8,20 @@
 
 config_version=4
 
-_global_script_classes=[  ]
+_global_script_classes=[ {
+"base": "Node",
+"class": "AStarPathfinder",
+"language": "GDScript",
+"path": "res://Grid/AStarPathfinder.gd"
+}, {
+"base": "Object",
+"class": "Character",
+"language": "GDScript",
+"path": "res://Character/Character.gd"
+} ]
 _global_script_class_icons={
-
+"AStarPathfinder": "",
+"Character": ""
 }
 
 [application]
