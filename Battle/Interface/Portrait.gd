@@ -2,11 +2,12 @@ extends Control
 
 var outline_shader = preload("res://outline.shader")
 
-onready var Img = $Layout/Image
+onready var image = $Layout/Image
 
 var character_id:String
 
 func setup(character):
+    # Before _ready
     character_id = character.id
     $Layout/Name.text = String(character.name)
     
@@ -16,12 +17,13 @@ func set_outline(value):
         # so it is necessary to create a new one each time.
         var material = ShaderMaterial.new()
         material.shader = outline_shader
-        Img.material = material
+        image.material = material
     else:
-        Img.material.shader = null
+        image.material.shader = null
 
 
 func _on_Portrait_gui_input(event):
     if event is InputEventMouseButton and event.is_pressed():
-        print("portrait handled")
         get_tree().set_input_as_handled()
+        SignalManager.emit_signal("portrait_selected", character_id)
+        

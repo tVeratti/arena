@@ -1,7 +1,5 @@
 extends Node2D
 
-# mjyiuykymhmkydkjyiky
-
 var _pathfinder:AStarPathfinder
 
 # Reference to the parent battle for checking if units
@@ -12,13 +10,11 @@ var _battle
 # Tiles
 enum { TILE_NONE = -1, TILE_GRASS = 0 }
 var _tile_focused
-var _tile_selected
 
 
 # Cache child nodes
 onready var Map = $TileMap
 onready var Cam = $Camera
-onready var Selection = $Selection
 
 
 # Character Units
@@ -28,9 +24,9 @@ var units = []
 
 func _ready():
     _battle = get_parent()
-    
-    # Initialize A* Pathfinder with the TileMap
     _pathfinder = AStarPathfinder.new(Map)
+    
+    SignalManager.connect("portrait_selected", self, "select_unit_by_id")
 
 
 func add_characters(characters:Array):
@@ -55,7 +51,7 @@ func _unhandled_input(event):
         if event is InputEventMouseButton:
             # Mouse CLICK - Tile selection
             if event.button_index == BUTTON_LEFT and event.is_pressed():
-                select_tile(tile)
+                select_unit_by_tile(tile)
         
         elif event is InputEventMouseMotion:
             # Mouse OVER - Tile focus
@@ -73,12 +69,8 @@ func focus_tile(tile):
     _tile_focused = tile
 
  
-func select_tile(tile):
-    _tile_selected = tile
-    
+func select_unit_by_tile(tile):    
     var tile_position = Map.map_to_world(tile)
-    Cam.set_target(tile_position)
-    Selection.position = tile_position
     
     # Check if there is a unit occupying this tile...
     var unit_on_tile
@@ -88,8 +80,15 @@ func select_tile(tile):
             break        
     
     if unit_on_tile != null:
-        # Select the unit and do not start pathfinding.
-        unit_selected = unit_on_tile
+        if unit_selected != unit_on_tile:
+            # Remove the outline from the previous sprite.
+            if unit_selected != null:
+                unit_selected.deactivate()
+            
+            # Select the unit and do not start pathfinding.
+            unit_selected = unit_on_tile
+            unit_selected.activate()
+    
     elif unit_selected != null:
         # If a unit is already selected, do pathfinding for that unit.
         if _battle.character_move(unit_selected.character):
@@ -99,7 +98,13 @@ func select_tile(tile):
             unit_selected.character.speed)
             unit_selected.path = new_path
 
-        
-    SignalManager.emit_signal("tile_selected", tile, unit_selected)
 
-    
+func select_unit_by_id(character_id):
+    for unit in units:
+        if character_id == unit.character.id:
+            unit_selected = unit
+            unit_selected.activate()
+            Cam.set_target(unit.position)
+        else:
+            unit.deactivate()
+

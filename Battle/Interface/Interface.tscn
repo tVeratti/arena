@@ -58,6 +58,20 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_constants/separation = 10
 
+[node name="spring" type="Control" parent="Layout/Rows/Columns"]
+margin_left = 370.0
+margin_right = 955.0
+margin_bottom = 90.0
+mouse_filter = 2
+size_flags_horizontal = 3
+
+[node name="TurnCount" type="Label" parent="Layout/Rows/Columns"]
+margin_left = 960.0
+margin_top = 38.0
+margin_right = 1004.0
+margin_bottom = 52.0
+text = "Turn: 1"
+
 [node name="Actions" type="HBoxContainer" parent="Layout/Rows"]
 margin_top = 94.0
 margin_right = 1004.0

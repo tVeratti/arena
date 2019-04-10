@@ -1,11 +1,14 @@
 extends Node2D
 
+var outline_shader = preload("res://outline.shader")
 
 var speed:float = 200.0
 var path = PoolVector2Array() setget set_path
 
 
 var character:Character
+
+onready var sprite = $Sprite
 
 
 func _ready():
@@ -15,6 +18,23 @@ func _ready():
 func _process(delta):
     var move_distance = speed * delta
     move_along_path(move_distance)
+
+func activate():
+    set_outline(true)
+    SignalManager.emit_signal("character_selected", character)
+    
+func deactivate():
+    set_outline(false)
+
+func set_outline(value):
+    if value:
+        # ShaderMaterial is shared by all instances,
+        # so it is necessary to create a new one each time.
+        var material = ShaderMaterial.new()
+        material.shader = outline_shader
+        sprite.material = material
+    else:
+        sprite.material.shader = null
 
 
 func move_along_path(distance):
