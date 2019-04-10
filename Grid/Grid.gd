@@ -47,7 +47,7 @@ func add_characters(characters:Array):
         units.append(unit)
 
 
-func _input(event):
+func _unhandled_input(event):
     if event is InputEventMouse:
         var mouse_position = get_global_mouse_position()
         var tile = Map.world_to_map(mouse_position)
@@ -56,6 +56,7 @@ func _input(event):
             # Mouse CLICK - Tile selection
             if event.button_index == BUTTON_LEFT and event.is_pressed():
                 select_tile(tile)
+        
         elif event is InputEventMouseMotion:
             # Mouse OVER - Tile focus
             focus_tile(tile)

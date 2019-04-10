@@ -19,3 +19,9 @@ func set_outline(value):
         Img.material = material
     else:
         Img.material.shader = null
+
+
+func _on_Portrait_gui_input(event):
+    if event is InputEventMouseButton and event.is_pressed():
+        print("portrait handled")
+        get_tree().set_input_as_handled()

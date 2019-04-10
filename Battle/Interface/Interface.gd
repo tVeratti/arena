@@ -1,9 +1,8 @@
 extends CanvasLayer
 
-var Portrait = preload("res://Interface/Portrait.tscn")
+var Portrait = preload("res://Battle/Interface/Portrait.tscn")
 
 onready var frames = $Layout/Rows/Columns/Characters/Frames
-onready var distance = $Layout/Rows/Columns/Distance
 onready var active_portrait = $Layout/Rows/Columns/MarginContainer/ActivePortrait
 
 onready var portraits = {}
