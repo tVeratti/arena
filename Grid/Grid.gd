@@ -63,7 +63,11 @@ func focus_tile(tile):
         return
     
     var tile_position = Map.map_to_world(tile)
-    var path = _pathfinder.find_path(unit_selected.position, tile_position)
+    var path = _pathfinder.find_path(\
+    unit_selected.position,\
+    tile_position,\
+    unit_selected.character.speed,\
+    _get_unit_positions())
     SignalManager.emit_signal("tile_focused", tile, path)
     
     _tile_focused = tile
@@ -95,7 +99,8 @@ func select_unit_by_tile(tile):
             var new_path = _pathfinder.find_path(\
             unit_selected.position,\
             tile_position,\
-            unit_selected.character.speed)
+            unit_selected.character.speed,\
+            _get_unit_positions())
             unit_selected.path = new_path
 
 
@@ -107,4 +112,12 @@ func select_unit_by_id(character_id):
             Cam.set_target(unit.position)
         else:
             unit.deactivate()
+            
+func _get_unit_positions():
+    var positions = []
+    for unit in units:
+        if unit != unit_selected:
+            positions.append(Map.world_to_map(unit.path_end))
+        
+    return positions
 

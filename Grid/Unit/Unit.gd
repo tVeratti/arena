@@ -4,6 +4,7 @@ var outline_shader = preload("res://outline.shader")
 
 var speed:float = 200.0
 var path = PoolVector2Array() setget set_path
+var path_end:Vector2
 
 
 var character:Character
@@ -66,6 +67,7 @@ func set_path(value:PoolVector2Array):
         if character.speed >= i:
             valid_path.append(value[i])
 
-    path = valid_path
-    
-    set_process(true)
+    if valid_path.size() > 0:
+        path = valid_path
+        path_end = valid_path[valid_path.size() - 1]
+        set_process(true)

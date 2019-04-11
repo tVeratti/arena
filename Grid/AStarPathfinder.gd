@@ -14,6 +14,8 @@ var _half_cell_size = Vector2(0, 25)
 var _walkable_bounds:Rect2
 var _walkable_tiles:Array
 
+var _obstacles:Array
+
 
 func _init(map:TileMap):
     _astar = AStar.new()
@@ -28,21 +30,24 @@ func walkable_tiles():
     return _walkable_tiles
 
 # If the map hasn't been loaded in for pathfinding,
+# (OR if obstacle positions have changed...)
 # get all tiles and create astar nodes & connections.
-func _get_map_data():
-    walkable_tiles()
-        
-    if _astar.get_points().empty():
+func _get_map_data(new_obstacles):
+    if _astar.get_points().empty() or new_obstacles != _obstacles:
+        _obstacles = new_obstacles
+        _astar.clear()
         # Generate astar points & connections.
+        walkable_tiles()
         _set_astar_points()
         _connect_astar_points()
-
+    
 
 # Loop through walkable tiles and create astar points for each.
 func _set_astar_points():
     for tile in _walkable_tiles:
-        var index = _get_point_index(tile)
-        _astar.add_point(index, Vector3(tile.x, tile.y, 0))
+        if not _obstacles.has(tile):
+            var index = _get_point_index(tile)
+            _astar.add_point(index, Vector3(tile.x, tile.y, 0))
 
 
 # Loop through walkable tiles and create connections to 
@@ -60,15 +65,18 @@ func _connect_astar_points():
                 var relative_tile = tile + Vector2(x - 1, y - 1)
                 var relative_index = _get_point_index(relative_tile)
                 
-                if tile == relative_tile or not _astar.has_point(relative_index):
+                if tile == relative_tile or \
+                not _astar.has_point(relative_index):
                     continue
-                    
+                
                 _astar.connect_points(index, relative_index, true)
 
 
 # Take two world-based vectors and find a path between them.
 # Returns an array of centered Vector2 positions.
-func find_path(world_start, world_end, max_distance = -1):
+func find_path(world_start, world_end, max_distance = -1, obstacles = []):
+    _get_map_data(obstacles)
+    
     var point_path = calculate_path(world_start, world_end)
     
     var path_world = []
@@ -83,9 +91,7 @@ func find_path(world_start, world_end, max_distance = -1):
 
 # Convert world vectors to unique indexes connected by astar.
 # Get a path from astar using start/end indexes.
-func calculate_path(world_start, world_end):
-    _get_map_data()
-    
+func calculate_path(world_start, world_end):    
     var start = _map.world_to_map(world_start)
     var end = _map.world_to_map(world_end)
     
