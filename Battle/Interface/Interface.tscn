@@ -65,18 +65,34 @@ margin_bottom = 90.0
 mouse_filter = 2
 size_flags_horizontal = 3
 
-[node name="TurnCount" type="Label" parent="Layout/Rows/Columns"]
+[node name="BattleInfo" type="VBoxContainer" parent="Layout/Rows/Columns"]
 margin_left = 960.0
-margin_top = 38.0
 margin_right = 1004.0
-margin_bottom = 52.0
+margin_bottom = 90.0
+
+[node name="TurnCount" type="Label" parent="Layout/Rows/Columns/BattleInfo"]
+margin_right = 44.0
+margin_bottom = 14.0
 text = "Turn: 1"
 
-[node name="Actions" type="HBoxContainer" parent="Layout/Rows"]
+[node name="ActionState" type="Label" parent="Layout/Rows/Columns/BattleInfo"]
+margin_top = 18.0
+margin_right = 44.0
+margin_bottom = 32.0
+
+[node name="Control" type="Control" parent="Layout/Rows"]
 margin_top = 94.0
 margin_right = 1004.0
-margin_bottom = 114.0
+margin_bottom = 556.0
 mouse_filter = 2
+size_flags_vertical = 3
+
+[node name="Actions" type="HBoxContainer" parent="Layout/Rows"]
+margin_top = 560.0
+margin_right = 1004.0
+margin_bottom = 580.0
+mouse_filter = 2
+custom_constants/separation = 10
 
 [node name="Turn" type="Button" parent="Layout/Rows/Actions"]
 margin_right = 74.0
@@ -84,4 +100,25 @@ margin_bottom = 20.0
 mouse_filter = 1
 text = "Next Turn"
 
+[node name="Move" type="Button" parent="Layout/Rows/Actions"]
+margin_left = 84.0
+margin_right = 131.0
+margin_bottom = 20.0
+text = "Move"
+
+[node name="Attack" type="Button" parent="Layout/Rows/Actions"]
+margin_left = 141.0
+margin_right = 193.0
+margin_bottom = 20.0
+text = "Attack"
+
+[node name="Analyze" type="Button" parent="Layout/Rows/Actions"]
+margin_left = 203.0
+margin_right = 265.0
+margin_bottom = 20.0
+text = "Analyze"
+
 [connection signal="pressed" from="Layout/Rows/Actions/Turn" to="." method="_on_Turn_pressed"]
+[connection signal="pressed" from="Layout/Rows/Actions/Move" to="." method="_on_Move_pressed"]
+[connection signal="pressed" from="Layout/Rows/Actions/Attack" to="." method="_on_Attack_pressed"]
+[connection signal="pressed" from="Layout/Rows/Actions/Analyze" to="." method="_on_Analyze_pressed"]

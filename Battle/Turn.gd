@@ -16,6 +16,15 @@ func _init(characters, turn_count):
     SignalManager.emit_signal("turn_updated", self)
 
 
+func next_possible_action(id):
+    if can_take_action(id, Action.MOVE):
+        return Action.MOVE
+    elif can_take_action(id, Action.ATTACK):
+        return Action.ATTACK
+    else:
+        return Action.WAIT
+
+
 func is_complete() -> bool:
     for character in characters_total:
         # Check if the character has taken any actions.
@@ -23,16 +32,22 @@ func is_complete() -> bool:
             return false
             
         # Check that all actions have been taken by this character.
-        if character_is_done(character):
+        if character_done(character):
             return false
    
     # All characters have taken all actions.
     return true
 
-func character_is_done(id) -> bool:
-    return actions_taken.has(id) and\
-        actions_taken[id].has(Action.MOVE)
-        # and actions_taken[character.id][Action.ATTACK]:
+
+
+func can_take_action(id, type) -> bool:
+    return not actions_taken.has(id) or\
+        not actions_taken[id].has(type)
+
+
+func character_done(id) -> bool:
+    return not can_take_action(id, Action.MOVE) and not can_take_action(id, Action.ATTACK)
+
 
 func take_action(character:Character, action:Action) -> bool:
     var can_take_action = true

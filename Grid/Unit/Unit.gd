@@ -9,6 +9,7 @@ var path_end:Vector2
 
 var character:Character
 
+
 onready var sprite = $Sprite
 
 
@@ -16,16 +17,25 @@ func _ready():
     set_process(false)
 
 
+func setup(tile_position, character):
+    position = tile_position
+    path_end = tile_position
+    self.character = character
+
+
 func _process(delta):
     var move_distance = speed * delta
     move_along_path(move_distance)
 
+
 func activate():
     set_outline(true)
     SignalManager.emit_signal("character_selected", character)
-    
+
+
 func deactivate():
     set_outline(false)
+
 
 func set_outline(value):
     if value:

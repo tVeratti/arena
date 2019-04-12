@@ -21,7 +21,7 @@ func _draw():
         draw_line(point_prev, point, DRAW_COLOR, BASE_LINE_WIDTH, true)
         point_prev = point
         
-func _on_tile_focused(tile, path):
+func _on_tile_focused(path):
     if _path == path:
         return
     

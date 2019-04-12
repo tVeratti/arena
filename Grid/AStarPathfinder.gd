@@ -9,7 +9,7 @@ class_name AStarPathfinder
 var _astar:AStar
 
 var _map:TileMap
-var _half_cell_size = Vector2(0, 25)
+var _half_cell_size:Vector2
 
 var _walkable_bounds:Rect2
 var _walkable_tiles:Array
@@ -20,7 +20,7 @@ var _obstacles:Array
 func _init(map:TileMap):
     _astar = AStar.new()
     _map = map
-
+    _half_cell_size = Vector2(0, map.cell_size.y / 2)
 
 func walkable_tiles():
     if _walkable_tiles.size() == 0:

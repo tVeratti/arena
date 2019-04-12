@@ -108,7 +108,3 @@ func speed_get():
 func power_get():
     return clamp(agility + constitution, 1, POWER_MAX)
     
-    
-    
-    
-    

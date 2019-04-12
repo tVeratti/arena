@@ -14,9 +14,11 @@ func _init(maximum, minimum = 0, current = null):
     value_maximum = maximum
     self.value_current = current if current != null else maximum
 
+
 func _set_current(value):
     value_current = clamp(value, value_minimum, value_maximum)
-    
+
+
 func _get_current():
     var initial = value_current
     
@@ -24,7 +26,9 @@ func _get_current():
         initial += mod
 
     return clamp(initial, value_minimum, value_maximum)
-    
+
+
 func set_base(value):
     value_maximum = value
     value_current = value
+
