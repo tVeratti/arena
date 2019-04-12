@@ -24,6 +24,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://Character/Character.gd"
 }, {
+"base": "Node",
+"class": "Stat",
+"language": "GDScript",
+"path": "res://Character/Stat.gd"
+}, {
 "base": "Object",
 "class": "Turn",
 "language": "GDScript",
@@ -33,6 +38,7 @@ _global_script_class_icons={
 "AStarPathfinder": "",
 "Action": "",
 "Character": "",
+"Stat": "",
 "Turn": ""
 }
 
