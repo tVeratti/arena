@@ -108,10 +108,17 @@ func select_tile(tile):
     var unit_on_tile = _get_unit_on_tile(tile)     
     if unit_on_tile != null:
         if unit_selected != unit_on_tile:
-            # Select the character and do NOT start pathfinding.
-            # Wait for battle to initiate movement again.
-            SignalManager.emit_signal("character_selected", unit_on_tile.character)
-            activate_unit(unit_on_tile)
+            
+            if _battle.action_state == Action.ATTACK:
+                # Selected character is trying to attack someone...
+                var unit_position = map.world_to_map(unit_selected.position)
+                var distance = (tile - unit_position).length()
+                _battle.character_attack(unit_on_tile.character, distance)
+            else:
+                # Select the character and do NOT start pathfinding.
+                # Wait for battle to initiate movement again.
+                SignalManager.emit_signal("character_selected", unit_on_tile.character)
+                activate_unit(unit_on_tile)
     
     elif unit_selected != null:
         # If a unit is already selected, do pathfinding for that unit.

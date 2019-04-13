@@ -73,8 +73,23 @@ func character_move() -> bool:
     return did_move
 
 
-func character_attack() -> bool:
-    return character_action(Action.ATTACK)
+func character_attack(target:Character, distance):
+    # Check that the current character can reach the target.
+    print(distance)
+    if distance > active_character.attack_range:
+        return false
+    
+    var did_attack = character_action(Action.ATTACK)
+    if did_attack:
+        # Roll for avoidance based on target's speed.
+        var avoidance = rand_range(0, target.speed)
+        if avoidance > active_character.speed:
+            return false
+        
+        var damage = active_character.deal_damage()
+        var final_damage = target.take_damage(damage)
+        print("Damage dealt: %s, %s, %s" % [damage, final_damage, target.health.value_current])
+        set_action_state(Action.WAIT)
 
 
 func character_action(type):

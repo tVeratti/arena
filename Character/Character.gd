@@ -9,12 +9,16 @@ const TOUGH_MAX = 20
 const SPEED_MAX = 10
 const POWER_MAX = 30
 
+const DAMAGE_MULTIPLIER = 2
+
 var id:String
 var name:String
 
 var health:Stat = Stat.new(HEALTH_MAX)
 var experience:Stat = Stat.new(EXPERIENCE_MAX, 0, 0)
 var level:int = 1
+
+var attack_range:int = 1
 
 # Natural Stats
 # ------------------------------
@@ -36,7 +40,7 @@ var constitution:int
 
 # Agility
 # + speed
-# + power
+# + accuracy
 # - toughness
 # * improve by moving, dealing damage
 var agility:int
@@ -50,16 +54,16 @@ var agility:int
 # Toughness
 # + damage mitigation
 # + chance to resist dying when reduced to 0
-var toughness:int setget , toughness_get
+var toughness:float setget , toughness_get
 
 # Speed
 # + damage avoidance
 # + move distance
-var speed:int setget , speed_get
+var speed:float setget , speed_get
 
 # Power
 # + damage dealt
-var power:int setget , power_get
+var power:float setget , power_get
 
 
 func _init(name):
@@ -86,17 +90,20 @@ func _generate_natural():
     return int(rand_range(1, NATURAL_MAX))
 
 
-func take_damage(value):
-    var damage = value - constitution
+func take_damage(value) -> int:
+    var damage = int(value - constitution)
     health.value_current -= damage
+    return damage
 
 
 func deal_damage():
-    return power + speed
+    var power_bonus = rand_range(self.power, self.power * DAMAGE_MULTIPLIER)
+    var acuity_bonus = rand_range(self.acuity, self.acuity * DAMAGE_MULTIPLIER)
+    return self.power + power_bonus + acuity_bonus
 
 
 func toughness_get():
-    var base = constitution - int(agility / 2)
+    var base = constitution - int(agility / 3)
     return clamp(base, 1, TOUGH_MAX)
 
 
@@ -106,5 +113,6 @@ func speed_get():
 
 
 func power_get():
-    return clamp(agility + constitution, 1, POWER_MAX)
+    var base = constitution * 1.5
+    return clamp(base, 1, POWER_MAX)
     
