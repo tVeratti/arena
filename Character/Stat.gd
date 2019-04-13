@@ -2,9 +2,9 @@ extends Node
 
 class_name Stat
 
-var value_maximum:int = 0
-var value_minimum:int = 0
-var value_current:int = 0 setget _set_current, _get_current
+var value_maximum:float = 0
+var value_minimum:float = 0
+var value_current:float = 0 setget _set_current, _get_current
 
 var modifiers:Array = []
 

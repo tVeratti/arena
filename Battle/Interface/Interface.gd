@@ -3,7 +3,6 @@ extends CanvasLayer
 var Portrait = preload("res://Battle/Interface/Portrait.tscn")
 
 onready var frames = $Layout/Rows/Columns/Characters/Frames
-onready var active_portrait = $Layout/Rows/Columns/MarginContainer/ActivePortrait
 onready var turn_count = $Layout/Rows/Columns/BattleInfo/TurnCount
 onready var battle_state = $Layout/Rows/Columns/BattleInfo/ActionState
 
@@ -65,7 +64,6 @@ func _update_everything():
         portrait.set_outline(is_active)
         
         if is_active:
-            active_portrait.setup(_battle.active_character)
             active_character_id = id
     
     
