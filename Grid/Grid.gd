@@ -46,9 +46,9 @@ func add_characters(characters:Array, is_enemies = false):
 
 
 # Activate the unit that holds the given character.
-func activate_character(character):
+func activate_character(character) -> Unit:
     if unit_selected != null and unit_selected.character == character:
-        return
+        return unit_selected
 
     for unit in units:
         if character.id == unit.character.id:
@@ -57,6 +57,8 @@ func activate_character(character):
             camera.set_target(unit_selected.position)
         else:
             unit.deactivate()
+    
+    return unit_selected
 
 
 func activate_unit(unit):

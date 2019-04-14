@@ -33,13 +33,19 @@ _global_script_classes=[ {
 "class": "Turn",
 "language": "GDScript",
 "path": "res://Battle/Turn.gd"
+}, {
+"base": "Node2D",
+"class": "Unit",
+"language": "GDScript",
+"path": "res://Grid/Unit/Unit.gd"
 } ]
 _global_script_class_icons={
 "AStarPathfinder": "",
 "Action": "",
 "Character": "",
 "Stat": "",
-"Turn": ""
+"Turn": "",
+"Unit": ""
 }
 
 [application]

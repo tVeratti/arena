@@ -1,5 +1,7 @@
 extends Node2D
 
+class_name Unit
+
 var white_outline = preload("res://Assets/outline_white.shader")
 var red_outline = preload("res://Assets/outline_red.shader")
 
