@@ -1,15 +1,12 @@
 extends Node2D
 
-onready var _damage = $Values/Damage
-onready var _bonus = $Values/Bonus
+onready var _value = $Values/Value
+onready var _extra = $Values/Extra
 
-func setup(damage, multiplier):
-    _damage.text = String(damage)
-    _bonus.text = ""
+func setup(value, extra):
+    _value.text = String(value)
+    _extra.text = String(extra)
     
-    if multiplier > 1:
-        _bonus.text = "x%s" % multiplier
-        
     $Timer.start(1)
     $AnimationPlayer.play("Fade")
         

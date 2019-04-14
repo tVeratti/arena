@@ -25,13 +25,13 @@ margin_right = 40.0
 margin_bottom = 40.0
 alignment = 1
 
-[node name="Damage" type="Label" parent="Values"]
+[node name="Value" type="Label" parent="Values"]
 margin_top = 13.0
 margin_right = 24.0
 margin_bottom = 27.0
 text = "100"
 
-[node name="Bonus" type="Label" parent="Values"]
+[node name="Extra" type="Label" parent="Values"]
 margin_left = 28.0
 margin_top = 13.0
 margin_right = 56.0

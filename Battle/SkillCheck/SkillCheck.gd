@@ -11,7 +11,7 @@ const BONUS_MULTIPLIER = 1.2
 const CRIT_MULTIPLIER = 1.5
 
 var _type:String
-var _speed:int = 2
+var _speed:int = 3
 var _size:int = 200
 
 # Texture Measurements
@@ -65,15 +65,18 @@ func calculate_multiplier():
     # Get the multiplier value based on the current value
     # and its position relative to the bonus ranges.
     var value = self._value
+    var label = ""
     var multiplier = 1
     if value > _crit_range[0] and value < _crit_range[1]:
         multiplier = CRIT_MULTIPLIER
+        label = "Great!"
     elif value > _bonus_range[0] and value < _bonus_range[1]:
         multiplier = BONUS_MULTIPLIER
+        label = "Good!"
     
     # Allow battle to finish resolving the attack with
     # the new multiplier from this skill check.
-    _battle.resolve_attack(multiplier)
+    _battle.resolve_attack(multiplier, label)
     
     # Delete instance entirely
     self.queue_free()

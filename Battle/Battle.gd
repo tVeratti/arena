@@ -98,24 +98,29 @@ func character_action(type):
     return current_turn.take_action(self.active_character, action)
 
 
-func resolve_attack(multiplier = 1):
+func resolve_attack(multiplier = 1, label = ""):
     if not active_target or not active_unit:
         return
     
     # Roll for avoidance based on target's speed.
     var avoidance = rand_range(0, active_target.character.speed)
     if avoidance > self.active_character.speed:
+        var avoid_text = CombatText.instance()
+        active_target.add_child(avoid_text)
+        avoid_text.setup("Missed", "")
         set_action_state(Action.WAIT)
         return false
     
+    # Calculate final damage after target's mitigation.
     var damage = self.active_character.deal_damage() * multiplier
     var final_damage = int(active_target.character.take_damage(damage))
+    
+    # Render the damage done...
     var damage_text = CombatText.instance()
     active_target.add_child(damage_text)
-    damage_text.setup(final_damage, multiplier)
+    damage_text.setup(final_damage, label)
     
     set_action_state(Action.WAIT)
-    
     active_target = null
 
 
