@@ -7,3 +7,5 @@ signal character_selected(character)
 
 signal turn_updated(turn)
 signal battle_state_updated(state)
+
+signal health_changed(character)

@@ -120,9 +120,11 @@ func resolve_attack(multiplier = 1, label = ""):
     active_target.add_child(damage_text)
     damage_text.setup(final_damage, label)
     
+    SignalManager.emit_signal("health_changed", active_target.character)
+    
     set_action_state(Action.WAIT)
     active_target = null
-
+    
 
 func _on_turn_ended():
     next_turn()

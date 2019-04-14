@@ -14,6 +14,7 @@ var character:Character
 var is_enemy:bool
 
 onready var sprite = $Sprite
+onready var health = $HealthBar
 
 
 func _ready():
@@ -27,6 +28,7 @@ func setup(tile_position, character, is_enemy = false):
     self.is_enemy = is_enemy
     
     $Sprite.texture = character.unit_texture
+    $HealthBar.setup(character)
 
 
 func _process(delta):

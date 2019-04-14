@@ -4,7 +4,6 @@
 [ext_resource path="res://Character/textures/unit/circle.png" type="Texture" id=2]
 
 [node name="CharacterInfo" type="VBoxContainer"]
-editor/display_folded = true
 margin_bottom = 68.0
 script = ExtResource( 1 )
 
