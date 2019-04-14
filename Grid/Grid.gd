@@ -109,12 +109,12 @@ func focus_tile(tile):
  
 func select_tile(tile):    
     var tile_position = map.map_to_world(tile)
+    camera.set_target(tile_position)
     
     # Check if there is a unit occupying this tile...
     var unit_on_tile = _get_unit_on_tile(tile)     
     if unit_on_tile != null:
         if unit_selected != unit_on_tile:
-            
             if _battle.action_state == Action.ATTACK:
                 # Selected character is trying to attack someone...
                 var unit_position = map.world_to_map(unit_selected.position)
