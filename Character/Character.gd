@@ -4,10 +4,9 @@ class_name Character
 
 const HEALTH_MAX = 100
 const EXPERIENCE_MAX = 1000
-const NATURAL_MAX = 5
-const TOUGH_MAX = 20
-const SPEED_MAX = 10
-const POWER_MAX = 30
+
+const NATURAL_BASE = 2
+const NATURAL_POOL = 10
 
 const DAMAGE_MULTIPLIER = 2
 
@@ -89,9 +88,10 @@ func _generate():
     randomize()
     
     # Character stats
-    acuity = _generate_natural()
-    constitution = _generate_natural()
-    agility = _generate_natural()
+    var pool_points = _generate_natural_pool()
+    acuity = pool_points[0]
+    constitution = pool_points[1]
+    agility = pool_points[2]
     
     # Set portrait & unit textures
     # TODO: Use some algorithm to create
@@ -101,8 +101,18 @@ func _generate():
     portrait_texture = texture
 
 
-func _generate_natural():
-    return int(rand_range(1, NATURAL_MAX))
+func _generate_natural_pool() -> Array:
+    var points = [NATURAL_BASE, NATURAL_BASE, NATURAL_BASE]
+    for i in range(NATURAL_POOL):
+        var rand = rand_range(0, 3)
+        if rand > 2:
+            points[0] += 1
+        elif rand > 1:
+            points[1] += 1
+        else:
+            points[2] += 1
+        
+    return points
 
 
 func take_damage(value) -> int:
@@ -118,16 +128,13 @@ func deal_damage():
 
 
 func toughness_get():
-    var base = constitution - int(agility / 3)
-    return clamp(base, 1, TOUGH_MAX)
+    return constitution - int(agility / 3)
 
 
 func speed_get():
-    var base = agility - int(constitution / 2)
-    return clamp(base, 2, SPEED_MAX)
+    return agility - int(constitution / 2)
 
 
 func power_get():
-    var base = constitution * 1.5
-    return clamp(base, 1, POWER_MAX)
+    return constitution * 1.5
     
