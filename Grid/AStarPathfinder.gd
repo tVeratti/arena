@@ -22,12 +22,14 @@ func _init(map:TileMap):
     _map = map
     _half_cell_size = Vector2(0, map.cell_size.y / 2)
 
+
 func walkable_tiles():
     if _walkable_tiles.size() == 0:
         _walkable_bounds = _map.get_used_rect()
         _walkable_tiles = _map.get_used_cells_by_id(0)
     
     return _walkable_tiles
+
 
 # If the map hasn't been loaded in for pathfinding,
 # (OR if obstacle positions have changed...)
@@ -53,23 +55,38 @@ func _set_astar_points():
 # Loop through walkable tiles and create connections to 
 # all adjacent tiles (including diagonal).
 func _connect_astar_points():
+    # var previous_normal = Vector2(0, 0)
     for tile in _walkable_tiles:
         var index = _get_point_index(tile)
         
-        # Make a connection in all directions:
+        # Make a connection quad directions:
         # (-1, -1)     (-1, 0)     (-1, 1)
         # (0, -1)      (0, 0)      (0, 1)
         # (1, -1)      (1, 0)      (1, 1)
-        for x in range(3):
-            for y in range(3):
-                var relative_tile = tile + Vector2(x - 1, y - 1)
-                var relative_index = _get_point_index(relative_tile)
-                
-                if tile == relative_tile or \
-                not _astar.has_point(relative_index):
-                    continue
-                
-                _astar.connect_points(index, relative_index, true)
+        var adjacent_tiles = [
+            Vector2(1, 0), # up
+            Vector2(0, -1), # left
+            Vector2(0, 1), # right
+            Vector2(1, 0) # down
+        ]
+        
+        for offset in adjacent_tiles:
+            var adjacent_tile = tile + offset
+            var adjacent_index = _get_point_index(adjacent_tile)
+            
+            
+            if tile == adjacent_tile or \
+            not _astar.has_point(adjacent_index):
+                continue
+            
+            _astar.connect_points(index, adjacent_index, true)
+            
+            # Try to prefer straight movement
+            # DISABLED BECAUSE SLOW
+            # var normal = (tile - adjacent_tile).normalized()
+            # var weight = 0.9 if normal == previous_normal else 1
+            # _astar.set_point_weight_scale(adjacent_index, weight
+            # previous_normal = normal
 
 
 # Take two world-based vectors and find a path between them.
