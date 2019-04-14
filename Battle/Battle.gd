@@ -5,6 +5,7 @@ var Turn = preload("res://Battle/Turn.gd")
 var Action = preload("res://Battle/Action.gd")
 
 var SkillCheck = preload("res://Battle/SkillCheck/SkillCheck.tscn")
+var CombatText = preload("res://Battle/CombatText.tscn")
 
 var heroes:Array
 var enemies:Array
@@ -12,10 +13,10 @@ var enemies:Array
 var current_turn:Turn
 var current_turn_count:int = 1
 
-var active_character:Character
-var active_target:Character
 var active_unit:Unit
+var active_target:Unit
 var action_state:String = Action.WAIT
+var active_character:Character setget , _get_active_character
 
 onready var Grid = $Grid
 
@@ -34,9 +35,8 @@ func _ready():
 
 
 func activate_character(character):
-    if character != active_character:
-        active_character = character
-        active_unit = Grid.activate_character(active_character)
+    if character != self.active_character:
+        active_unit = Grid.activate_character(character)
         
         var next_possible_action = current_turn.next_possible_action(character.id)
         set_action_state(next_possible_action)
@@ -45,8 +45,8 @@ func activate_character(character):
 func set_action_state(next_state):
     # Verify that the next state is valid for the current battle state.
     if action_state == next_state or\
-    active_character == null or\
-    not current_turn.can_take_action(active_character.id, next_state):
+    active_unit == null or\
+    not current_turn.can_take_action(self.active_character.id, next_state):
         return
 
     if action_state == Action.MOVE and next_state != Action.MOVE:
@@ -77,9 +77,9 @@ func character_move() -> bool:
     return did_move
 
 
-func character_attack(target:Character, distance):
+func character_attack(target:Unit, distance):
     # Check that the current character can reach the target.
-    if distance > active_character.attack_range:
+    if distance > self.active_character.attack_range:
         return false
     
     var did_attack = character_action(Action.ATTACK)
@@ -96,21 +96,25 @@ func character_attack(target:Character, distance):
 
 func character_action(type):
     var action = Action.new(type)
-    return current_turn.take_action(active_character, action)
+    return current_turn.take_action(self.active_character, action)
 
 
 func resolve_attack(multiplier = 1):
-    if not active_target or not active_character:
+    if not active_target or not active_unit:
         return
     
     # Roll for avoidance based on target's speed.
-    var avoidance = rand_range(0, active_target.speed)
-    if avoidance > active_character.speed:
+    var avoidance = rand_range(0, active_target.character.speed)
+    if avoidance > self.active_character.speed:
+        set_action_state(Action.WAIT)
         return false
     
-    var damage = active_character.deal_damage() * multiplier
-    var final_damage = active_target.take_damage(damage)
-    print("Damage dealt: (%s) %s, %s, %s" % [multiplier, damage, final_damage, active_target.health.value_current])
+    var damage = self.active_character.deal_damage() * multiplier
+    var final_damage = int(active_target.character.take_damage(damage))
+    var damage_text = CombatText.instance()
+    active_target.add_child(damage_text)
+    damage_text.setup(final_damage, multiplier)
+    
     set_action_state(Action.WAIT)
     
     active_target = null
@@ -121,3 +125,8 @@ func _on_turn_ended():
     
 func _on_character_selected(character):
     activate_character(character)
+    
+func _get_active_character():
+    if active_unit != null and active_unit.character != null:
+        return active_unit.character
+    

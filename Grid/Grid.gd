@@ -119,7 +119,7 @@ func select_tile(tile):
                 # Selected character is trying to attack someone...
                 var unit_position = map.world_to_map(unit_selected.position)
                 var distance = (tile - unit_position).length()
-                _battle.character_attack(unit_on_tile.character, distance)
+                _battle.character_attack(unit_on_tile, distance)
             else:
                 # Select the character and do NOT start pathfinding.
                 # Wait for battle to initiate movement again.
