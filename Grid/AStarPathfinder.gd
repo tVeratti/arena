@@ -58,6 +58,8 @@ func _connect_astar_points():
     # var previous_normal = Vector2(0, 0)
     for tile in _walkable_tiles:
         var index = _get_point_index(tile)
+        if not _astar.has_point(index):
+            continue
         
         # Make a connection quad directions:
         # (-1, -1)     (-1, 0)     (-1, 1)

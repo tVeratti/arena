@@ -61,16 +61,16 @@ var agility:int
 # Toughness
 # + damage mitigation
 # + chance to resist dying when reduced to 0
-var toughness:float setget , toughness_get
+var toughness:int setget , toughness_get
 
 # Speed
 # + damage avoidance
 # + move distance
-var speed:float setget , speed_get
+var speed:int setget , speed_get
 
 # Power
 # + damage dealt
-var power:float setget , power_get
+var power:int setget , power_get
 
 
 func _init(name, is_enemy = false):
@@ -107,7 +107,7 @@ func _generate():
 func _generate_natural_pool() -> Array:
     var pool = int(rand_range(NATURAL_POOL - 2, NATURAL_POOL + 2))
     rating = pool
-    print(pool)
+
     var points = [NATURAL_BASE, NATURAL_BASE, NATURAL_BASE]
     for i in range(pool):
         var rand = rand_range(0, 3)
@@ -133,17 +133,17 @@ func deal_damage():
     return self.power + power_bonus + acuity_bonus
 
 
-func toughness_get():
-    return constitution - int(agility / 3)
+func toughness_get() -> int:
+    return int(constitution - int(agility / 3))
 
 
-func speed_get():
+func speed_get() -> int:
     var base = agility - int(constitution / 2)
     if base <= 0:
         base = 1
     return base
 
 
-func power_get():
-    return constitution * 1.5
+func power_get() -> int:
+    return int(constitution * 1.5)
     
