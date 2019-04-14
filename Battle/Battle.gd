@@ -90,8 +90,7 @@ func character_attack(target:Unit, distance):
         # resolve_attack when the player compeletes it.
         var skill_check = SkillCheck.instance()
         add_child(skill_check)
-        skill_check.setup(self, "SWORD")
-        skill_check.position = active_unit.position
+        skill_check.setup(self, active_unit, "SWORD")
 
 
 func character_action(type):

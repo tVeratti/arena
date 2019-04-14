@@ -1,4 +1,4 @@
-extends Node2D
+extends CanvasLayer
 
 # Types
 const SWORD = "SWORD"
@@ -23,7 +23,7 @@ var _crit_size:int = 10
 var _bonus_range:Array = [_bonus_start, _bonus_start + _bonus_size]
 var _crit_range:Array = [_crit_start, _crit_start + _crit_size]
 
-onready var _value_indicator = $Value
+onready var _value_indicator = $Textures/Value
 var _value:int = 0 setget , _get_value
 
 # Battle reference to resolve the attack once
@@ -35,8 +35,8 @@ func _ready():
     set_process(false)
     
     # Set up targets to make sure ranges line up.
-    $Target.rect_position.x = _bonus_range[0]
-    $Critical.rect_position.x = _crit_range[0]
+    $Textures/Target.rect_position.x = _bonus_range[0]
+    $Textures/Critical.rect_position.x = _crit_range[0]
     
     # Don't start the skill check right away.
     $Timer.start(2)
@@ -52,9 +52,11 @@ func _process(delta):
         calculate_multiplier()
 
 
-func setup(battle, type):
+func setup(battle, anchor, type):
     _type = type
     _battle = battle
+    
+    $Textures.rect_position = anchor.get_global_transform_with_canvas().get_origin()
     
     
 func calculate_multiplier():
