@@ -18,6 +18,8 @@ var units = []
 # Cache node
 onready var map = $TileMap
 onready var camera = $Camera
+onready var p_start = $PlayerStart
+onready var e_start = $EnemyStart
 
 
 func _ready():
@@ -26,18 +28,19 @@ func _ready():
 
 
 # Create the units for the grid based on the characters given.
-func add_characters(characters:Array):
+func add_characters(characters:Array, is_enemies = false):
     var walkable_tiles = _pathfinder.walkable_tiles()
     var cell_offset = map.cell_size.y / 2
-    
+    var start_position = map.world_to_map(e_start.position if is_enemies else p_start.position)
+
     for i in range(characters.size()):
-        var coords:Vector2 = walkable_tiles[i]
+        var coords:Vector2 = Vector2(i, 0) + start_position
         var character:Character = characters[i]
         
         var tile_position = map.map_to_world(coords)
         var unit_position = Vector2(tile_position.x, tile_position.y + cell_offset)
         var unit = Unit.instance()
-        unit.setup(unit_position, character)
+        unit.setup(unit_position, character, is_enemies)
         add_child(unit)
         units.append(unit)
 
@@ -80,6 +83,7 @@ func _unhandled_input(event):
         
         elif event is InputEventMouseMotion and \
         unit_selected != null and \
+        not unit_selected.is_enemy and \
         _battle.action_state == Action.MOVE:
             # Mouse OVER tile (focus)
             focus_tile(tile)
@@ -120,7 +124,7 @@ func select_tile(tile):
                 SignalManager.emit_signal("character_selected", unit_on_tile.character)
                 activate_unit(unit_on_tile)
     
-    elif unit_selected != null:
+    elif unit_selected != null and not unit_selected.is_enemy:
         # If a unit is already selected, do pathfinding for that unit.
         if _battle.character_move():
             var new_path = _pathfinder.find_path(\
@@ -150,4 +154,5 @@ func _get_unit_positions():
             positions.append(map.world_to_map(unit.path_end))
         
     return positions
+    
 

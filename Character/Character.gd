@@ -12,6 +12,7 @@ const DAMAGE_MULTIPLIER = 2
 
 var id:String
 var name:String
+var is_enemy:bool
 
 # Unit & Portrait Textures
 var TEXTURES = preload("res://Character/TEXTURES.gd")
@@ -22,6 +23,7 @@ var portrait_texture:Texture
 var health:Stat = Stat.new(HEALTH_MAX)
 var experience:Stat = Stat.new(EXPERIENCE_MAX, 0, 0)
 var level:int = 1
+var rating:int = 1
 
 var attack_range:int = 1
 
@@ -71,9 +73,10 @@ var speed:float setget , speed_get
 var power:float setget , power_get
 
 
-func _init(name):
+func _init(name, is_enemy = false):
     self.name = name
     self.id = "%s_%s" % [name, randi()]
+    self.is_enemy = is_enemy
     
     # Load character or create new one...
     # _load_stats or
@@ -96,14 +99,17 @@ func _generate():
     # Set portrait & unit textures
     # TODO: Use some algorithm to create
     # new asset combinations and unique textures.
-    var texture = TEXTURES.CIRCLE if randi() % 2 == 0 else TEXTURES.CIRCLE_YELLOW
+    var texture = TEXTURES.CIRCLE_YELLOW if is_enemy else TEXTURES.CIRCLE_BLUE
     unit_texture = texture
     portrait_texture = texture
 
 
 func _generate_natural_pool() -> Array:
+    var pool = int(rand_range(NATURAL_POOL - 2, NATURAL_POOL + 2))
+    rating = pool
+    print(pool)
     var points = [NATURAL_BASE, NATURAL_BASE, NATURAL_BASE]
-    for i in range(NATURAL_POOL):
+    for i in range(pool):
         var rand = rand_range(0, 3)
         if rand > 2:
             points[0] += 1
@@ -132,7 +138,10 @@ func toughness_get():
 
 
 func speed_get():
-    return agility - int(constitution / 2)
+    var base = agility - int(constitution / 2)
+    if base <= 0:
+        base = 1
+    return base
 
 
 func power_get():

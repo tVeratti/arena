@@ -11,6 +11,7 @@ onready var attack_button = $Layout/Rows/Actions/Attack
 onready var analyze_button = $Layout/Rows/Actions/Analyze
 
 onready var portraits = {}
+var active_character:Character
 
 var _battle
 
@@ -24,7 +25,7 @@ func _ready():
 
 
 func render_portraits(turn):
-    var active_character_id = _get_active_character_id()
+    active_character = _battle.active_character
     var character_ids = []
     
     # Render character portraits
@@ -39,7 +40,7 @@ func render_portraits(turn):
         
         # Create new portrait instance...
         var portrait = Portrait.instance()
-        var is_active = active_character_id == character.id
+        var is_active = active_character != null and active_character.id == character.id
         frames.add_child(portrait)
         portrait.setup(character)
         
@@ -54,42 +55,37 @@ func render_portraits(turn):
             portrait.queue_free()
             
 
-func _update_everything():
-    var active_character_id = _get_active_character_id()
+func _update_everything(character):
+    active_character = character
     
     # Activate the selected portrait by unit
     for id in portraits.keys():
         var portrait = portraits[id]        
-        var is_active = active_character_id == id
+        var is_active = active_character != null and active_character.id == id
         portrait.set_outline(is_active)
-        
-        if is_active:
-            active_character_id = id
     
     
-    update_button(move_button, active_character_id, Action.MOVE)
-    update_button(attack_button, active_character_id, Action.ATTACK)
+    update_button(move_button, active_character, Action.MOVE)
+    update_button(attack_button, active_character, Action.ATTACK)
+    update_button(analyze_button, active_character, Action.ANALYZE)
 
 
-func update_button(button, character_id, state):
+func update_button(button, character, state):
     var current_turn = _battle.current_turn
-    button.disabled = !current_turn.can_take_action(character_id, state)
+    button.disabled = !current_turn.can_take_action(character.id, state)
+    if character.is_enemy:
+        button.hide()
+    else:
+        button.show()
 
 
 func _on_character_selected(character):
-    _update_everything()
+    _update_everything(character)
     
-
-func _get_active_character_id():
-    var active_character_id = ""
-    if _battle.active_character != null:
-        active_character_id = _battle.active_character.id
-    
-    return active_character_id
 
 
 func _on_turn_updated(turn):
-    _update_everything()
+    _update_everything(_battle.active_character)
     turn_count.text = "Turn: %s" % turn.turn_count
     
     
@@ -99,7 +95,7 @@ func _on_battle_state_updated(state):
 
 func _on_Turn_pressed():
     _battle.next_turn()
-    _update_everything()
+    _update_everything(_battle.active_character)
 
 func _on_Move_pressed():
     _battle.set_action_state(Action.MOVE)

@@ -11,9 +11,9 @@ func _ready():
     ]
     
     var enemies = [
-        Character.new("Sovereign"),
-        Character.new("Caleb"),
-        Character.new("Detlaff")
+        Character.new("Sovereign", true),
+        Character.new("Caleb", true),
+        Character.new("Detlaff", true)
     ]
     
     var new_battle = Battle.instance()

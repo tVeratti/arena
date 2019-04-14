@@ -1,14 +1,15 @@
 extends Node2D
 
-var outline_shader = preload("res://outline.shader")
+var white_outline = preload("res://Assets/outline_white.shader")
+var red_outline = preload("res://Assets/outline_red.shader")
 
+# Movement
 var speed:float = 200.0
 var path = PoolVector2Array() setget set_path
 var path_end:Vector2
 
-
 var character:Character
-
+var is_enemy:bool
 
 onready var sprite = $Sprite
 
@@ -17,10 +18,11 @@ func _ready():
     set_process(false)
 
 
-func setup(tile_position, character):
+func setup(tile_position, character, is_enemy = false):
     position = tile_position
     path_end = tile_position
     self.character = character
+    self.is_enemy = is_enemy
     
     $Sprite.texture = character.unit_texture
 
@@ -44,7 +46,7 @@ func set_outline(value):
         # ShaderMaterial is shared by all instances,
         # so it is necessary to create a new one each time.
         var material = ShaderMaterial.new()
-        material.shader = outline_shader
+        material.shader = red_outline if is_enemy else white_outline
         sprite.material = material
     else:
         sprite.material.shader = null

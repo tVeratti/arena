@@ -6,10 +6,10 @@
 [node name="Tile" type="Node2D"]
 
 [node name="Grass" type="Sprite" parent="."]
-position = Vector2( 0, 7 )
 texture = ExtResource( 1 )
+centered = false
 
 [node name="Water" type="Sprite" parent="."]
-position = Vector2( 101, 8 )
 texture = ExtResource( 2 )
+centered = false
 

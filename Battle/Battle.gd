@@ -24,6 +24,7 @@ func setup(heroes, enemies):
 
 func _ready():
     Grid.add_characters(heroes)
+    Grid.add_characters(enemies, true)
     
     SignalManager.connect("character_selected", self, "_on_character_selected")
 
