@@ -1,5 +1,6 @@
 extends Control
 
+onready var _image = $Layout/TextureRect
 onready var _name = $Layout/Details/Name
 onready var _speed = $Layout/Details/Speed
 onready var _toughness = $Layout/Details/Toughness
@@ -18,9 +19,7 @@ func _on_character_selected(character:Character):
     else:
         hide()
     
-    print((\
-    float(character.health.value_current) / \
-    float(character.health.value_maximum)))
+    _image.texture = character.portrait_texture
     _name.text = character.name
     _speed.text = "Speed: %s" % character.speed
     _toughness.text = "Toughness: %s" % character.toughness

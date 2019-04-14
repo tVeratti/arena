@@ -11,6 +11,7 @@ func setup(character):
     # Before _ready
     self.character = character
     $Layout/Name.text = String(character.name)
+    $Layout/Image.texture = character.portrait_texture
 
 
 func set_outline(value):

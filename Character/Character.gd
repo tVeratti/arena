@@ -14,6 +14,12 @@ const DAMAGE_MULTIPLIER = 2
 var id:String
 var name:String
 
+# Unit & Portrait Textures
+var TEXTURES = preload("res://Character/TEXTURES.gd")
+var unit_texture:Texture
+var portrait_texture:Texture
+
+# General Info
 var health:Stat = Stat.new(HEALTH_MAX)
 var experience:Stat = Stat.new(EXPERIENCE_MAX, 0, 0)
 var level:int = 1
@@ -72,18 +78,27 @@ func _init(name):
     
     # Load character or create new one...
     # _load_stats or
-    _generate_stats()
+    _generate()
 
 
 func _load_stats():
     pass
 
 
-func _generate_stats():
+func _generate():
     randomize()
+    
+    # Character stats
     acuity = _generate_natural()
     constitution = _generate_natural()
     agility = _generate_natural()
+    
+    # Set portrait & unit textures
+    # TODO: Use some algorithm to create
+    # new asset combinations and unique textures.
+    var texture = TEXTURES.CIRCLE if randi() % 2 == 0 else TEXTURES.CIRCLE_YELLOW
+    unit_texture = texture
+    portrait_texture = texture
 
 
 func _generate_natural():

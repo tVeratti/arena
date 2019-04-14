@@ -21,6 +21,8 @@ func setup(tile_position, character):
     position = tile_position
     path_end = tile_position
     self.character = character
+    
+    $Sprite.texture = character.unit_texture
 
 
 func _process(delta):
