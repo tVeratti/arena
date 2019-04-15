@@ -19,34 +19,34 @@ margin_bottom = 40.0
 [node name="Bar" type="TextureRect" parent="Textures"]
 margin_top = 17.0
 margin_right = 200.0
-margin_bottom = 57.0
+margin_bottom = 37.0
 texture = ExtResource( 2 )
 
 [node name="Target" type="TextureRect" parent="Textures"]
-margin_left = 115.0
 margin_top = 17.0
-margin_right = 315.0
-margin_bottom = 57.0
+margin_right = 50.0
+margin_bottom = 37.0
 texture = ExtResource( 3 )
+expand = true
 
 [node name="Critical" type="TextureRect" parent="Textures"]
-margin_left = 150.0
 margin_top = 17.0
-margin_right = 350.0
-margin_bottom = 57.0
+margin_right = 10.0
+margin_bottom = 37.0
 texture = ExtResource( 4 )
+expand = true
 
 [node name="Value" type="TextureRect" parent="Textures"]
 margin_left = -2.49059
 margin_top = 12.3395
-margin_right = 197.509
-margin_bottom = 52.3395
+margin_right = 2.50941
+margin_bottom = 42.3395
 texture = ExtResource( 5 )
 
 [node name="Button" type="TextureButton" parent="Textures"]
 margin_left = 195.776
 margin_top = 6.43376
-margin_right = 395.776
+margin_right = 235.776
 margin_bottom = 46.4338
 texture_normal = ExtResource( 6 )
 

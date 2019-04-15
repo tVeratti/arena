@@ -90,7 +90,7 @@ func character_attack(target:Unit, distance):
         # resolve_attack when the player compeletes it.
         var skill_check = SkillCheck.instance()
         add_child(skill_check)
-        skill_check.setup(self, active_unit, "SWORD")
+        skill_check.setup(self, active_unit, target)
 
 
 func character_action(type):
@@ -102,12 +102,10 @@ func resolve_attack(multiplier = 1, label = ""):
     if not active_target or not active_unit:
         return
     
-    # Roll for avoidance based on target's speed.
-    var avoidance = rand_range(0, active_target.character.speed)
-    if avoidance > self.active_character.speed:
+    if multiplier == 0:
         var avoid_text = CombatText.instance()
         active_target.add_child(avoid_text)
-        avoid_text.setup("Missed", "")
+        avoid_text.setup(label, "")
         set_action_state(Action.WAIT)
         return false
     

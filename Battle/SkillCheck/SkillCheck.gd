@@ -15,13 +15,11 @@ var _speed:int = 3
 var _size:int = 200
 
 # Texture Measurements
-var _bonus_start:int = 115
-var _crit_start:int = 150
-var _bonus_size:int = 50
-var _crit_size:int = 10
-
-var _bonus_range:Array = [_bonus_start, _bonus_start + _bonus_size]
-var _crit_range:Array = [_crit_start, _crit_start + _crit_size]
+const METER_PADDING = 15
+const BONUS_BASE_SIZE = 50
+const CRIT_BASE_SIZE = 10
+var _bonus_range:Array = []
+var _crit_range:Array = []
 
 onready var _value_indicator = $Textures/Value
 var _value:int = 0 setget , _get_value
@@ -33,11 +31,7 @@ var _battle
 
 func _ready():
     set_process(false)
-    
-    # Set up targets to make sure ranges line up.
-    $Textures/Target.rect_position.x = _bonus_range[0]
-    $Textures/Critical.rect_position.x = _crit_range[0]
-    
+        
     # Don't start the skill check right away.
     $Timer.start(2)
 
@@ -52,11 +46,29 @@ func _process(delta):
         calculate_multiplier()
 
 
-func setup(battle, anchor, type):
-    _type = type
+func setup(battle, attacker:Unit, target:Unit):
     _battle = battle
     
-    $Textures.rect_position = anchor.get_global_transform_with_canvas().get_origin()
+    # Calculate the size of the targets based on attacker/target speeds.
+    var speed_total:float = attacker.character.speed + target.character.speed
+    var relative_size_ratio:float = attacker.character.speed / speed_total
+    
+    var bonus_size = BONUS_BASE_SIZE * relative_size_ratio
+    var crit_size = CRIT_BASE_SIZE * (relative_size_ratio / 2)
+    
+    var bonus_start = (_size - bonus_size) - METER_PADDING
+    var crit_start = (_size - crit_size) - METER_PADDING
+    
+    _bonus_range = [bonus_start, bonus_start + bonus_size]
+    _crit_range = [crit_start, crit_start + crit_size]
+    
+    # Position the skill check beside the player unit.
+    $Textures.rect_position = target.get_global_transform_with_canvas().get_origin()
+    $Textures/Target.rect_size.x = bonus_size
+    $Textures/Target.rect_position.x = clamp(_bonus_range[0], 40, _size)
+    $Textures/Critical.rect_size.x = crit_size
+    $Textures/Critical.rect_position.x = clamp(_crit_range[0], 50, _size)
+    
     
     
 func calculate_multiplier():
@@ -73,6 +85,9 @@ func calculate_multiplier():
     elif value > _bonus_range[0] and value < _bonus_range[1]:
         multiplier = BONUS_MULTIPLIER
         label = "Good!"
+    else:
+        multiplier = 0
+        label = "Missed!"
     
     # Allow battle to finish resolving the attack with
     # the new multiplier from this skill check.
@@ -81,12 +96,14 @@ func calculate_multiplier():
     # Delete instance entirely
     self.queue_free()
 
+
 func _on_Button_pressed():
     calculate_multiplier()
    
 
 func _on_Timer_timeout():
     set_process(true)
+
 
 func _get_value():
     return _value_indicator.rect_position.x
