@@ -45,8 +45,8 @@ func add_characters(characters:Array, is_enemies = false):
 
 
 # Activate the unit that holds the given character.
-func activate_character(character) -> Unit:
-    if unit_selected != null and unit_selected.character == character:
+func activate_character(character:Character) -> Unit:
+    if character == null or (unit_selected != null and unit_selected.character == character):
         return unit_selected
 
     for unit in self.units:
@@ -60,7 +60,7 @@ func activate_character(character) -> Unit:
     return unit_selected
 
 
-func activate_unit(unit):
+func activate_unit(unit:Unit):
     if unit_selected == unit:
         return
         
@@ -127,7 +127,7 @@ func select_tile(tile):
     
     elif unit_selected != null and not unit_selected.is_enemy:
         # If a unit is already selected, do pathfinding for that unit.
-        if _battle.character_move():
+        if _battle.action_state == Action.MOVE and _battle.character_move():
             var new_path = _pathfinder.find_path(\
                 unit_selected.position,\
                 tile_position,\

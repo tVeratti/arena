@@ -12,6 +12,7 @@ var enemies:Array
 
 var current_turn:Turn
 var current_turn_count:int = 1
+var previous_turn:Turn
 
 var active_unit:Unit
 var active_target:Unit
@@ -25,21 +26,24 @@ func setup(heroes, enemies):
     self.heroes = heroes
     self.enemies = enemies
     self.current_turn = Turn.new(heroes, current_turn_count)
+    self.previous_turn = self.current_turn
 
 
 func _ready():
     Grid.add_characters(heroes)
     Grid.add_characters(enemies, true)
     
+    # activate_character(heroes[0])
+    
     SignalManager.connect("character_selected", self, "_on_character_selected")
 
 
-func activate_character(character):
-    if character != self.active_character:
-        active_unit = Grid.activate_character(character)
-        
-        var next_possible_action = current_turn.next_possible_action(character.id)
-        set_action_state(next_possible_action)
+func activate_character(character:Character):
+    active_unit = Grid.activate_character(character)
+    
+    # Allow auto-selection of next action... maybe a setting later.
+    # var next_action = current_turn.next_possible_action(character.id)
+    # set_action_state(next_action)
 
 
 func set_action_state(next_state):
@@ -65,8 +69,11 @@ func set_action_state(next_state):
 
 
 func next_turn():
+    previous_turn = current_turn
     current_turn_count += 1
     current_turn = Turn.new(heroes, current_turn_count)
+    
+    activate_character(self.active_character)
 
 
 func character_move() -> bool:

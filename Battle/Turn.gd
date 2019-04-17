@@ -5,6 +5,7 @@ class_name Turn
 var Action = preload("res://Battle/Action.gd")
 
 var actions_taken = {}
+var last_actions = {}
 var characters_total = []
 var characters_done = []
 var turn_count:int
@@ -12,6 +13,9 @@ var turn_count:int
 func _init(characters, turn_count):
     self.characters_total = characters
     self.turn_count = turn_count
+    
+    for character in characters:
+        last_actions[character.id] = Action.WAIT
     
     SignalManager.emit_signal("turn_updated", self)
 
@@ -23,6 +27,10 @@ func next_possible_action(id):
         return Action.ATTACK
     else:
         return Action.WAIT
+
+
+func last_action(character):
+    return last_actions[character.id] 
 
 
 func is_complete() -> bool:
@@ -70,6 +78,8 @@ func take_action(character:Character, action:Action) -> bool:
     
     # TODO:
     # update "characters_awaiting" or another array to store the CURRENT list
+    
+    last_actions[c_id] = a_id
     
     # Return true to indicate that the action was taken.
     return can_take_action
