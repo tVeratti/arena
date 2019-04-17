@@ -136,12 +136,25 @@ func resolve_attack(multiplier = 1, label = ""):
     active_target = null
 
 
-func _handle_character_death(character):
-    if character.is_enemy:
-        enemies.erase(character)
-    else:
-        heroes.erase(character)
-        current_turn.characters_total.erase(character)
+func _handle_character_death(target):
+    var full_list = enemies
+    if !target.is_enemy:
+        full_list = heroes
+        current_turn.characters_total.erase(target)
+    
+    var all_dead = true
+    for character in full_list:
+        if character.is_alive:
+            all_dead = false
+            break
+    
+    if all_dead:
+        # END THE BATTLE, one side is 100% dead
+        ScreenManager.change_to(Scenes.BATTLE_EXIT, {
+            "heroes": heroes,
+            "enemies": enemies,
+            "winner": "player" if target.is_enemy else "enemy"
+        })
 
 
 func _on_turn_ended():

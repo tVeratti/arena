@@ -25,5 +25,5 @@ func _on_character_selected(character:Character):
     _toughness.text = "Toughness: %s" % character.toughness
     _power.text = "Power: %s" % character.power
     _health.value = \
-    character.health.value_current / \
-    character.health.value_maximum * 100
+        character.health.value_current / \
+        character.health.value_maximum * 100

@@ -6,6 +6,7 @@
 [node name="Character" type="VBoxContainer"]
 margin_bottom = 68.0
 size_flags_horizontal = 3
+alignment = 1
 script = ExtResource( 1 )
 
 [node name="Layout" type="HBoxContainer" parent="."]
@@ -54,4 +55,10 @@ align = 2
 margin_top = 55.0
 margin_bottom = 69.0
 align = 2
+
+[node name="Health" type="ProgressBar" parent="."]
+margin_top = 74.0
+margin_right = 74.0
+margin_bottom = 88.0
+size_flags_horizontal = 3
 
