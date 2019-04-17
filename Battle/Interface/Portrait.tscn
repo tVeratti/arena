@@ -5,7 +5,9 @@
 
 [sub_resource type="ShaderMaterial" id=1]
 
-[node name="Portrait" type="Control"]
+[node name="Portrait" type="Control" groups=[
+"portraits",
+]]
 margin_right = 50.0
 margin_bottom = 70.0
 rect_min_size = Vector2( 50, 70 )

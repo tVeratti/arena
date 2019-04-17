@@ -13,7 +13,7 @@ var _tile_focused
 # Character Units
 var Unit = preload("res://Grid/Unit/Unit.tscn")
 var unit_selected
-var units = []
+var units:Array setget , _get_units
 
 # Cache node
 onready var map = $TileMap
@@ -42,7 +42,6 @@ func add_characters(characters:Array, is_enemies = false):
         var unit = Unit.instance()
         unit.setup(unit_position, character, is_enemies)
         add_child(unit)
-        units.append(unit)
 
 
 # Activate the unit that holds the given character.
@@ -50,7 +49,7 @@ func activate_character(character) -> Unit:
     if unit_selected != null and unit_selected.character == character:
         return unit_selected
 
-    for unit in units:
+    for unit in self.units:
         if character.id == unit.character.id:
             unit_selected = unit
             unit_selected.activate()
@@ -84,9 +83,9 @@ func _unhandled_input(event):
                 select_tile(tile)
         
         elif event is InputEventMouseMotion and \
-        unit_selected != null and \
-        not unit_selected.is_enemy and \
-        _battle.action_state == Action.MOVE:
+            unit_selected != null and \
+            not unit_selected.is_enemy and \
+            _battle.action_state == Action.MOVE:
             # Mouse OVER tile (focus)
             focus_tile(tile)
 
@@ -97,10 +96,10 @@ func focus_tile(tile):
     
     var tile_position = map.map_to_world(tile)
     var path = _pathfinder.find_path(\
-    unit_selected.position,\
-    tile_position,\
-    unit_selected.character.speed,\
-    _get_unit_positions())
+        unit_selected.position,\
+        tile_position,\
+        unit_selected.character.speed,\
+        _get_unit_positions())
     
     SignalManager.emit_signal("tile_focused", path)
     
@@ -109,7 +108,6 @@ func focus_tile(tile):
  
 func select_tile(tile):    
     var tile_position = map.map_to_world(tile)
-    
     
     # Check if there is a unit occupying this tile...
     var unit_on_tile = _get_unit_on_tile(tile)     
@@ -131,19 +129,20 @@ func select_tile(tile):
         # If a unit is already selected, do pathfinding for that unit.
         if _battle.character_move():
             var new_path = _pathfinder.find_path(\
-            unit_selected.position,\
-            tile_position,\
-            unit_selected.character.speed,\
-            _get_unit_positions())
+                unit_selected.position,\
+                tile_position,\
+                unit_selected.character.speed,\
+                _get_unit_positions())
             unit_selected.path = new_path
             
             deactivate()
 
     camera.set_target(tile_position)
 
+
 func _get_unit_on_tile(tile):
     # Check if there is a unit occupying this tile...
-    for unit in units:
+    for unit in self.units:
         if tile == map.world_to_map(unit.position):
             return unit
 
@@ -153,10 +152,13 @@ func _get_unit_on_tile(tile):
    
 func _get_unit_positions():
     var positions = []
-    for unit in units:
+    #for unit in units:
+    for unit in self.units:
         if unit != unit_selected:
             positions.append(map.world_to_map(unit.path_end))
         
     return positions
-    
 
+
+func _get_units():
+    return get_tree().get_nodes_in_group("units")

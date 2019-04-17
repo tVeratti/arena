@@ -1,6 +1,6 @@
 extends Control
 
-var outline_shader = preload("res://outline.shader")
+var outline_shader = preload("res://Assets/outline_white.shader")
 
 onready var image = $Layout/Image
 
@@ -12,6 +12,8 @@ func setup(character):
     self.character = character
     $Layout/Name.text = String(character.name)
     $Layout/Image.texture = character.portrait_texture
+    
+    SignalManager.connect("health_changed", self, "_on_health_changed")
 
 
 func set_outline(value):
@@ -29,4 +31,10 @@ func _on_Portrait_gui_input(event):
     if event is InputEventMouseButton and event.is_pressed():
         get_tree().set_input_as_handled()
         SignalManager.emit_signal("character_selected", character)
+
+
+func _on_health_changed(target):
+    if character == target and not target.is_alive:
+        # I die... die.... DIE!!
+        queue_free()
         

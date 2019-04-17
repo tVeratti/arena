@@ -39,10 +39,9 @@ func _ready():
 
 func _process(delta):
     _value_indicator.rect_position = Vector2(\
-    lerp(self._value, _size, _speed * delta),\
-    _value_indicator.rect_position.y)
+        lerp(self._value, _size, _speed * delta),\
+        _value_indicator.rect_position.y)
 
-        
     if self._value >= _size - 5:
         calculate_multiplier()
 

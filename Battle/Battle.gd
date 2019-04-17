@@ -112,19 +112,31 @@ func resolve_attack(multiplier = 1, label = ""):
         return false
     
     # Calculate final damage after target's mitigation.
+    var target = active_target.character
     var damage = self.active_character.deal_damage() * multiplier
-    var final_damage = int(active_target.character.take_damage(damage))
+    var final_damage = int(target.take_damage(damage))
     
     # Render the damage done...
     var damage_text = CombatText.instance()
     active_target.add_child(damage_text)
     damage_text.setup(final_damage, label)
     
-    SignalManager.emit_signal("health_changed", active_target.character)
+    if !target.is_alive:
+        _handle_character_death(target)
+        
+    SignalManager.emit_signal("health_changed", target)
     
     set_action_state(Action.WAIT)
     active_target = null
-    
+
+
+func _handle_character_death(character):
+    if character.is_enemy:
+        enemies.erase(character)
+    else:
+        heroes.erase(character)
+        current_turn.characters_total.erase(character)
+
 
 func _on_turn_ended():
     next_turn()

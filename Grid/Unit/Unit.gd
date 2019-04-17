@@ -19,6 +19,7 @@ onready var health = $HealthBar
 
 func _ready():
     set_process(false)
+    SignalManager.connect("health_changed", self, "_on_health_changed")
 
 
 func setup(tile_position, character, is_enemy = false):
@@ -29,6 +30,8 @@ func setup(tile_position, character, is_enemy = false):
     
     $Sprite.texture = character.unit_texture
     $HealthBar.setup(character)
+    
+    #SignalManager.connect("health_changed", self, "_on_health_changed")
 
 
 func _process(delta):
@@ -89,3 +92,10 @@ func set_path(value:PoolVector2Array):
         path = valid_path
         path_end = valid_path[valid_path.size() - 1]
         set_process(true)
+
+
+func _on_health_changed(target):
+    if character == target and not target.is_alive:
+        # I die... die.... DIE!!
+        queue_free()
+        

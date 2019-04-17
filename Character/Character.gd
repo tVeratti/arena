@@ -13,6 +13,7 @@ const DAMAGE_MULTIPLIER = 2
 var id:String
 var name:String
 var is_enemy:bool
+var is_alive:bool setget , _alive_get
 
 # Unit & Portrait Textures
 var TEXTURES = preload("res://Character/TEXTURES.gd")
@@ -61,16 +62,16 @@ var agility:int
 # Toughness
 # + damage mitigation
 # + chance to resist dying when reduced to 0
-var toughness:int setget , toughness_get
+var toughness:int setget , _toughness_get
 
 # Speed
 # + damage avoidance
 # + move distance
-var speed:int setget , speed_get
+var speed:int setget , _speed_get
 
 # Power
 # + damage dealt
-var power:int setget , power_get
+var power:int setget , _power_get
 
 
 func _init(name, is_enemy = false):
@@ -133,17 +134,20 @@ func deal_damage():
     return self.power + power_bonus + acuity_bonus
 
 
-func toughness_get() -> int:
+func _toughness_get() -> int:
     return int(constitution - int(agility / 3))
 
 
-func speed_get() -> int:
+func _speed_get() -> int:
     var base = agility - int(constitution / 2)
     if base <= 0:
         base = 1
     return base
 
 
-func power_get() -> int:
+func _power_get() -> int:
     return int(constitution * 1.5)
     
+
+func _alive_get() -> bool:
+    return health.value_current > 0
