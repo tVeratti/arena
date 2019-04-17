@@ -109,7 +109,7 @@ func focus_tile(tile):
  
 func select_tile(tile):    
     var tile_position = map.map_to_world(tile)
-    camera.set_target(tile_position)
+    
     
     # Check if there is a unit occupying this tile...
     var unit_on_tile = _get_unit_on_tile(tile)     
@@ -120,6 +120,7 @@ func select_tile(tile):
                 var unit_position = map.world_to_map(unit_selected.position)
                 var distance = (tile - unit_position).length()
                 _battle.character_attack(unit_on_tile, distance)
+                camera.lock()
             else:
                 # Select the character and do NOT start pathfinding.
                 # Wait for battle to initiate movement again.
@@ -138,6 +139,7 @@ func select_tile(tile):
             
             deactivate()
 
+    camera.set_target(tile_position)
 
 func _get_unit_on_tile(tile):
     # Check if there is a unit occupying this tile...

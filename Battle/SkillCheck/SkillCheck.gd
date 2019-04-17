@@ -15,6 +15,7 @@ var _speed:int = 3
 var _size:int = 200
 
 # Texture Measurements
+const WINDOW_PADDING = 100
 const METER_PADDING = 15
 const BONUS_BASE_SIZE = 50
 const CRIT_BASE_SIZE = 10
@@ -62,8 +63,14 @@ func setup(battle, attacker:Unit, target:Unit):
     _bonus_range = [bonus_start, bonus_start + bonus_size]
     _crit_range = [crit_start, crit_start + crit_size]
     
-    # Position the skill check beside the player unit.
-    $Textures.rect_position = target.get_global_transform_with_canvas().get_origin()
+    # Position the skill check beside the player unit, but within the viewport.
+    var target_position = target.get_global_transform_with_canvas().get_origin()
+    var window_size = OS.window_size
+    $Textures.rect_position = Vector2(\
+        clamp(target_position.x, WINDOW_PADDING, window_size.x - (_size + WINDOW_PADDING)),\
+        clamp(target_position.y, WINDOW_PADDING, window_size.y - WINDOW_PADDING))
+    
+    # Size all target areas based on speed ranges.
     $Textures/Target.rect_size.x = bonus_size
     $Textures/Target.rect_position.x = clamp(_bonus_range[0], 40, _size)
     $Textures/Critical.rect_size.x = crit_size

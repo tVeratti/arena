@@ -99,6 +99,8 @@ func character_action(type):
 
 
 func resolve_attack(multiplier = 1, label = ""):
+    Grid.camera.unlock()
+    
     if not active_target or not active_unit:
         return
     

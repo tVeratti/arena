@@ -13,6 +13,8 @@ var _zoom_speed:float = 3.0
 var _zoom_step:Vector2 = Vector2(0.3, 0.3)
 var _zoom_tolerance:float = 0.1
 
+var _camera_locked:bool = false
+
 
 func _process(delta):
     _manual_camera_input()
@@ -33,24 +35,36 @@ func _process(delta):
 
 
 func _input(event):
-    if event is InputEventMouse and event.is_pressed():
-        if event.button_index == BUTTON_WHEEL_UP:
-            _zoom_target = zoom - _zoom_step
-        elif event.button_index == BUTTON_WHEEL_DOWN:
-            _zoom_target = zoom + _zoom_step
+    if not _camera_locked:
+        if event is InputEventMouse and event.is_pressed():
+            if event.button_index == BUTTON_WHEEL_UP:
+                _zoom_target = zoom - _zoom_step
+            elif event.button_index == BUTTON_WHEEL_DOWN:
+                _zoom_target = zoom + _zoom_step
 
        
 func _manual_camera_input():
-    # Manual camera _target movement
-    if Input.is_action_pressed("ui_up"):
-        _target.y -= _manual_speed
-    if Input.is_action_pressed("ui_down"):
-        _target.y += _manual_speed
-    if Input.is_action_pressed("ui_right"):
-        _target.x += _manual_speed
-    if Input.is_action_pressed("ui_left"):
-        _target.x -= _manual_speed
+    if not _camera_locked:
+        # Manual camera _target movement
+        if Input.is_action_pressed("ui_up"):
+            _target.y -= _manual_speed
+        if Input.is_action_pressed("ui_down"):
+            _target.y += _manual_speed
+        if Input.is_action_pressed("ui_right"):
+            _target.x += _manual_speed
+        if Input.is_action_pressed("ui_left"):
+            _target.x -= _manual_speed
 
 
 func set_target(target):
-    _target = target   
+    if not _camera_locked:
+        _target = target
+
+
+func lock():
+    _camera_locked = true
+
+
+func unlock():
+    _camera_locked = false
+
