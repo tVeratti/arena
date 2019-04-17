@@ -22,19 +22,18 @@ var active_character:Character setget , _get_active_character
 onready var Grid = $Grid
 
 
-func setup(heroes, enemies):
-    self.heroes = heroes
-    self.enemies = enemies
-    self.current_turn = Turn.new(heroes, current_turn_count)
+func setup(battle):
+    self.heroes = battle.heroes
+    self.enemies = battle.enemies
+    self.current_turn = Turn.new(battle.heroes, current_turn_count)
     self.previous_turn = self.current_turn
+    
+    $Interface.setup()
+    Grid.add_characters(heroes)
+    Grid.add_characters(enemies, true)
 
 
 func _ready():
-    Grid.add_characters(heroes)
-    Grid.add_characters(enemies, true)
-    
-    # activate_character(heroes[0])
-    
     SignalManager.connect("character_selected", self, "_on_character_selected")
 
 

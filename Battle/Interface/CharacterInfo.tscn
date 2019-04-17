@@ -11,7 +11,7 @@ script = ExtResource( 1 )
 margin_right = 74.0
 margin_bottom = 70.0
 
-[node name="TextureRect" type="TextureRect" parent="Layout"]
+[node name="Image" type="TextureRect" parent="Layout"]
 margin_right = 70.0
 margin_bottom = 70.0
 rect_min_size = Vector2( 70, 70 )

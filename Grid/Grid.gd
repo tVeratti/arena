@@ -137,8 +137,6 @@ func select_tile(tile):
             
             deactivate()
 
-    camera.set_target(tile_position)
-
 
 func _get_unit_on_tile(tile):
     # Check if there is a unit occupying this tile...

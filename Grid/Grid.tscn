@@ -14,6 +14,10 @@ position = Vector2( 87.3502, -101.67 )
 current = true
 drag_margin_h_enabled = false
 drag_margin_v_enabled = false
+drag_margin_left = 1.0
+drag_margin_top = 1.0
+drag_margin_right = 1.0
+drag_margin_bottom = 1.0
 script = ExtResource( 2 )
 
 [node name="TileMap_Water" type="TileMap" parent="."]

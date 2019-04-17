@@ -17,14 +17,14 @@ var _battle
 
 func _ready():
     _battle = get_parent()
-    initialize_portraits(_battle.current_turn)
     
     SignalManager.connect("character_selected", self, "_on_character_selected")
     SignalManager.connect("turn_updated", self, "_on_turn_updated")
     SignalManager.connect("battle_state_updated", self, "_on_battle_state_updated")
 
 
-func initialize_portraits(turn):
+func setup():
+    var turn = _battle.current_turn
     active_character = _battle.active_character
     
     # Render character portraits
@@ -59,8 +59,8 @@ func _update_everything(character):
 
 func update_button(button, character, state):
     var current_turn = _battle.current_turn
-    button.disabled = !current_turn.can_take_action(character.id, state)
-    if character.is_enemy:
+    button.disabled = character == null or !current_turn.can_take_action(character.id, state)
+    if character == null or character.is_enemy:
         button.hide()
     else:
         button.show()
