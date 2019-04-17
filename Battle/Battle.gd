@@ -15,9 +15,11 @@ var current_turn_count:int = 1
 var previous_turn:Turn
 
 var active_unit:Unit
-var active_target:Unit
+var active_targets:Array = []
 var action_state:String = Action.WAIT
 var active_character:Character setget , _get_active_character
+
+var current_telegraph:Telegraph
 
 onready var Grid = $Grid
 
@@ -35,6 +37,7 @@ func setup(battle):
 
 func _ready():
     SignalManager.connect("character_selected", self, "_on_character_selected")
+    SignalManager.connect("telegraph_executed", self, "_on_telegraph_executed")
 
 
 func activate_character(character:Character):
@@ -48,18 +51,18 @@ func activate_character(character:Character):
 func set_action_state(next_state):
     # Verify that the next state is valid for the current battle state.
     if action_state == next_state or\
-    active_unit == null or\
-    not current_turn.can_take_action(self.active_character.id, next_state):
+        active_unit == null or\
+        not current_turn.can_take_action(self.active_character.id, next_state):
         return
 
     if action_state == Action.MOVE and next_state != Action.MOVE:
         Grid.deactivate()
-    
+
     match(next_state):
         Action.MOVE:
             pass
         Action.ATTACK:
-            pass
+            Grid.show_telegraph(self.active_character.attack_range)
         Action.WAIT:
             pass
             
@@ -83,20 +86,25 @@ func character_move() -> bool:
     return did_move
 
 
-func character_attack(target:Unit, distance):
-    # Check that the current character can reach the target.
-    if distance > self.active_character.attack_range:
-        return false
-    
+func character_attack(targets:Array):
+    if targets.size() == 0:
+        set_action_state(Action.WAIT)
+        return
+      
     var did_attack = character_action(Action.ATTACK)
-    if did_attack:
-        active_target = target
+    if did_attack:    
+        active_targets = targets
+        
+        var target_speed = 0
+        for target in targets:
+            target_speed += target.character.speed
+        target_speed /= targets.size()
         
         # Initiate a skill check which will call
         # resolve_attack when the player compeletes it.
         var skill_check = SkillCheck.instance()
         add_child(skill_check)
-        skill_check.setup(self, active_unit, target)
+        skill_check.setup(self, active_unit, target_speed)
 
 
 func character_action(type):
@@ -107,33 +115,34 @@ func character_action(type):
 func resolve_attack(multiplier = 1, label = ""):
     Grid.camera.unlock()
     
-    if not active_target or not active_unit:
+    if not active_targets or not active_unit:
         return
     
     if multiplier == 0:
-        var avoid_text = CombatText.instance()
-        active_target.add_child(avoid_text)
-        avoid_text.setup(label, "")
-        set_action_state(Action.WAIT)
+        #var avoid_text = CombatText.instance()
+        #active_target.add_child(avoid_text)
+        #avoid_text.setup(label, "")
+        #set_action_state(Action.WAIT)
         return false
     
     # Calculate final damage after target's mitigation.
-    var target = active_target.character
-    var damage = self.active_character.deal_damage() * multiplier
-    var final_damage = int(target.take_damage(damage))
-    
-    # Render the damage done...
-    var damage_text = CombatText.instance()
-    active_target.add_child(damage_text)
-    damage_text.setup(final_damage, label)
-    
-    if !target.is_alive:
-        _handle_character_death(target)
+    for target in active_targets:
+        var target_character = target.character
+        var damage = self.active_character.deal_damage() * multiplier
+        var final_damage = int(target_character.take_damage(damage))
         
-    SignalManager.emit_signal("health_changed", target)
+        # Render the damage done...
+        var damage_text = CombatText.instance()
+        target.add_child(damage_text)
+        damage_text.setup(final_damage, label)
+        
+        if !target_character.is_alive:
+            _handle_character_death(target_character)
+            
+        SignalManager.emit_signal("health_changed", target_character)
     
     set_action_state(Action.WAIT)
-    active_target = null
+    active_targets = []
 
 
 func _handle_character_death(target):
@@ -157,12 +166,25 @@ func _handle_character_death(target):
         })
 
 
+func _on_telegraph_executed(bodies):
+    var targets = []
+    for body in bodies:
+        var unit = body as Unit
+        if unit.character.id != self.active_character.id:
+            targets.append(unit)
+        
+    character_attack(targets)
+    Grid.camera.lock()
+
+
 func _on_turn_ended():
     next_turn()
-    
+
+
 func _on_character_selected(character):
     activate_character(character)
-    
+
+
 func _get_active_character():
     if active_unit != null and active_unit.character != null:
         return active_unit.character

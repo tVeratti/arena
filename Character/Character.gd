@@ -12,6 +12,7 @@ const DAMAGE_MULTIPLIER = 2
 
 var id:String
 var name:String
+var gender:String
 var is_enemy:bool
 var is_alive:bool setget , _alive_get
 

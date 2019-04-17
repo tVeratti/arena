@@ -51,3 +51,5 @@ position = Vector2( 257.825, -149.784 )
 [node name="EnemyStart" type="Node2D" parent="."]
 position = Vector2( -94.4199, 72.6639 )
 
+[node name="TelegraphRoot" type="Node2D" parent="."]
+

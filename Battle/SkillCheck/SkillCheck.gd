@@ -46,12 +46,12 @@ func _process(delta):
         calculate_multiplier()
 
 
-func setup(battle, attacker:Unit, target:Unit):
+func setup(battle, unit:Unit, target_speed:float):
     _battle = battle
-    
+    print(target_speed)
     # Calculate the size of the targets based on attacker/target speeds.
-    var speed_total:float = attacker.character.speed + target.character.speed
-    var relative_size_ratio:float = attacker.character.speed / speed_total
+    var speed_total:float = unit.character.speed + target_speed
+    var relative_size_ratio:float = unit.character.speed / speed_total
     
     var bonus_size = BONUS_BASE_SIZE * relative_size_ratio
     var crit_size = CRIT_BASE_SIZE * (relative_size_ratio / 2)
@@ -63,7 +63,7 @@ func setup(battle, attacker:Unit, target:Unit):
     _crit_range = [crit_start, crit_start + crit_size]
     
     # Position the skill check beside the player unit, but within the viewport.
-    var target_position = target.get_global_transform_with_canvas().get_origin()
+    var target_position = unit.get_global_transform_with_canvas().get_origin()
     var window_size = OS.window_size
     $Textures.rect_position = Vector2(\
         clamp(target_position.x, WINDOW_PADDING, window_size.x - (_size + WINDOW_PADDING)),\

@@ -12,6 +12,7 @@ var path_end:Vector2
 
 var character:Character
 var is_enemy:bool
+var is_active:bool
 
 onready var sprite = $Sprite
 onready var health = $HealthBar
@@ -48,7 +49,10 @@ func deactivate():
     set_outline(false)
 
 
-func set_outline(value):
+func set_outline(value = false):
+    if value == is_active:
+        return
+    
     if value:
         # ShaderMaterial is shared by all instances,
         # so it is necessary to create a new one each time.
@@ -57,6 +61,8 @@ func set_outline(value):
         sprite.material = material
     else:
         sprite.material.shader = null
+    
+    is_active = value
 
 
 func move_along_path(distance):
@@ -99,3 +105,6 @@ func _on_health_changed(target):
         # I die... die.... DIE!!
         queue_free()
         
+
+func _on_Character_area_entered(area):
+    print("please.")

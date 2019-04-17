@@ -10,6 +10,8 @@ var _battle
 enum { TILE_NONE = -1, TILE_GRASS = 0 }
 var _tile_focused
 
+var Telegraph = preload("res://Grid/Telegraph.tscn")
+
 # Character Units
 var Unit = preload("res://Grid/Unit/Unit.tscn")
 var unit_selected
@@ -20,6 +22,7 @@ onready var map = $TileMap
 onready var camera = $Camera
 onready var p_start = $PlayerStart
 onready var e_start = $EnemyStart
+onready var t_root = $TelegraphRoot
 
 
 func _ready():
@@ -70,6 +73,14 @@ func activate_unit(unit:Unit):
 
 func deactivate():
     SignalManager.emit_signal("tile_focused", [])
+    
+    
+func show_telegraph(max_range):
+    # Show the telegraph of the character's attack
+    var new_telegraph = Telegraph.instance()
+    t_root.add_child(new_telegraph)
+    t_root.position = unit_selected.position
+    new_telegraph.set_range(max_range)
 
 
 func _unhandled_input(event):
@@ -114,11 +125,7 @@ func select_tile(tile):
     if unit_on_tile != null:
         if unit_selected != unit_on_tile:
             if _battle.action_state == Action.ATTACK:
-                # Selected character is trying to attack someone...
-                var unit_position = map.world_to_map(unit_selected.position)
-                var distance = (tile - unit_position).length()
-                _battle.character_attack(unit_on_tile, distance)
-                camera.lock()
+                return
             else:
                 # Select the character and do NOT start pathfinding.
                 # Wait for battle to initiate movement again.
