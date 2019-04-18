@@ -48,20 +48,30 @@ func _ready():
 # Activate enemies and let the next possible one take an action,
 # until none can and the next turns (player) begins
 func activate_enemies():
+    
     var next_enemy = current_turn.next_character()
     if next_enemy == null:
         return next_turn()
     
+    # Get the next action and update the turn.
     var next_action = current_turn.next_possible_action(next_enemy.id)
     current_turn.take_action(next_enemy, next_action)
     
     # Let the AI decide to do with the current action...
     if next_action == Action.MOVE:
-        var target = Grid.get_nearest_unit(next_enemy)
-        Grid.move_enemy(next_enemy, target)
+        # This starts movement which won't activated
+        # enemies again until it finishes.
+        if Grid.move_to_nearest_unit(next_enemy):
+            return
         
     elif next_action == Action.ATTACK:
-        activate_enemies()
+        var enemy_unit = Grid.get_unit_by_character(next_enemy)
+        var nearest_unit = Grid.get_nearest_unit(next_enemy)
+        if is_instance_valid(nearest_unit) and is_instance_valid(enemy_unit) and \
+            nearest_unit.position.distance_to(enemy_unit.position) <= next_enemy.attack_range * 90:
+            resolve_attack(1, "", [nearest_unit])
+      
+    activate_enemies()
 
 
 # When a character is selected, activate it on the grid
@@ -133,7 +143,7 @@ func character_action(type):
 func set_action_state(next_state):
     # Verify that the next state is valid for the current battle state.
     if action_state == next_state or\
-        active_unit == null or\
+        not is_instance_valid(active_unit) or\
         not current_turn.can_take_action(self.active_character.id, next_state):
         return
 
@@ -158,10 +168,12 @@ func set_action_state(next_state):
 # -----------------------------
 
 # Skill check completed, calculate damage(s)
-func resolve_attack(multiplier = 1, label = ""):
+func resolve_attack(multiplier = 1, label = "", targets = null):
     
-    if not active_targets or not active_unit:
+    if (not targets and not active_targets) or not active_unit:
         return
+        
+    var considered_targets = targets if targets != null else active_targets 
     
     if multiplier == 0:
         #var avoid_text = CombatText.instance()
@@ -171,10 +183,10 @@ func resolve_attack(multiplier = 1, label = ""):
         return false
         
     # Reduce damage by how many targets are being hit (spread)
-    var aoe_multiplier:float = float(active_targets.size()) / 2
+    var aoe_multiplier:float = float(considered_targets.size()) / 2
     
     # Calculate final damage after target's mitigation.
-    for target in active_targets:
+    for target in considered_targets:
         var target_character = target.character
         var damage = (self.active_character.deal_damage() * multiplier) / aoe_multiplier
         var final_damage = int(target_character.take_damage(damage))
@@ -189,7 +201,9 @@ func resolve_attack(multiplier = 1, label = ""):
             
         SignalManager.emit_signal("health_changed", target_character)
     
-    set_action_state(Action.WAIT)
+    if !current_turn.is_enemy:
+        set_action_state(Action.WAIT)
+    
     active_targets = []
 
 
@@ -233,7 +247,7 @@ func _on_telegraph_executed(bodies):
 # -----------------------------
 
 func _get_active_character():
-    if active_unit != null and active_unit.character != null:
+    if is_instance_valid(active_unit) and active_unit.character != null:
         return active_unit.character
 
 

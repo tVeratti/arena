@@ -52,7 +52,7 @@ func add_characters(characters:Array, is_enemies = false):
 
 # Activate the unit that holds the given character.
 func activate_character(character:Character):
-    if character == null or (unit_selected != null and unit_selected.character == character):
+    if character == null or (is_instance_valid(unit_selected) and unit_selected.character == character):
         return unit_selected
 
     for unit in self.units:
@@ -104,6 +104,7 @@ func _unhandled_input(event):
         
         elif event is InputEventMouseMotion and \
             unit_selected != null and \
+            is_instance_valid(unit_selected) and \
             not unit_selected.is_enemy and \
             _battle.action_state == Action.MOVE:
             # Mouse OVER tile (focus)
@@ -162,15 +163,22 @@ func select_tile(tile):
 # ENEMIES
 # -----------------------------
 
-func move_enemy(enemy, target_unit):
-    var enemy_unit = get_unit_by_character(enemy)           
-    var obstacle_positions = _get_unit_positions([target_unit, enemy_unit])
+func move_to_nearest_unit(character):
+    var origin_unit = get_unit_by_character(character)   
+    var target_unit = get_nearest_unit(origin_unit)      
+    var obstacle_positions = _get_unit_positions([origin_unit, target_unit])
+    
+    if origin_unit == null or target_unit == null:
+        return false
     
     var new_path = _pathfinder.find_path(\
-        enemy_unit.position,\
+        origin_unit.position,\
         target_unit.position,\
-        enemy.speed,\
+        character.speed,\
         obstacle_positions)
+    
+    if new_path.size() == 0:
+        return false
     
     # Take the last piece of the path off if it's the tile the
     # target is currently occupying
@@ -178,12 +186,12 @@ func move_enemy(enemy, target_unit):
     if map.world_to_map(last_point) == map.world_to_map(target_unit.position):
         new_path.pop_back()
     
-    enemy_unit.path = new_path
+    origin_unit.path = new_path
+    return true
 
 
 # Get the unit nearest to the origin character.
-func get_nearest_unit(origin_character):
-    var origin_unit = get_unit_by_character(origin_character)
+func get_nearest_unit(origin_unit):
     var min_distance:float = 9999
     var target
     

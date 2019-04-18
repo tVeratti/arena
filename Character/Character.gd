@@ -29,6 +29,7 @@ var rating:int = 1
 
 var attack_range:int = 1
 
+
 # Natural Stats
 # ------------------------------
 # These change VERY SLOWLY and passively, they are
