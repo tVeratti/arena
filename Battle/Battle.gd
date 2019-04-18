@@ -68,7 +68,7 @@ func activate_enemies():
         var enemy_unit = Grid.get_unit_by_character(next_enemy)
         var nearest_unit = Grid.get_nearest_unit(next_enemy)
         if is_instance_valid(nearest_unit) and is_instance_valid(enemy_unit) and \
-            nearest_unit.position.distance_to(enemy_unit.position) <= next_enemy.attack_range * 90:
+            nearest_unit.position.distance_to(enemy_unit.position) <= next_enemy.attack_range * 75:
             resolve_attack(1, "", [nearest_unit])
       
     activate_enemies()
