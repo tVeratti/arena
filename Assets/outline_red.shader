@@ -1,7 +1,7 @@
 shader_type canvas_item;
 render_mode blend_mix;
 
-uniform float outLineSize  = 0.02;
+uniform float outLineSize  = 0.03;
 uniform vec4  outLineColor = vec4(1.0, 0.0, 0.0, 1.0);
 
 void fragment()

@@ -163,8 +163,7 @@ func select_tile(tile):
 # ENEMIES
 # -----------------------------
 
-func move_to_nearest_unit(character):
-    var origin_unit = get_unit_by_character(character)   
+func move_to_nearest_unit(origin_unit):  
     var target_unit = get_nearest_unit(origin_unit)      
     var obstacle_positions = _get_unit_positions([origin_unit, target_unit])
     
@@ -174,7 +173,7 @@ func move_to_nearest_unit(character):
     var new_path = _pathfinder.find_path(\
         origin_unit.position,\
         target_unit.position,\
-        character.speed,\
+        origin_unit.character.speed,\
         obstacle_positions)
     
     if new_path.size() == 0:
@@ -192,12 +191,14 @@ func move_to_nearest_unit(character):
 
 # Get the unit nearest to the origin character.
 func get_nearest_unit(origin_unit):
+    var origin_tile = map.world_to_map(position)
     var min_distance:float = 9999
     var target
     
     for unit in self.units:
-        if unit != origin_unit and !unit.is_enemy:
-            var distance = position.distance_to(unit.position)
+        if unit != origin_unit and unit.character.is_enemy != origin_unit.character.is_enemy:
+            var enemy_tile = map.world_to_map(unit.position)
+            var distance = origin_tile.distance_to(enemy_tile)
             if distance < min_distance:
                 min_distance = distance
                 target = unit
@@ -207,6 +208,12 @@ func get_nearest_unit(origin_unit):
 
 # HELPERS
 # -----------------------------
+
+func get_unit_by_character(character):
+    for unit in self.units:
+        if unit.character == character:
+            return unit
+
 
 func _get_unit_on_tile(tile):
     # Check if there is a unit occupying this tile...
@@ -226,12 +233,6 @@ func _get_unit_positions(exceptions = []):
             positions.append(map.world_to_map(unit.path_end))
         
     return positions
-
-
-func get_unit_by_character(character):
-    for unit in self.units:
-        if unit.character == character:
-            return unit
 
 
 # GETTERS

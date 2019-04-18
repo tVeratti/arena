@@ -15,9 +15,10 @@ var current_turn_count:int = 1
 var previous_turn
 
 var active_unit:Unit
+var active_character:Character setget , _get_active_character
+
 var active_targets:Array = []
 var action_state:String = Action.WAIT
-var active_character:Character setget , _get_active_character
 
 var current_telegraph:Telegraph
 
@@ -49,27 +50,29 @@ func _ready():
 # until none can and the next turns (player) begins
 func activate_enemies():
     
-    var next_enemy = current_turn.next_character()
-    if next_enemy == null:
+    var active_enemy = current_turn.next_character()
+    if active_enemy == null:
         return next_turn()
     
+    active_unit = Grid.activate_character(active_enemy)
+    
     # Get the next action and update the turn.
-    var next_action = current_turn.next_possible_action(next_enemy.id)
-    current_turn.take_action(next_enemy, next_action)
+    var next_action = current_turn.next_possible_action(active_enemy.id)
+    current_turn.take_action(active_enemy, next_action)
     
     # Let the AI decide to do with the current action...
     if next_action == Action.MOVE:
         # This starts movement which won't activated
         # enemies again until it finishes.
-        if Grid.move_to_nearest_unit(next_enemy):
+        if Grid.move_to_nearest_unit(active_unit):
             return
         
     elif next_action == Action.ATTACK:
-        var enemy_unit = Grid.get_unit_by_character(next_enemy)
-        var nearest_unit = Grid.get_nearest_unit(next_enemy)
-        if is_instance_valid(nearest_unit) and is_instance_valid(enemy_unit) and \
-            nearest_unit.position.distance_to(enemy_unit.position) <= next_enemy.attack_range * 75:
-            resolve_attack(1, "", [nearest_unit])
+        var nearest_unit = Grid.get_nearest_unit(active_unit)
+        if is_instance_valid(nearest_unit) and is_instance_valid(active_unit) and \
+            nearest_unit.position.distance_to(active_unit.position) <= active_enemy.attack_range * 70:
+                active_targets = [nearest_unit]
+                resolve_attack(1, "")
       
     activate_enemies()
 
@@ -90,11 +93,22 @@ func next_turn():
     
     if previous_turn.is_enemy:
         current_turn_count += 1
-        current_turn = Turn.new(heroes, current_turn_count, false)
-        activate_character(heroes[0])
+        var characters = get_living_characters(heroes)
+        current_turn = Turn.new(characters, current_turn_count, false)
+        activate_character(characters[0])
     else:
-        current_turn = Turn.new(enemies, current_turn_count, true)
+        var characters = get_living_characters(enemies)
+        current_turn = Turn.new(characters, current_turn_count, true)
         activate_enemies()
+
+
+func get_living_characters(all):
+    var living = []
+    for character in all:
+        if character.is_alive:
+            living.append(character)
+    
+    return living
 
 
 # CHARACTER ACTIONS
@@ -168,25 +182,24 @@ func set_action_state(next_state):
 # -----------------------------
 
 # Skill check completed, calculate damage(s)
-func resolve_attack(multiplier = 1, label = "", targets = null):
+func resolve_attack(multiplier = 1, label = ""):
     
-    if (not targets and not active_targets) or not active_unit:
+    if not active_targets or not active_unit:
         return
-        
-    var considered_targets = targets if targets != null else active_targets 
     
-    if multiplier == 0:
+    #f multiplier == 0:
         #var avoid_text = CombatText.instance()
         #active_target.add_child(avoid_text)
         #avoid_text.setup(label, "")
         #set_action_state(Action.WAIT)
-        return false
+        #active_targets = []
+        #return false
         
     # Reduce damage by how many targets are being hit (spread)
-    var aoe_multiplier:float = float(considered_targets.size()) / 2
+    var aoe_multiplier:float = float(active_targets.size()) / 2
     
     # Calculate final damage after target's mitigation.
-    for target in considered_targets:
+    for target in active_targets:
         var target_character = target.character
         var damage = (self.active_character.deal_damage() * multiplier) / aoe_multiplier
         var final_damage = int(target_character.take_damage(damage))
