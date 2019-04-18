@@ -47,6 +47,9 @@ func add_characters(characters:Array, is_enemies = false):
         add_child(unit)
 
 
+# UNIT ACTICATION
+# -----------------------------
+
 # Activate the unit that holds the given character.
 func activate_character(character:Character):
     if character == null or (unit_selected != null and unit_selected.character == character):
@@ -73,7 +76,10 @@ func activate_unit(unit):
 
 func deactivate():
     SignalManager.emit_signal("tile_focused", [])
-    
+
+
+# TELEGRAPHS
+# -----------------------------
     
 func show_telegraph(max_range):
     # Show the telegraph of the character's attack
@@ -82,6 +88,9 @@ func show_telegraph(max_range):
     t_root.position = unit_selected.position
     new_telegraph.set_range(max_range)
 
+
+# INPUT
+# -----------------------------
 
 func _unhandled_input(event):
     if event is InputEventMouse:
@@ -101,6 +110,10 @@ func _unhandled_input(event):
             focus_tile(tile)
 
 
+# TILE SELECTION
+# -----------------------------
+
+# Focus a tile so that a line path can be previewed.
 func focus_tile(tile):
     if _tile_focused == tile or unit_selected == null:
         return
@@ -116,7 +129,8 @@ func focus_tile(tile):
     
     _tile_focused = tile
 
- 
+
+# Activate a tile or move a unit if already active.
 func select_tile(tile):    
     var tile_position = map.map_to_world(tile)
     
@@ -145,6 +159,9 @@ func select_tile(tile):
             deactivate()
 
 
+# ENEMIES
+# -----------------------------
+
 func move_enemy(enemy, target_unit):
     var enemy_unit = get_unit_by_character(enemy)           
     var obstacle_positions = _get_unit_positions([target_unit, enemy_unit])
@@ -162,8 +179,9 @@ func move_enemy(enemy, target_unit):
         new_path.pop_back()
     
     enemy_unit.path = new_path
-    
-    
+
+
+# Get the unit nearest to the origin character.
 func get_nearest_unit(origin_character):
     var origin_unit = get_unit_by_character(origin_character)
     var min_distance:float = 9999
@@ -178,6 +196,9 @@ func get_nearest_unit(origin_character):
     
     return target
 
+
+# HELPERS
+# -----------------------------
 
 func _get_unit_on_tile(tile):
     # Check if there is a unit occupying this tile...
@@ -204,6 +225,9 @@ func get_unit_by_character(character):
         if unit.character == character:
             return unit
 
+
+# GETTERS
+# -----------------------------
 
 func _get_units():
     return get_tree().get_nodes_in_group("units")

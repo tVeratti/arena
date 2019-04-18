@@ -10,9 +10,9 @@ var CombatText = preload("res://Battle/CombatText.tscn")
 var heroes:Array
 var enemies:Array
 
-var current_turn:Turn
+var current_turn
 var current_turn_count:int = 1
-var previous_turn:Turn
+var previous_turn
 
 var active_unit:Unit
 var active_targets:Array = []
@@ -42,20 +42,12 @@ func _ready():
     SignalManager.connect("unit_movement_done", self, "_on_movement_done")
 
 
-# When a character is selected, activate it on the grid
-# and apply any other changes necessary.
-func activate_character(character:Character):
-    active_unit = Grid.activate_character(character)
-    
-    # Allow auto-selection of next action... maybe a setting later.
-    # var next_action = current_turn.next_possible_action(character.id)
-    # set_action_state(next_action)
-    
+# TURN ACTIVATION
+# -----------------------------
 
 # Activate enemies and let the next possible one take an action,
 # until none can and the next turns (player) begins
 func activate_enemies():
-    print("ACTIVATE ENEMIES")
     var next_enemy = current_turn.next_character()
     if next_enemy == null:
         return next_turn()
@@ -70,37 +62,19 @@ func activate_enemies():
         
     elif next_action == Action.ATTACK:
         activate_enemies()
-        
-    print("NEXT ACTION", next_enemy.id, next_action)
+
+
+# When a character is selected, activate it on the grid
+# and apply any other changes necessary.
+func activate_character(character:Character):
+    active_unit = Grid.activate_character(character)
+    
+    # Allow auto-selection of next action... maybe a setting later.
+    # var next_action = current_turn.next_possible_action(character.id)
+    # set_action_state(next_action)
     
 
-# Change the action state of the battle and handle some
-# transitional logic between states.
-func set_action_state(next_state):
-    # Verify that the next state is valid for the current battle state.
-    if action_state == next_state or\
-        active_unit == null or\
-        not current_turn.can_take_action(self.active_character.id, next_state):
-        return
-
-    if action_state == Action.MOVE and next_state != Action.MOVE:
-        Grid.deactivate()
-
-    match(next_state):
-        Action.MOVE:
-            pass
-        Action.ATTACK:
-            Grid.show_telegraph(self.active_character.attack_range)
-        Action.WAIT:
-            pass
-        Action.FREEZE:
-            pass
-            
-    action_state = next_state
-    SignalManager.emit_signal("battle_state_updated", action_state)
-
-
-# End the player's turn and allow the AI to go.
+# End the current turn, and activate the next group.
 func next_turn():
     previous_turn = current_turn
     
@@ -112,6 +86,9 @@ func next_turn():
         current_turn = Turn.new(enemies, current_turn_count, true)
         activate_enemies()
 
+
+# CHARACTER ACTIONS
+# -----------------------------
 
 # Check if the character can move, then return if
 # the action has been logged in the turn.
@@ -150,6 +127,35 @@ func character_attack(targets:Array):
 func character_action(type):
     return current_turn.take_action(self.active_character, type)
 
+
+# Change the action state of the battle and handle some
+# transitional logic between states.
+func set_action_state(next_state):
+    # Verify that the next state is valid for the current battle state.
+    if action_state == next_state or\
+        active_unit == null or\
+        not current_turn.can_take_action(self.active_character.id, next_state):
+        return
+
+    if action_state == Action.MOVE and next_state != Action.MOVE:
+        Grid.deactivate()
+
+    match(next_state):
+        Action.MOVE:
+            pass
+        Action.ATTACK:
+            Grid.show_telegraph(self.active_character.attack_range)
+        Action.WAIT:
+            pass
+        Action.FREEZE:
+            pass
+            
+    action_state = next_state
+    SignalManager.emit_signal("battle_state_updated", action_state)
+
+
+# ATTACK RESOLUTION
+# -----------------------------
 
 # Skill check completed, calculate damage(s)
 func resolve_attack(multiplier = 1, label = ""):
@@ -223,6 +229,17 @@ func _on_telegraph_executed(bodies):
     character_attack(targets)
 
 
+# GETTERS
+# -----------------------------
+
+func _get_active_character():
+    if active_unit != null and active_unit.character != null:
+        return active_unit.character
+
+
+# SIGNAL LISTENERS
+# -----------------------------
+
 func _on_turn_ended():
     next_turn()
 
@@ -233,11 +250,6 @@ func _on_ai_action_taken():
 
 func _on_character_selected(character):
     activate_character(character)
-
-
-func _get_active_character():
-    if active_unit != null and active_unit.character != null:
-        return active_unit.character
 
 
 func _on_movement_done():
