@@ -48,7 +48,7 @@ func add_characters(characters:Array, is_enemies = false):
 
 
 # Activate the unit that holds the given character.
-func activate_character(character:Character) -> Unit:
+func activate_character(character:Character):
     if character == null or (unit_selected != null and unit_selected.character == character):
         return unit_selected
 
@@ -63,7 +63,7 @@ func activate_character(character:Character) -> Unit:
     return unit_selected
 
 
-func activate_unit(unit:Unit):
+func activate_unit(unit):
     if unit_selected == unit:
         return
         
@@ -145,6 +145,40 @@ func select_tile(tile):
             deactivate()
 
 
+func move_enemy(enemy, target_unit):
+    var enemy_unit = get_unit_by_character(enemy)           
+    var obstacle_positions = _get_unit_positions([target_unit, enemy_unit])
+    
+    var new_path = _pathfinder.find_path(\
+        enemy_unit.position,\
+        target_unit.position,\
+        enemy.speed,\
+        obstacle_positions)
+    
+    # Take the last piece of the path off if it's the tile the
+    # target is currently occupying
+    var last_point = new_path[new_path.size() - 1]
+    if map.world_to_map(last_point) == map.world_to_map(target_unit.position):
+        new_path.pop_back()
+    
+    enemy_unit.path = new_path
+    
+    
+func get_nearest_unit(origin_character):
+    var origin_unit = get_unit_by_character(origin_character)
+    var min_distance:float = 9999
+    var target
+    
+    for unit in self.units:
+        if unit != origin_unit and !unit.is_enemy:
+            var distance = position.distance_to(unit.position)
+            if distance < min_distance:
+                min_distance = distance
+                target = unit
+    
+    return target
+
+
 func _get_unit_on_tile(tile):
     # Check if there is a unit occupying this tile...
     for unit in self.units:
@@ -155,14 +189,20 @@ func _get_unit_on_tile(tile):
     return null
 
    
-func _get_unit_positions():
+func _get_unit_positions(exceptions = []):
     var positions = []
     #for unit in units:
     for unit in self.units:
-        if unit != unit_selected:
+        if unit != unit_selected and !exceptions.has(unit):
             positions.append(map.world_to_map(unit.path_end))
         
     return positions
+
+
+func get_unit_by_character(character):
+    for unit in self.units:
+        if unit.character == character:
+            return unit
 
 
 func _get_units():

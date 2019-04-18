@@ -1,8 +1,8 @@
 extends Node
 
-var Character = preload("res://Character/Character.gd")
-var Turn = preload("res://Battle/Turn.gd")
-var Action = preload("res://Battle/Action.gd")
+var Character = load("res://Character/Character.gd")
+var Turn = load("res://Battle/Turn.gd")
+var Action = load("res://Battle/Action.gd")
 
 var SkillCheck = preload("res://Battle/SkillCheck/SkillCheck.tscn")
 var CombatText = preload("res://Battle/CombatText.tscn")
@@ -55,15 +55,23 @@ func activate_character(character:Character):
 # Activate enemies and let the next possible one take an action,
 # until none can and the next turns (player) begins
 func activate_enemies():
+    print("ACTIVATE ENEMIES")
     var next_enemy = current_turn.next_character()
-    print("enemy", next_enemy)
     if next_enemy == null:
         return next_turn()
     
     var next_action = current_turn.next_possible_action(next_enemy.id)
     current_turn.take_action(next_enemy, next_action)
-    next_enemy.brain.take_action(next_action)
-    print("action", next_action)
+    
+    # Let the AI decide to do with the current action...
+    if next_action == Action.MOVE:
+        var target = Grid.get_nearest_unit(next_enemy)
+        Grid.move_enemy(next_enemy, target)
+        
+    elif next_action == Action.ATTACK:
+        activate_enemies()
+        
+    print("NEXT ACTION", next_enemy.id, next_action)
     
 
 # Change the action state of the battle and handle some
@@ -99,7 +107,7 @@ func next_turn():
     if previous_turn.is_enemy:
         current_turn_count += 1
         current_turn = Turn.new(heroes, current_turn_count, false)
-        activate_character(self.active_character)
+        activate_character(heroes[0])
     else:
         current_turn = Turn.new(enemies, current_turn_count, true)
         activate_enemies()
@@ -158,7 +166,6 @@ func resolve_attack(multiplier = 1, label = ""):
         
     # Reduce damage by how many targets are being hit (spread)
     var aoe_multiplier:float = float(active_targets.size()) / 2
-    print(aoe_multiplier)
     
     # Calculate final damage after target's mitigation.
     for target in active_targets:

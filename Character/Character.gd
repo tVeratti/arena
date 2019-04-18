@@ -16,9 +16,6 @@ var gender:String
 var is_enemy:bool
 var is_alive:bool setget , _alive_get
 
-# AI for enemy turns
-var brain:AI
-
 # Unit & Portrait Textures
 var TEXTURES = preload("res://Character/TEXTURES.gd")
 var unit_texture:Texture
@@ -82,9 +79,6 @@ func _init(name, is_enemy = false):
     self.name = name
     self.id = "%s_%s" % [name, randi()]
     self.is_enemy = is_enemy
-    
-    if is_enemy:
-        brain = AI.new()
     
     # Load character or create new one...
     # _load_stats or

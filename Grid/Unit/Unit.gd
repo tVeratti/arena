@@ -67,6 +67,11 @@ func set_outline(value = false):
 
 func move_along_path(distance):
     var start = position
+
+    if path.size() == 0:
+        set_process(false)
+        SignalManager.emit_signal("unit_movement_done")
+        return
     
     for i in range(path.size()):
         var current = path[0]
