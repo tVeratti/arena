@@ -4,7 +4,9 @@ signal teams_loaded(heroes, enemies)
 
 signal tile_focused(path)
 signal character_selected(character)
+signal unit_movement_done()
 signal telegraph_executed(units)
+signal ai_action_taken()
 
 signal turn_updated(turn)
 signal battle_state_updated(state)

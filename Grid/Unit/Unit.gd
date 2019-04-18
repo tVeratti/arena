@@ -78,6 +78,7 @@ func move_along_path(distance):
         elif distance < 0.0:
             position = current
             set_process(false)
+            SignalManager.emit_signal("unit_movement_done")
             break
         
         distance -= distance_to_next

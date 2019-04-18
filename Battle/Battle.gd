@@ -27,7 +27,7 @@ onready var Grid = $Grid
 func setup(battle):
     self.heroes = battle.heroes
     self.enemies = battle.enemies
-    self.current_turn = Turn.new(battle.heroes, current_turn_count)
+    self.current_turn = Turn.new(battle.heroes, current_turn_count, false)
     self.previous_turn = self.current_turn
     
     $Interface.setup()
@@ -38,16 +38,36 @@ func setup(battle):
 func _ready():
     SignalManager.connect("character_selected", self, "_on_character_selected")
     SignalManager.connect("telegraph_executed", self, "_on_telegraph_executed")
+    SignalManager.connect("ai_action_taken", self, "_on_ai_action_taken")
+    SignalManager.connect("unit_movement_done", self, "_on_movement_done")
 
 
+# When a character is selected, activate it on the grid
+# and apply any other changes necessary.
 func activate_character(character:Character):
     active_unit = Grid.activate_character(character)
     
     # Allow auto-selection of next action... maybe a setting later.
     # var next_action = current_turn.next_possible_action(character.id)
     # set_action_state(next_action)
+    
 
+# Activate enemies and let the next possible one take an action,
+# until none can and the next turns (player) begins
+func activate_enemies():
+    var next_enemy = current_turn.next_character()
+    print("enemy", next_enemy)
+    if next_enemy == null:
+        return next_turn()
+    
+    var next_action = current_turn.next_possible_action(next_enemy.id)
+    current_turn.take_action(next_enemy, next_action)
+    next_enemy.brain.take_action(next_action)
+    print("action", next_action)
+    
 
+# Change the action state of the battle and handle some
+# transitional logic between states.
 func set_action_state(next_state):
     # Verify that the next state is valid for the current battle state.
     if action_state == next_state or\
@@ -65,19 +85,28 @@ func set_action_state(next_state):
             Grid.show_telegraph(self.active_character.attack_range)
         Action.WAIT:
             pass
+        Action.FREEZE:
+            pass
             
     action_state = next_state
     SignalManager.emit_signal("battle_state_updated", action_state)
 
 
+# End the player's turn and allow the AI to go.
 func next_turn():
     previous_turn = current_turn
-    current_turn_count += 1
-    current_turn = Turn.new(heroes, current_turn_count)
     
-    activate_character(self.active_character)
+    if previous_turn.is_enemy:
+        current_turn_count += 1
+        current_turn = Turn.new(heroes, current_turn_count, false)
+        activate_character(self.active_character)
+    else:
+        current_turn = Turn.new(enemies, current_turn_count, true)
+        activate_enemies()
 
 
+# Check if the character can move, then return if
+# the action has been logged in the turn.
 func character_move() -> bool:
     var did_move = character_action(Action.MOVE)
     if did_move:
@@ -86,6 +115,8 @@ func character_move() -> bool:
     return did_move
 
 
+# Telgegraph has completed and the targets are chosen,
+# so continue with the skillcheck.
 func character_attack(targets:Array):
     if targets.size() == 0:
         set_action_state(Action.WAIT)
@@ -95,6 +126,7 @@ func character_attack(targets:Array):
     if did_attack:    
         active_targets = targets
         
+        # Get average target speed.
         var target_speed = 0
         for target in targets:
             target_speed += target.character.speed
@@ -108,13 +140,13 @@ func character_attack(targets:Array):
 
 
 func character_action(type):
-    var action = Action.new(type)
-    return current_turn.take_action(self.active_character, action)
+    return current_turn.take_action(self.active_character, type)
 
 
+# Skill check completed, calculate damage(s)
 func resolve_attack(multiplier = 1, label = ""):
     
-    if not active_targets or active_targets.size() == 0 or not active_unit:
+    if not active_targets or not active_unit:
         return
     
     if multiplier == 0:
@@ -148,6 +180,9 @@ func resolve_attack(multiplier = 1, label = ""):
     active_targets = []
 
 
+# When a character dies, remove them fom the turns list
+# and check for a victory/defeat condition of one team
+# being entirely deceased.
 func _handle_character_death(target):
     var full_list = enemies
     if !target.is_enemy:
@@ -169,6 +204,8 @@ func _handle_character_death(target):
         })
 
 
+# Player has compelted a telegraph target so continue 
+# with the attack resolution.
 func _on_telegraph_executed(bodies):
     var targets = []
     for body in bodies:
@@ -183,6 +220,10 @@ func _on_turn_ended():
     next_turn()
 
 
+func _on_ai_action_taken():
+    activate_enemies()
+
+
 func _on_character_selected(character):
     activate_character(character)
 
@@ -190,4 +231,10 @@ func _on_character_selected(character):
 func _get_active_character():
     if active_unit != null and active_unit.character != null:
         return active_unit.character
-    
+
+
+func _on_movement_done():
+    if current_turn.is_enemy:
+        activate_enemies()
+    else:
+        set_action_state(Action.WAIT)

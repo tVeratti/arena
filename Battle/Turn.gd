@@ -10,9 +10,12 @@ var characters_total = []
 var characters_done = []
 var turn_count:int
 
-func _init(characters, turn_count):
+var is_enemy:bool = false
+
+func _init(characters, turn_count, is_enemy):
     self.characters_total = characters
     self.turn_count = turn_count
+    self.is_enemy = is_enemy
     
     for character in characters:
         last_actions[character.id] = Action.WAIT
@@ -27,6 +30,14 @@ func next_possible_action(id):
         return Action.ATTACK
     else:
         return Action.WAIT
+
+
+func next_character() -> Character:
+    for character in characters_total:
+        if !character_done(character.id):
+            return character
+    
+    return null
 
 
 func last_action(character):
@@ -47,7 +58,6 @@ func is_complete() -> bool:
     return true
 
 
-
 func can_take_action(id, type) -> bool:
     return not actions_taken.has(id) or\
         not actions_taken[id].has(type)
@@ -57,10 +67,10 @@ func character_done(id) -> bool:
     return not can_take_action(id, Action.MOVE) and not can_take_action(id, Action.ATTACK)
 
 
-func take_action(character:Character, action:Action) -> bool:
+func take_action(character:Character, action:String) -> bool:
     var can_take_action = true
     var c_id = character.id
-    var a_id = action.type
+    var a_id = action
     
     if actions_taken.has(c_id):
         if actions_taken[c_id].has(a_id):
