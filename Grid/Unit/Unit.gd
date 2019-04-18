@@ -102,9 +102,10 @@ func set_path(value:PoolVector2Array):
 
 func _on_health_changed(target):
     if character == target and not target.is_alive:
-        # I die... die.... DIE!!
-        queue_free()
-        
+        # Start the death timer (allow animations to finish)
+        $Timer.start(2)
 
-func _on_Character_area_entered(area):
-    print("please.")
+
+func _on_Timer_timeout():
+    # I die... die.... DIE!!
+        queue_free()

@@ -4,23 +4,20 @@ class_name Telegraph
 
 const LINE = "LINE"
 const CONE = "CONE"
+const COLOR:Color = Color(1,0,0,0.2)
 
 var _mouse:Vector2
 var _points:PoolVector2Array
 var _bodies:Array
 var _max_range:float = 75
 
+
 onready var area = $Area2D
 onready var parent = get_parent()
 
 
-func _ready():
-    # Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
-    pass
-
-
 func set_range(max_range):
-    _max_range = max_range * 60
+    _max_range = max_range * 90
 
 
 func _input(event):
@@ -32,7 +29,6 @@ func _input(event):
     elif event is InputEventMouseButton:
         if event.button_index == BUTTON_LEFT:
             SignalManager.emit_signal("telegraph_executed", _bodies)
-            # Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
             queue_free()
         elif event.button_index == BUTTON_RIGHT:
             SignalManager.emit_signal("telegraph_executed", [])
@@ -51,20 +47,20 @@ func _process(delta):
 
 
 func _draw():
-    draw_polygon(_points, PoolColorArray([Color(1,0,0,0.3)]))
+    draw_polygon(_points, PoolColorArray([COLOR]))
 
 
 func _get_points():
-    var angle_to_mouse = position.angle_to_point(_mouse) + deg2rad(180)
-    var distance_to_mouse = clamp(position.distance_to(_mouse), 10, _max_range)
-    var angle_offset = distance_to_mouse
-    var angle = deg2rad(clamp(_max_range - angle_offset, 2, 50))
+    var angle_to_mouse = rad2deg(position.angle_to_point(_mouse)) - 90
+    var distance_to_mouse = clamp(position.distance_to(_mouse), 50, _max_range)
+    var angle = clamp(_max_range - distance_to_mouse, 2, 90)
     
-    var a = position
-    var b = _get_cone_point(angle_to_mouse - angle, distance_to_mouse)
-    var c = _get_cone_point(angle_to_mouse + angle, distance_to_mouse)
-        
-    _points = [a, b, c]
+    var mouse_offset = _mouse.normalized() * 5
+    var center = position # + mouse_offset
+    var b = angle_to_mouse - angle
+    var c = angle_to_mouse + angle
+    
+    _points = _get_arc(center, b, c, distance_to_mouse, angle_to_mouse)
 
 
 func _set_collision_polygon():
@@ -80,4 +76,35 @@ func _set_collision_polygon():
     
 func _get_cone_point(angle, distance) -> Vector2 :
     return Vector2(cos(angle), sin(angle)) * distance
-  
+
+
+func _get_arc(center, angle_from, angle_to, radius, angle_to_mouse) -> PoolVector2Array:
+    var num_points = 8
+    var points_arc = PoolVector2Array([center])
+    
+    #var mouse_vector = _get_deg_vector(angle_to_mouse)
+    #var radius_offset = (abs(mouse_vector.y) - abs(mouse_vector.x)) * 20
+    #var total_radius = radius + radius_offset
+    
+    #var vector_from = _get_deg_vector(angle_from)
+    #var vector_to = _get_deg_vector(angle_to)
+    
+    #var angle_from_offset = (abs(vector_from.y) - abs(vector_to.y)) * 10
+    #var angle_to_offset = angle_from_offset * -1
+    
+    for i in range(num_points + 1):
+        var angle_point = deg2rad(angle_from + i * (angle_to - angle_from) / num_points - 90)
+        var angle_vector = _get_rad_vector(angle_point)       
+        points_arc.push_back(center + angle_vector * radius)
+        
+    return points_arc
+
+
+func _get_deg_vector(angle) -> Vector2:
+    var rad = deg2rad(angle)
+    return Vector2(cos(rad), sin(rad))   
+
+
+func _get_rad_vector(rad) -> Vector2:
+    return Vector2(cos(rad), sin(rad))   
+      

@@ -113,9 +113,8 @@ func character_action(type):
 
 
 func resolve_attack(multiplier = 1, label = ""):
-    Grid.camera.unlock()
     
-    if not active_targets or not active_unit:
+    if not active_targets or active_targets.size() == 0 or not active_unit:
         return
     
     if multiplier == 0:
@@ -124,11 +123,15 @@ func resolve_attack(multiplier = 1, label = ""):
         #avoid_text.setup(label, "")
         #set_action_state(Action.WAIT)
         return false
+        
+    # Reduce damage by how many targets are being hit (spread)
+    var aoe_multiplier:float = float(active_targets.size()) / 2
+    print(aoe_multiplier)
     
     # Calculate final damage after target's mitigation.
     for target in active_targets:
         var target_character = target.character
-        var damage = self.active_character.deal_damage() * multiplier
+        var damage = (self.active_character.deal_damage() * multiplier) / aoe_multiplier
         var final_damage = int(target_character.take_damage(damage))
         
         # Render the damage done...
@@ -174,7 +177,6 @@ func _on_telegraph_executed(bodies):
             targets.append(unit)
         
     character_attack(targets)
-    Grid.camera.lock()
 
 
 func _on_turn_ended():
