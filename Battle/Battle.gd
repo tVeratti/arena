@@ -49,10 +49,12 @@ func _ready():
 # Activate enemies and let the next possible one take an action,
 # until none can and the next turns (player) begins
 func activate_enemies():
-    
     var active_enemy = current_turn.next_character()
     if active_enemy == null:
+        set_action_state(Action.WAIT)
         return next_turn()
+        
+    set_action_state(Action.FREEZE)
     
     active_unit = Grid.activate_character(active_enemy)
     
@@ -95,7 +97,8 @@ func next_turn():
         current_turn_count += 1
         var characters = get_living_characters(heroes)
         current_turn = Turn.new(characters, current_turn_count, false)
-        activate_character(characters[0])
+        if characters.size() > 0:
+            activate_character(characters[0])
     else:
         var characters = get_living_characters(enemies)
         current_turn = Turn.new(characters, current_turn_count, true)
@@ -119,7 +122,7 @@ func get_living_characters(all):
 func character_move() -> bool:
     var did_move = character_action(Action.MOVE)
     if did_move:
-        set_action_state(Action.WAIT)
+        set_action_state(Action.FREEZE)
 
     return did_move
 
@@ -149,6 +152,9 @@ func character_attack(targets:Array):
 
 
 func character_action(type):
+    if action_state == Action.FREEZE:
+        return false
+    
     return current_turn.take_action(self.active_character, type)
 
 
@@ -157,7 +163,6 @@ func character_action(type):
 func set_action_state(next_state):
     # Verify that the next state is valid for the current battle state.
     if action_state == next_state or\
-        not is_instance_valid(active_unit) or\
         not current_turn.can_take_action(self.active_character.id, next_state):
         return
 

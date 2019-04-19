@@ -17,7 +17,7 @@ onready var parent = get_parent()
 
 
 func set_range(max_range):
-    _max_range = max_range * 90
+    _max_range = max_range * 70
 
 
 func _input(event):
@@ -52,11 +52,11 @@ func _draw():
 
 func _get_points():
     var angle_to_mouse = rad2deg(position.angle_to_point(_mouse)) - 90
-    var distance_to_mouse = clamp(position.distance_to(_mouse), 50, _max_range)
+    var distance_to_mouse = clamp(position.distance_to(_mouse), 30, _max_range)
     var angle = clamp(_max_range - distance_to_mouse, 2, 90)
     
     var mouse_offset = _mouse.normalized() * 5
-    var center = position # + mouse_offset
+    var center = position + mouse_offset
     var b = angle_to_mouse - angle
     var c = angle_to_mouse + angle
     

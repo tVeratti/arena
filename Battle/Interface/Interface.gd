@@ -21,6 +21,7 @@ func _ready():
     SignalManager.connect("character_selected", self, "_on_character_selected")
     SignalManager.connect("turn_updated", self, "_on_turn_updated")
     SignalManager.connect("battle_state_updated", self, "_on_battle_state_updated")
+    SignalManager.connect("unit_movement_done", self, "_on_unit_movement_done")
 
 
 func setup():
@@ -60,8 +61,11 @@ func _update_everything(character):
 func update_button(button, character, state):
     var current_turn = _battle.current_turn
     button.disabled = character == null or !current_turn.can_take_action(character.id, state)
-    if character == null or character.is_enemy:
-        button.hide()
+    
+    if _battle.action_state == Action.FREEZE or \
+        character == null or \
+        character.is_enemy:
+            button.hide()
     else:
         button.show()
 
@@ -81,7 +85,11 @@ func _on_turn_updated(turn):
     
 func _on_battle_state_updated(state):
     battle_state.text = state 
-            
+
+
+func _on_unit_movement_done():
+    _update_everything(_battle.active_character)    
+
 
 func _on_Turn_pressed():
     _battle.next_turn()
