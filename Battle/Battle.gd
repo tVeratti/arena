@@ -163,6 +163,7 @@ func character_action(type):
 func set_action_state(next_state):
     # Verify that the next state is valid for the current battle state.
     if action_state == next_state or\
+        not is_instance_valid(active_unit) or\
         not current_turn.can_take_action(self.active_character.id, next_state):
         return
 

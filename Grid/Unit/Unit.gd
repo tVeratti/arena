@@ -6,9 +6,10 @@ var white_outline = preload("res://Assets/outline_white.shader")
 var red_outline = preload("res://Assets/outline_red.shader")
 
 # Movement
-var speed:float = 200.0
+var speed:float = 10.0
 var path = PoolVector2Array() setget set_path
 var path_end:Vector2
+var path_index:int = 0
 
 var character:Character
 var is_enemy:bool
@@ -36,8 +37,26 @@ func setup(tile_position, character, is_enemy = false):
 
 
 func _process(delta):
-    var move_distance = speed * delta
-    move_along_path(move_distance)
+    var current = path[path_index]
+    var distance = position.distance_to(current)
+    
+    if distance > 0.1:
+        print("move", distance)
+        position = position.linear_interpolate(current, delta * speed)
+        # position = Vector2(\
+            # lerp(position.x, current.x, delta * speed),\
+            # lerp(position.y, current.y, delta * speed))
+    
+    elif path_index < path.size() - 1:
+        print("next index")
+        # Start moving to the next point on the path
+        path_index += 1
+        
+    else:
+        print("end move")
+        #position = current
+        SignalManager.emit_signal("unit_movement_done")
+        set_process(false)
 
 
 func activate():
@@ -65,34 +84,9 @@ func set_outline(value = false):
     is_active = value
 
 
-func move_along_path(distance):
-    var start = position
-
-    if path.size() == 0:
-        set_process(false)
-        SignalManager.emit_signal("unit_movement_done")
-        return
-    
-    for i in range(path.size()):
-        var current = path[0]
-        var distance_to_next = start.distance_to(current)
-        
-        if distance <= distance_to_next and distance >= 0.0:
-            position = start.linear_interpolate(current, distance / distance_to_next)
-            break
-        elif distance < 0.0:
-            position = current
-            set_process(false)
-            SignalManager.emit_signal("unit_movement_done")
-            break
-        
-        distance -= distance_to_next
-        start = current
-        path.remove(0)
-
-
 func set_path(value:PoolVector2Array):
     var valid_path = []
+    path_index = 0
     
     # Check that the unit's character has enough speed
     # to complete the full movement.

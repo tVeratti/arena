@@ -148,7 +148,7 @@ func _speed_get() -> int:
 
 
 func _power_get() -> int:
-    return int(constitution * 1.5)
+    return int(constitution * 1.2)
     
 
 func _alive_get() -> bool:
