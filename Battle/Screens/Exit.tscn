@@ -66,6 +66,6 @@ size_flags_vertical = 3
 margin_top = 600.0
 margin_right = 1180.0
 margin_bottom = 620.0
-text = "Exit"
+text = "Restart"
 
 [connection signal="pressed" from="Container/Layout/Exit" to="." method="_on_Exit_pressed"]

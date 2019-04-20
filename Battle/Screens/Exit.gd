@@ -21,4 +21,4 @@ func setup(battle):
 
 
 func _on_Exit_pressed():
-    get_tree().quit()
+    get_tree().get_root().get_node("Main").start_game()
