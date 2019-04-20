@@ -1,4 +1,4 @@
-extends Node2D
+extends KinematicBody2D
 
 class_name Unit
 
@@ -6,7 +6,7 @@ var white_outline = preload("res://Assets/outline_white.shader")
 var red_outline = preload("res://Assets/outline_red.shader")
 
 # Movement
-var speed:float = 10.0
+var speed:float = 300.0
 var path = PoolVector2Array() setget set_path
 var path_end:Vector2
 var path_index:int = 0
@@ -20,7 +20,7 @@ onready var health = $HealthBar
 
 
 func _ready():
-    set_process(false)
+    set_physics_process(false)
     SignalManager.connect("health_changed", self, "_on_health_changed")
 
 
@@ -36,27 +36,27 @@ func setup(tile_position, character, is_enemy = false):
     #SignalManager.connect("health_changed", self, "_on_health_changed")
 
 
-func _process(delta):
-    var current = path[path_index]
-    var distance = position.distance_to(current)
+func _physics_process(delta):
+    var target:Vector2 = path[path_index]
+    var velocity:Vector2
+    var distance:float = position.distance_to(target)
     
-    if distance > 0.1:
-        print("move", distance)
-        position = position.linear_interpolate(current, delta * speed)
-        # position = Vector2(\
-            # lerp(position.x, current.x, delta * speed),\
-            # lerp(position.y, current.y, delta * speed))
+    if distance > 5:
+        velocity = (target - position).normalized() * speed
+        move_and_slide(velocity)
+        #position = position.linear_interpolate(current, delta * speed)
+        #position = Vector2(\
+            #lerp(position.x, current.x, delta * speed),\
+            #lerp(position.y, current.y, delta * speed))
     
     elif path_index < path.size() - 1:
-        print("next index")
         # Start moving to the next point on the path
         path_index += 1
         
     else:
-        print("end move")
         #position = current
         SignalManager.emit_signal("unit_movement_done")
-        set_process(false)
+        set_physics_process(false)
 
 
 func activate():
@@ -97,7 +97,7 @@ func set_path(value:PoolVector2Array):
     if valid_path.size() > 0:
         path = valid_path
         path_end = valid_path[valid_path.size() - 1]
-        set_process(true)
+        set_physics_process(true)
 
 
 func _on_health_changed(target):

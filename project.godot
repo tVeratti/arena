@@ -44,7 +44,7 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://Battle/Turn.gd"
 }, {
-"base": "Node2D",
+"base": "KinematicBody2D",
 "class": "Unit",
 "language": "GDScript",
 "path": "res://Grid/Unit/Unit.gd"

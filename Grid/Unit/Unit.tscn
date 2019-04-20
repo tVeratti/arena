@@ -9,7 +9,7 @@
 [sub_resource type="CircleShape2D" id=2]
 radius = 18.994
 
-[node name="Character" type="Node2D" groups=[
+[node name="Character" type="KinematicBody2D" groups=[
 "units",
 ]]
 script = ExtResource( 1 )
