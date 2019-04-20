@@ -125,7 +125,7 @@ func _generate_natural_pool() -> Array:
 
 
 func take_damage(value) -> int:
-    var damage = int(value - constitution)
+    var damage = clamp(int(value - constitution), 0, health.value_current)
     health.value_current -= damage
     return damage
 
