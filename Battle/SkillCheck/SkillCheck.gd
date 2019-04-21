@@ -25,30 +25,45 @@ var _crit_range:Array = []
 onready var _value_indicator = $Textures/Value
 var _value:int = 0 setget , _get_value
 
+# Preparation Timer
+const TIMER_LENGTH:float = 2000.0
+var _start_time:float = 0.0
+var _elapsed_time:float = 0.0
+var running:bool = false
+onready var _timer_texture = $Textures/Container/TimerTexture
+
 # Battle reference to resolve the attack once
 # the skill check has full completed its cycle.
 var _battle
 
 
 func _ready():
-    set_process(false)
-        
     # Don't start the skill check right away.
-    $Timer.start(2)
+    _start_time = OS.get_ticks_msec()
+    _timer_texture.max_value = TIMER_LENGTH
+    
+    $AnimationPlayer.play("Enter")
 
 
 func _process(delta):
-    _value_indicator.rect_position = Vector2(\
-        lerp(self._value, _size, _speed * delta),\
-        _value_indicator.rect_position.y)
-
-    if self._value >= _size - 5:
-        calculate_multiplier()
+    if running:
+        # Run the skillcheck and track the value.
+        _value_indicator.rect_position = Vector2(\
+            lerp(self._value, _size, _speed * delta),\
+            _value_indicator.rect_position.y)
+    
+        if self._value >= _size - 5:
+            calculate_multiplier()
+    else:
+        # Animate the prep timer...
+        _timer_texture.value = TIMER_LENGTH - (OS.get_ticks_msec() - _start_time)
+        if _timer_texture.value <= 0:
+            start()
 
 
 func setup(battle, unit:Unit, target_speed:float):
     _battle = battle
-    print(target_speed)
+
     # Calculate the size of the targets based on attacker/target speeds.
     var speed_total:float = unit.character.speed + target_speed
     var relative_size_ratio:float = unit.character.speed / speed_total
@@ -63,7 +78,7 @@ func setup(battle, unit:Unit, target_speed:float):
     _crit_range = [crit_start, crit_start + crit_size]
     
     # Position the skill check beside the player unit, but within the viewport.
-    var target_position = unit.get_global_transform_with_canvas().get_origin()
+    var target_position = unit.get_global_transform_with_canvas().get_origin() - Vector2(_size / 2, 0)
     var window_size = OS.window_size
     $Textures.rect_position = Vector2(\
         clamp(target_position.x, WINDOW_PADDING, window_size.x - (_size + WINDOW_PADDING)),\
@@ -103,12 +118,13 @@ func calculate_multiplier():
     self.queue_free()
 
 
+func start():
+    running = true
+    _timer_texture.queue_free()
+
+
 func _on_Button_pressed():
     calculate_multiplier()
-   
-
-func _on_Timer_timeout():
-    set_process(true)
 
 
 func _get_value():

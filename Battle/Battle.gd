@@ -139,7 +139,7 @@ func character_attack(targets:Array):
     if targets.size() == 0:
         set_action_state(Action.WAIT)
         return
-      
+ 
     var did_attack = character_action(Action.ATTACK)
     if did_attack:    
         active_targets = targets
@@ -155,6 +155,7 @@ func character_attack(targets:Array):
         var skill_check = SkillCheck.instance()
         add_child(skill_check)
         skill_check.setup(self, active_unit, target_speed)
+        set_action_state(Action.FREEZE)
 
 
 func character_action(type):
