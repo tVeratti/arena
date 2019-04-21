@@ -59,7 +59,9 @@ func is_complete() -> bool:
 
 
 func can_take_action(id, type) -> bool:
-    return not actions_taken.has(id) or\
+    return type == Action.FREEZE or \
+        type == Action.WAIT or \
+        not actions_taken.has(id) or \
         not actions_taken[id].has(type)
 
 

@@ -6,9 +6,13 @@ onready var frames = $Layout/Rows/Columns/Characters/Frames
 onready var turn_count = $Layout/Rows/Columns/BattleInfo/TurnCount
 onready var battle_state = $Layout/Rows/Columns/BattleInfo/ActionState
 
+onready var actions = $Layout/Rows/Actions
+onready var turn_button = $Layout/Rows/Actions/Turn
 onready var move_button = $Layout/Rows/Actions/Move
 onready var attack_button = $Layout/Rows/Actions/Attack
 onready var analyze_button = $Layout/Rows/Actions/Analyze
+
+var actions_showing:bool = false
 
 onready var portraits:Array setget , _get_portraits
 var active_character:Character
@@ -36,8 +40,9 @@ func setup():
         portrait.setup(character)
             
 
-func _update_everything(character):
-    active_character = character
+func _update_everything(character = null):
+    if character != null:
+        active_character = character
     
     var portraits = self.portraits
     for portrait in portraits:   
@@ -49,25 +54,37 @@ func _update_everything(character):
     for portrait in portraits:
         # Remove any frames tied to characters that are
         # no longer in the list to be rendered.
-        if not _battle.current_turn.characters_total.has(portrait.character):
+        if !portrait.character.is_alive:
             portraits.erase(portrait)
             portrait.queue_free()
     
-    update_button(move_button, active_character, Action.MOVE)
-    update_button(attack_button, active_character, Action.ATTACK)
-    update_button(analyze_button, active_character, Action.ANALYZE)
-
-
-func update_button(button, character, state):
-    var current_turn = _battle.current_turn
-    button.disabled = character == null or !current_turn.can_take_action(character.id, state)
+    # Hide actions during enemy turn.
+    if active_character == null or _battle.current_turn.is_enemy:
+        if actions_showing:
+            actions.hide()
+            actions_showing = false
+    elif !actions_showing:
+        actions.show()
+        actions_showing = true
     
-    if _battle.action_state == Action.FREEZE or \
-        character == null or \
-        character.is_enemy:
-            button.hide()
+    # Disable/enable buttons based on current state and what the character can do.
+    update_button(move_button, Action.MOVE)
+    update_button(attack_button, Action.ATTACK)
+    update_button(analyze_button, Action.ANALYZE)
+
+    turn_button.disabled = _battle.action_state == Action.FREEZE
+        
+
+func update_button(button, state):
+    var current_turn = _battle.current_turn
+
+    if  active_character == null or \
+        active_character.is_enemy or \
+        !current_turn.can_take_action(active_character.id, state) or \
+        _battle.action_state == Action.FREEZE:
+            button.disabled = true
     else:
-        button.show()
+        button.disabled = false
 
 
 func _get_portraits():
@@ -84,6 +101,7 @@ func _on_turn_updated(turn):
     
     
 func _on_battle_state_updated(state):
+    _update_everything()
     battle_state.text = state 
 
 

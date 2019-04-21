@@ -181,6 +181,7 @@ func set_action_state(next_state):
             pass
             
     action_state = next_state
+    print("next__", next_state)
     SignalManager.emit_signal("battle_state_updated", action_state)
 
 
