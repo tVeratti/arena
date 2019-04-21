@@ -82,11 +82,18 @@ func deactivate():
 # -----------------------------
     
 func show_telegraph(max_range):
+    clear_telegraph()
+    
     # Show the telegraph of the character's attack
     var new_telegraph = Telegraph.instance()
     t_root.add_child(new_telegraph)
     t_root.position = unit_selected.position
     new_telegraph.set_range(max_range)
+    
+
+func clear_telegraph():
+    for old_telegraph in t_root.get_children():
+        old_telegraph.queue_free()
 
 
 # INPUT
@@ -117,6 +124,11 @@ func _unhandled_input(event):
 # Focus a tile so that a line path can be previewed.
 func focus_tile(tile):
     if _tile_focused == tile or unit_selected == null:
+        return
+        
+    if _battle.action_state != Action.MOVE:
+        SignalManager.emit_signal("tile_focused", [])
+        _tile_focused = tile
         return
     
     var tile_position = map.map_to_world(tile)

@@ -47,6 +47,10 @@ func _ready():
 
 func _process(delta):
     if running:
+        if Input.is_action_pressed("actions_accept"):
+            calculate_multiplier()
+            return
+        
         # Run the skillcheck and track the value.
         _value_indicator.rect_position = Vector2(\
             lerp(self._value, _size, _speed * delta),\
@@ -59,6 +63,7 @@ func _process(delta):
         _timer_texture.value = TIMER_LENGTH - (OS.get_ticks_msec() - _start_time)
         if _timer_texture.value <= 0:
             start()
+
 
 
 func setup(battle, unit:Unit, target_speed:float):

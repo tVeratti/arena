@@ -28,11 +28,21 @@ func _input(event):
         
     elif event is InputEventMouseButton:
         if event.button_index == BUTTON_LEFT:
-            SignalManager.emit_signal("telegraph_executed", _bodies)
-            queue_free()
+            commit_telegraph()
         elif event.button_index == BUTTON_RIGHT:
-            SignalManager.emit_signal("telegraph_executed", [])
-            queue_free()
+            cancel_telegraph()
+            
+    elif Input.is_action_pressed("actions_accept"):
+        commit_telegraph()
+
+
+func commit_telegraph():
+    SignalManager.emit_signal("telegraph_executed", _bodies)
+    queue_free()
+    
+func cancel_telegraph():
+    SignalManager.emit_signal("telegraph_executed", [])
+    queue_free()
 
 
 func _process(delta):

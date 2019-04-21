@@ -80,14 +80,14 @@ margin_right = 192.594
 margin_bottom = 5.88072
 
 [node name="Button" type="TextureButton" parent="Textures/Container"]
-margin_right = 40.0
-margin_bottom = 40.0
+margin_right = 42.0
+margin_bottom = 42.0
 texture_normal = ExtResource( 6 )
 
 [node name="TimerTexture" type="TextureProgress" parent="Textures/Container"]
 material = SubResource( 2 )
-margin_right = 40.0
-margin_bottom = 40.0
+margin_right = 42.0
+margin_bottom = 42.0
 max_value = 120.0
 value = 120.0
 texture_progress = ExtResource( 6 )

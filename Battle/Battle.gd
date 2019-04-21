@@ -43,6 +43,39 @@ func _ready():
     SignalManager.connect("unit_movement_done", self, "_on_movement_done")
 
 
+func _input(event):
+    if action_state != Action.FREEZE:
+        if Input.is_action_pressed("actions_attack"):
+            set_action_state(Action.ATTACK)
+        elif Input.is_action_pressed("actions_move"):
+            set_action_state(Action.MOVE)
+        elif Input.is_action_pressed("actions_cancel"):
+            set_action_state(Action.WAIT)
+        elif Input.is_action_pressed("actions_turn"):
+            next_turn()
+        else:
+            var is_next = Input.is_action_pressed("next")
+            var is_prev = Input.is_action_pressed("previous")
+            if is_next or is_prev:
+                var living_characters = get_living_characters(heroes)
+                var character_index = living_characters.find(self.active_character)
+                var max_index = living_characters.size() - 1
+                
+                if !is_prev:
+                    if character_index < max_index:
+                        character_index += 1
+                    else:
+                        character_index = 0
+                else:
+                    if character_index > 0:
+                        character_index -= 1
+                    else:
+                        character_index = max_index
+                
+                activate_character(living_characters[character_index])
+            
+
+
 func _notification(event):
     if event == MainLoop.NOTIFICATION_WM_FOCUS_OUT and \
         action_state != Action.FREEZE:
@@ -174,8 +207,17 @@ func set_action_state(next_state):
         not current_turn.can_take_action(self.active_character.id, next_state):
         return
 
+    # The only action state that can follow FREEZE is WAIT.
+    # This makes sure that different states are locked during FREEZE.
+    if action_state == Action.FREEZE and next_state != Action.WAIT:
+        return
+
     if action_state == Action.MOVE and next_state != Action.MOVE:
         Grid.deactivate()
+        
+    # Clear out any telegraphs that weren't consumed by this turn
+    if action_state == Action.ATTACK and next_state != Action.FREEZE:
+        Grid.clear_telegraph()
 
     match(next_state):
         Action.MOVE:

@@ -93,26 +93,26 @@ mouse_filter = 2
 custom_constants/separation = 10
 
 [node name="Turn" type="Button" parent="Layout/Rows/Actions"]
-margin_right = 74.0
+margin_right = 93.0
 margin_bottom = 20.0
 mouse_filter = 1
-text = "Next Turn"
+text = "Next Turn (T)"
 
 [node name="Move" type="Button" parent="Layout/Rows/Actions"]
-margin_left = 84.0
-margin_right = 131.0
+margin_left = 103.0
+margin_right = 173.0
 margin_bottom = 20.0
-text = "Move"
+text = "Move (Q)"
 
 [node name="Attack" type="Button" parent="Layout/Rows/Actions"]
-margin_left = 141.0
-margin_right = 193.0
+margin_left = 183.0
+margin_right = 254.0
 margin_bottom = 20.0
-text = "Attack"
+text = "Attack (E)"
 
 [node name="Analyze" type="Button" parent="Layout/Rows/Actions"]
-margin_left = 203.0
-margin_right = 265.0
+margin_left = 264.0
+margin_right = 326.0
 margin_bottom = 20.0
 text = "Analyze"
 
