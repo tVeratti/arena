@@ -43,6 +43,12 @@ func _ready():
     SignalManager.connect("unit_movement_done", self, "_on_movement_done")
 
 
+func _notification(event):
+    if event == MainLoop.NOTIFICATION_WM_FOCUS_OUT and \
+        action_state != Action.FREEZE:
+            set_action_state(Action.WAIT)
+
+
 # TURN ACTIVATION
 # -----------------------------
 
@@ -181,7 +187,6 @@ func set_action_state(next_state):
             pass
             
     action_state = next_state
-    print("next__", next_state)
     SignalManager.emit_signal("battle_state_updated", action_state)
 
 
