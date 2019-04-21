@@ -5,7 +5,7 @@
 [ext_resource path="res://Character/AnimatedCharacter.tscn" type="PackedScene" id=3]
 
 [sub_resource type="CircleShape2D" id=1]
-radius = 18.994
+radius = 15.7696
 
 [node name="Character" type="KinematicBody2D" groups=[
 "units",
@@ -23,6 +23,6 @@ shape = SubResource( 1 )
 [node name="Timer" type="Timer" parent="."]
 
 [node name="AnimatedCharacter" parent="." instance=ExtResource( 3 )]
-scale = Vector2( 0.08, 0.08 )
+scale = Vector2( 0.05, 0.05 )
 
 [connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]
