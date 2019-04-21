@@ -89,6 +89,7 @@ func show_telegraph(max_range):
     t_root.add_child(new_telegraph)
     t_root.position = unit_selected.position
     new_telegraph.set_range(max_range)
+    new_telegraph.set_owner(unit_selected)
     
 
 func clear_telegraph():
@@ -114,12 +115,18 @@ func _unhandled_input(event):
             is_instance_valid(unit_selected) and \
             not unit_selected.is_enemy and \
             _battle.action_state == Action.MOVE:
-            # Mouse OVER tile (focus)
-            focus_tile(tile)
+                # Mouse OVER tile (focus)
+                focus_tile(tile)
 
 
 # TILE SELECTION
 # -----------------------------
+
+# Disable units from receving mouse input to allow
+# full movement options and not block tiles.
+func mouse_ignore_units(value):
+    for unit in self.units:
+        pass #unit.mouse
 
 # Focus a tile so that a line path can be previewed.
 func focus_tile(tile):

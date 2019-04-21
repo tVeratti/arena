@@ -2,8 +2,13 @@ extends KinematicBody2D
 
 class_name Unit
 
-var white_outline = preload("res://Assets/outline_white.shader")
-var red_outline = preload("res://Assets/outline_red.shader")
+const ACTIVE = "ACTIVE"
+const TARGETED = "TARGETED"
+const IDLE = "IDLE"
+
+var shader_darken = preload("res://Assets/darken.shader")
+var shader_lighten = preload("res://Assets/lighten.shader")
+var shader_red = preload("res://Assets/red.shader")
 
 # Movement
 var speed:float = 300.0
@@ -13,15 +18,19 @@ var path_index:int = 0
 
 var character:Character
 var is_enemy:bool
-var is_active:bool
+var state:String
 
-onready var sprite = $Sprite
+var sprite_sheet
+onready var sprite = $AnimatedCharacter
 onready var health = $HealthBar
 
 
 func _ready():
     set_physics_process(false)
+    set_state(IDLE)
+    
     SignalManager.connect("health_changed", self, "_on_health_changed")
+    sprite.get_node("AnimationPlayer").play("base")
 
 
 func setup(tile_position, character, is_enemy = false):
@@ -30,7 +39,7 @@ func setup(tile_position, character, is_enemy = false):
     self.character = character
     self.is_enemy = is_enemy
     
-    $Sprite.texture = character.unit_texture
+    sprite_sheet = character.unit_texture
     $HealthBar.setup(character)
     
     #SignalManager.connect("health_changed", self, "_on_health_changed")
@@ -44,44 +53,46 @@ func _physics_process(delta):
     if distance > 5:
         velocity = (target - position).normalized() * speed
         move_and_slide(velocity)
-        #position = position.linear_interpolate(current, delta * speed)
-        #position = Vector2(\
-            #lerp(position.x, current.x, delta * speed),\
-            #lerp(position.y, current.y, delta * speed))
     
     elif path_index < path.size() - 1:
-        # Start moving to the next point on the path
         path_index += 1
         
     else:
-        #position = current
         SignalManager.emit_signal("unit_movement_done")
         set_physics_process(false)
 
 
 func activate():
-    set_outline(true)
+    set_state(ACTIVE)
     SignalManager.emit_signal("character_selected", character)
 
 
 func deactivate():
-    set_outline(false)
+    set_state(IDLE)
 
 
-func set_outline(value = false):
-    if value == is_active:
+func target(is_targeted):
+    set_state(TARGETED if is_targeted else IDLE)
+
+
+func set_state(next_state):
+    if next_state == state:
         return
     
-    if value:
-        # ShaderMaterial is shared by all instances,
-        # so it is necessary to create a new one each time.
-        var material = ShaderMaterial.new()
-        material.shader = red_outline if is_enemy else white_outline
-        sprite.material = material
-    else:
-        sprite.material.shader = null
-    
-    is_active = value
+    # ShaderMaterial is shared by all instances,
+    # so it is necessary to create a new one each time.
+    var material = ShaderMaterial.new()
+    match(next_state):
+        ACTIVE:
+            material.shader = shader_lighten
+        TARGETED:
+            material.shader = shader_red
+        IDLE:
+            #TEMP ENEMY SHADER
+            material.shader = shader_darken if character.is_enemy else null 
+        
+    sprite.material = material
+    state = next_state
 
 
 func set_path(value:PoolVector2Array):

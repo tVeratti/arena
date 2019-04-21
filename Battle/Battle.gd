@@ -72,6 +72,7 @@ func _input(event):
                     else:
                         character_index = max_index
                 
+                set_action_state(Action.WAIT)
                 activate_character(living_characters[character_index])
             
 

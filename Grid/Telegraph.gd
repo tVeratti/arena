@@ -11,6 +11,7 @@ var _points:PoolVector2Array
 var _bodies:Array
 var _max_range:float = 75
 
+var _owner
 
 onready var area = $Area2D
 onready var parent = get_parent()
@@ -18,6 +19,10 @@ onready var parent = get_parent()
 
 func set_range(max_range):
     _max_range = max_range * 70
+
+
+func set_owner(unit):
+    _owner = unit
 
 
 func _input(event):
@@ -39,7 +44,8 @@ func _input(event):
 func commit_telegraph():
     SignalManager.emit_signal("telegraph_executed", _bodies)
     queue_free()
-    
+
+
 func cancel_telegraph():
     SignalManager.emit_signal("telegraph_executed", [])
     queue_free()
@@ -52,8 +58,11 @@ func _process(delta):
 
         var units = get_tree().get_nodes_in_group("units")
         for unit in units:
+            if _owner == unit:
+                continue
+            
             var is_active = _bodies.has(unit) or unit == parent
-            unit.set_outline(is_active)
+            unit.target(is_active)
 
 
 func _draw():

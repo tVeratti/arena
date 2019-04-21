@@ -102,9 +102,8 @@ func _generate():
     # Set portrait & unit textures
     # TODO: Use some algorithm to create
     # new asset combinations and unique textures.
-    var texture = TEXTURES.CIRCLE_YELLOW if is_enemy else TEXTURES.CIRCLE_BLUE
-    unit_texture = texture
-    portrait_texture = texture
+    unit_texture = TEXTURES.BASE
+    portrait_texture = TEXTURES.BASE
 
 
 func _generate_natural_pool() -> Array:
