@@ -24,29 +24,20 @@ var name:String
 var texture:Texture
 var region:Rect2
 var transform:Transform2D
-var children:Array
 
-func _init(source_sprite:Node2D, children:Array):
+func _init(source_sprite:Node2D):
     if source_sprite is Sprite:
         self.name = source_sprite.name
         self.texture = source_sprite.texture
         self.region = source_sprite.region_rect
         self.transform = source_sprite.transform
-    
-    self.children = children
 
 
 func to_JSON():
-    var json_children = []
-    for child in self.children:
-        json_children.append(child.to_JSON())
-        
-    var dict = {
-        "name": name,
-        "children": json_children
-    }
+    var dict = {}
     
     if texture != null:
+        dict["name"] = name
         dict["texture"] = texture.resource_path
         dict["region"] = region
         dict["transform"] = transform

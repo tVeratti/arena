@@ -21,7 +21,7 @@ var is_enemy:bool
 var state:String
 
 var sprite_sheet
-onready var sprite = $AnimatedCharacter
+onready var rig = $Rig
 onready var health = $HealthBar
 
 
@@ -30,7 +30,7 @@ func _ready():
     set_state(IDLE)
     
     SignalManager.connect("health_changed", self, "_on_health_changed")
-    sprite.get_node("AnimationPlayer").play("base")
+    rig.get_node("AnimationPlayer").play("base")
 
 
 func setup(tile_position, character, is_enemy = false):
@@ -91,7 +91,7 @@ func set_state(next_state):
             #TEMP ENEMY SHADER
             material.shader = shader_darken if character.is_enemy else null 
         
-    sprite.material = material
+    rig.material = material
     state = next_state
 
 
