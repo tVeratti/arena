@@ -1,16 +1,22 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://Generator/Generator.gd" type="Script" id=1]
-[ext_resource path="res://Generator/Rig.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Generator/test sheet 1.png" type="Texture" id=2]
+[ext_resource path="res://Generator/test sheet 2.png" type="Texture" id=3]
+[ext_resource path="res://Generator/test sheet 3.png" type="Texture" id=4]
+[ext_resource path="res://Generator/Rig.tscn" type="PackedScene" id=5]
 
 [node name="Generator" type="Node2D"]
 script = ExtResource( 1 )
+texture_a = ExtResource( 2 )
+texture_b = ExtResource( 3 )
+texture_c = ExtResource( 4 )
 
-[node name="Source" parent="." instance=ExtResource( 2 )]
+[node name="Source" parent="." instance=ExtResource( 5 )]
 visible = false
 position = Vector2( -349.805, 58.3008 )
 
-[node name="Target" parent="." instance=ExtResource( 2 )]
+[node name="Target" parent="." instance=ExtResource( 5 )]
 
 [node name="Randomize" type="Button" parent="."]
 margin_left = 562.176
