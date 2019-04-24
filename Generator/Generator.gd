@@ -18,13 +18,11 @@ func _ready():
 func generate():
     for part_key in _source.keys():
         var part = _source[part_key]
-        var part_node:Sprite = target.find_node(part_key)
+        var part_node:Polygon2D = target.find_node(part_key)
         
-        if part_node is Sprite:
+        if part_node is Polygon2D:
             part_node.texture = random_texture()
-            part_node.region_enabled = true
-            part_node.region_rect = part.region
-            part_node.transform = part.transform
+            part_node.polygon = part.polygon
 
 
 func random_texture():

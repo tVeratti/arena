@@ -22,27 +22,11 @@ const L_FOOT = "l_foot"
 
 var name:String
 var texture:Texture
-var region:Rect2
-var transform:Transform2D
+var polygon:PoolVector2Array
 
-func _init(source_sprite:Node2D):
-    if source_sprite is Sprite:
-        self.name = source_sprite.name
-        self.texture = source_sprite.texture
-        self.region = source_sprite.region_rect
-        self.transform = source_sprite.transform
-
-
-func to_JSON():
-    var dict = {}
-    
-    if texture != null:
-        dict["name"] = name
-        dict["texture"] = texture.resource_path
-        dict["region"] = region
-        dict["transform"] = transform
-    
-    return JSON.print(dict)
-    
+func _init(source:Node2D):
+    if source is Polygon2D:
+        self.name = source.name
+        self.polygon = source.polygon
     
     

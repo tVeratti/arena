@@ -17,6 +17,7 @@ visible = false
 position = Vector2( -349.805, 58.3008 )
 
 [node name="Target" parent="." instance=ExtResource( 5 )]
+position = Vector2( 311, 368 )
 
 [node name="Randomize" type="Button" parent="."]
 margin_left = 562.176
