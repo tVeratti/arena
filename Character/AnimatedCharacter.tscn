@@ -2,11 +2,9 @@
 
 [ext_resource path="res://Character/textures/unit/base_01.png" type="Texture" id=1]
 
+[sub_resource type="ShaderMaterial" id=1]
 
-[sub_resource type="ShaderMaterial" id=3]
-
-[sub_resource type="Animation" id=1]
-resource_name = "base"
+[sub_resource type="Animation" id=2]
 length = 2.0
 loop = true
 tracks/0/type = "value"
@@ -209,7 +207,7 @@ editor/display_folded = true
 use_parent_material = true
 
 [node name="arm R" type="Polygon2D" parent="polygons"]
-material = SubResource( 3 )
+material = SubResource( 1 )
 use_parent_material = true
 position = Vector2( -517.586, -1393.21 )
 rotation = 0.00224293
@@ -426,5 +424,5 @@ rest = Transform2D( -0.351551, 0.936169, -0.936169, -0.351551, 1.36035, 95.2263 
 default_length = 70.0
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-anims/base = SubResource( 1 )
+anims/base = SubResource( 2 )
 

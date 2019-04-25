@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/test sheet 1.png-ce2b0accc8b32d2f51436859f880a637.stex"
+path="res://.import/fb test sheet 2.png-51e7f8b48c10ef78ce7188b06b080efb.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Generator/test sheet 1.png"
-dest_files=[ "res://.import/test sheet 1.png-ce2b0accc8b32d2f51436859f880a637.stex" ]
+source_file="res://Generator/fb test sheet 2.png"
+dest_files=[ "res://.import/fb test sheet 2.png-51e7f8b48c10ef78ce7188b06b080efb.stex" ]
 
 [params]
 
