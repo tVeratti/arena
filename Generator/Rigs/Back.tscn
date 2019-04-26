@@ -1,14 +1,19 @@
 [gd_scene load_steps=3 format=2]
 
-[ext_resource path="res://Generator/fb test sheet 1.png" type="Texture" id=1]
+[ext_resource path="res://Character/textures/spritesheets/base_m_01.png" type="Texture" id=1]
 
 [sub_resource type="StreamTexture" id=1]
 flags = 4
 load_path = "res://.import/fb test sheet 1.png-bc14502de37e5491e985740885eb8239.stex"
 
-[node name="rig" type="Node2D"]
+[node name="Back" type="Node2D"]
 
 [node name="parts" type="Node2D" parent="."]
+editor/display_folded = true
+position = Vector2( 23.797, -502.608 )
+__meta__ = {
+"_edit_group_": true
+}
 
 [node name="l_hand" type="Polygon2D" parent="parts"]
 position = Vector2( -84.4389, 326.695 )
@@ -145,7 +150,6 @@ bones = [ NodePath("waist"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso"
 [node name="r_forearm" type="Polygon2D" parent="parts"]
 position = Vector2( 37.4812, 296.538 )
 rotation = -0.0692349
-scale = Vector2( 1, 1 )
 offset = Vector2( -2718.85, -2567.38 )
 texture = ExtResource( 1 )
 skeleton = NodePath("../../Skeleton2D")
@@ -156,7 +160,6 @@ bones = [ NodePath("waist"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso"
 [node name="r_arm" type="Polygon2D" parent="parts"]
 position = Vector2( 42.0526, 189.053 )
 rotation = -3.72529e-009
-scale = Vector2( 1, 1 )
 offset = Vector2( -2719.89, -2073.84 )
 texture = ExtResource( 1 )
 skeleton = NodePath("../../Skeleton2D")
@@ -165,6 +168,11 @@ uv = PoolVector2Array( 2478, 1888, 2950, 1888, 2950, 2360, 2478, 2360 )
 bones = [ NodePath("waist"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso/head"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso/r_arm"), PoolRealArray( 1, 1, 1, 1 ), NodePath("waist/torso/r_arm/r_forearm"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso/r_arm/r_forearm/r_hand"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso/l_arm"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso/l_arm/l_forearm"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso/l_arm/l_forearm/l_hand"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/r_thigh"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/r_thigh/r_shin"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/r_thigh/r_shin/r_foot"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/l_thigh"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/l_thigh/l_shin"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/l_thigh/l_shin/l_foot"), PoolRealArray( 0, 0, 0, 0 ) ]
 
 [node name="Skeleton2D" type="Skeleton2D" parent="."]
+editor/display_folded = true
+position = Vector2( 23.797, -502.608 )
+__meta__ = {
+"_edit_group_": true
+}
 
 [node name="waist" type="Bone2D" parent="Skeleton2D"]
 position = Vector2( -22.1053, 338.947 )

@@ -17,7 +17,7 @@ var is_enemy:bool
 var is_alive:bool setget , _alive_get
 
 # Unit & Portrait Textures
-var TEXTURES = preload("res://Character/TEXTURES.gd")
+var Textures = preload("res://Character/Textures.gd")
 var unit_texture:Texture
 var portrait_texture:Texture
 
@@ -102,8 +102,8 @@ func _generate():
     # Set portrait & unit textures
     # TODO: Use some algorithm to create
     # new asset combinations and unique textures.
-    unit_texture = TEXTURES.BASE
-    portrait_texture = TEXTURES.BASE
+    unit_texture = Textures.BASE
+    portrait_texture = Textures.BASE
 
 
 func _generate_natural_pool() -> Array:
