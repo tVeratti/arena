@@ -15,7 +15,7 @@ func _ready():
 func start_game():
     var battle = {
         "heroes": [
-            Character.new("Valla"),
+            Character.new("Carol"),
             Character.new("Valeera"),
             Character.new("Ashe")
         ],

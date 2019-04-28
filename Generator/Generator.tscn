@@ -1,10 +1,10 @@
 [gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://Generator/Generator.gd" type="Script" id=1]
-[ext_resource path="res://Generator/fb test sheet 1.png" type="Texture" id=2]
-[ext_resource path="res://Generator/fb test sheet 2.png" type="Texture" id=3]
-[ext_resource path="res://Generator/fb test sheet 3.png" type="Texture" id=4]
-[ext_resource path="res://Generator/Rig.tscn" type="PackedScene" id=5]
+[ext_resource path="res://Character/textures/spritesheets/base_m_01.png" type="Texture" id=2]
+[ext_resource path="res://Character/textures/spritesheets/base_m_02.png" type="Texture" id=3]
+[ext_resource path="res://Character/textures/spritesheets/base_m_03.png" type="Texture" id=4]
+[ext_resource path="res://Generator/Rigs/Rig.tscn" type="PackedScene" id=5]
 
 [node name="Generator" type="Node2D"]
 script = ExtResource( 1 )
@@ -13,17 +13,34 @@ texture_b = ExtResource( 3 )
 texture_c = ExtResource( 4 )
 
 [node name="Source" parent="." instance=ExtResource( 5 )]
-visible = false
-position = Vector2( -349.805, 58.3008 )
+position = Vector2( 631.513, 665.477 )
 
-[node name="Target" parent="." instance=ExtResource( 5 )]
-position = Vector2( 311, 368 )
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+margin_left = 931.154
+margin_top = 66.2327
+margin_right = 1014.15
+margin_bottom = 134.233
+__meta__ = {
+"_edit_group_": true
+}
 
-[node name="Randomize" type="Button" parent="."]
-margin_left = 562.176
-margin_top = 320.505
-margin_right = 645.176
-margin_bottom = 340.505
+[node name="Back" type="Button" parent="VBoxContainer"]
+margin_right = 83.0
+margin_bottom = 20.0
+text = "Back"
+
+[node name="Front" type="Button" parent="VBoxContainer"]
+margin_top = 24.0
+margin_right = 83.0
+margin_bottom = 44.0
+text = "Front"
+
+[node name="Randomize" type="Button" parent="VBoxContainer"]
+margin_top = 48.0
+margin_right = 83.0
+margin_bottom = 68.0
 text = "Randomize"
 
-[connection signal="pressed" from="Randomize" to="." method="_on_Randomize_pressed"]
+[connection signal="pressed" from="VBoxContainer/Back" to="." method="_on_Back_pressed"]
+[connection signal="pressed" from="VBoxContainer/Front" to="." method="_on_Front_pressed"]
+[connection signal="pressed" from="VBoxContainer/Randomize" to="." method="_on_Randomize_pressed"]

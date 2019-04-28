@@ -26,7 +26,7 @@ func _init(map:TileMap):
 func walkable_tiles():
     if _walkable_tiles.size() == 0:
         _walkable_bounds = _map.get_used_rect()
-        _walkable_tiles = _map.get_used_cells_by_id(0)
+        _walkable_tiles = _map.get_used_cells_by_id(2)
     
     return _walkable_tiles
 

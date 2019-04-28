@@ -112,7 +112,7 @@ func activate_enemies():
     elif next_action == Action.ATTACK:
         var nearest_unit = Grid.get_nearest_unit(active_unit)
         if is_instance_valid(nearest_unit) and is_instance_valid(active_unit) and \
-            nearest_unit.position.distance_to(active_unit.position) <= active_enemy.attack_range * 70:
+            nearest_unit.position.distance_to(active_unit.position) <= active_enemy.attack_range * Grid.map.cell_size.x:
                 active_targets = [nearest_unit]
                 resolve_attack(1, "")
       

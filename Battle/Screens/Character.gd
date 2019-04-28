@@ -1,7 +1,7 @@
 extends VBoxContainer
 
 func setup(character):
-    $Layout/Image.texture = character.portrait_texture
+    #$Layout/Image.texture = character.portrait_texture
     $Layout/Details/Name.text = character.name if character.is_alive else "%s (DECEASED)" % character.name
     $Health.value = \
         character.health.value_current / \

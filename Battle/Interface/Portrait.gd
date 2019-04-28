@@ -2,29 +2,30 @@ extends Control
 
 var outline_shader = preload("res://Assets/outline_white.shader")
 
-onready var image = $Layout/Image
-
 var character:Character
 
 
 func setup(character):
     # Before _ready
     self.character = character
-    $Layout/Name.text = String(character.name)
-    $Layout/Image.texture = character.portrait_texture
+    $Name.text = String(character.name)
+    $Head/head.texture = character.textures["head"]
+    $Head/hair.texture = character.textures["hair"]
     
     SignalManager.connect("health_changed", self, "_on_health_changed")
 
 
 func set_outline(value):
+    return
     if value:
         # ShaderMaterial is shared by all instances,
         # so it is necessary to create a new one each time.
         var material = ShaderMaterial.new()
         material.shader = outline_shader
-        image.material = material
+        #image.material = material
     else:
-        image.material.shader = null
+        pass
+        #image.material.shader = null
 
 
 func _on_Portrait_gui_input(event):

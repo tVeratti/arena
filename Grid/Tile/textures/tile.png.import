@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/fb test sheet 1.png-bc14502de37e5491e985740885eb8239.stex"
+path="res://.import/tile.png-f208ac88138286b2080e71b2c501fc25.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Generator/fb test sheet 1.png"
-dest_files=[ "res://.import/fb test sheet 1.png-bc14502de37e5491e985740885eb8239.stex" ]
+source_file="res://Grid/Tile/textures/tile.png"
+dest_files=[ "res://.import/tile.png-f208ac88138286b2080e71b2c501fc25.stex" ]
 
 [params]
 

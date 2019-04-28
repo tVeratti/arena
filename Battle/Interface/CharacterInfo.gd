@@ -1,6 +1,7 @@
 extends Control
 
-onready var _image = $Layout/Image
+onready var _head = $Head/head
+onready var _hair = $Head/hair
 onready var _name = $Layout/Details/Name
 onready var _speed = $Layout/Details/Speed
 onready var _toughness = $Layout/Details/Toughness
@@ -19,7 +20,9 @@ func _on_character_selected(character:Character):
     else:
         hide()
 
-    _image.texture = character.portrait_texture
+    _head.texture = character.textures["head"]
+    _hair.texture = character.textures["hair"]
+    
     _name.text = character.name
     _speed.text = "Speed: %s" % character.speed
     _toughness.text = "Toughness: %s" % character.toughness

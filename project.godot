@@ -10,11 +10,6 @@ config_version=4
 
 _global_script_classes=[ {
 "base": "Node",
-"class": "AI",
-"language": "GDScript",
-"path": "res://Battle/AI.gd"
-}, {
-"base": "Node",
 "class": "AStarPathfinder",
 "language": "GDScript",
 "path": "res://Grid/AStarPathfinder.gd"
@@ -55,7 +50,6 @@ _global_script_classes=[ {
 "path": "res://Grid/Unit/Unit.gd"
 } ]
 _global_script_class_icons={
-"AI": "",
 "AStarPathfinder": "",
 "Action": "",
 "Character": "",
