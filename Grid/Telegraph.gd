@@ -6,6 +6,9 @@ const LINE = "LINE"
 const CONE = "CONE"
 const COLOR:Color = Color(1,0,0,0.2)
 
+const CELL_SIZE = 300
+const MIN_SIZE = 150
+
 var _mouse:Vector2
 var _points:PoolVector2Array
 var _bodies:Array
@@ -18,7 +21,7 @@ onready var parent = get_parent()
 
 
 func set_range(max_range):
-    _max_range = max_range * 70
+    _max_range = max_range * CELL_SIZE
 
 
 func set_owner(unit):
@@ -71,8 +74,8 @@ func _draw():
 
 func _get_points():
     var angle_to_mouse = rad2deg(position.angle_to_point(_mouse)) - 90
-    var distance_to_mouse = clamp(position.distance_to(_mouse), 30, _max_range)
-    var angle = clamp(_max_range - distance_to_mouse, 2, 90)
+    var distance_to_mouse = clamp(position.distance_to(_mouse), MIN_SIZE, _max_range * 1.1)
+    var angle = clamp((_max_range * .8) - distance_to_mouse, 2, 60)
     
     var mouse_offset = _mouse.normalized() * 5
     var center = position + mouse_offset
@@ -98,7 +101,7 @@ func _get_cone_point(angle, distance) -> Vector2 :
 
 
 func _get_arc(center, angle_from, angle_to, radius, angle_to_mouse) -> PoolVector2Array:
-    var num_points = 8
+    var num_points = 12
     var points_arc = PoolVector2Array([center])
     
     #var mouse_vector = _get_deg_vector(angle_to_mouse)

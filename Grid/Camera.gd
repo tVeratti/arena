@@ -3,13 +3,13 @@ extends Camera2D
 # Target
 onready var _target:Vector2 = position
 var _speed:float = 5.0
-var _manual_speed:float = 10.0
+var _manual_speed:float = 15.0
 var _tolerance:float = 0.1
 
 
 # Zoom
 onready var _zoom_target:Vector2 = zoom
-var _zoom_speed:float = 3.0
+var _zoom_speed:float = 8.0
 var _zoom_step:Vector2 = Vector2(0.3, 0.3)
 var _zoom_tolerance:float = 0.1
 

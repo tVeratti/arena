@@ -4,8 +4,6 @@
 [ext_resource path="res://Battle/Interface/HealthBar.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Generator/Rigs/Front.tscn" type="PackedScene" id=3]
 
-
-
 [sub_resource type="CircleShape2D" id=1]
 radius = 15.7696
 
@@ -25,7 +23,6 @@ shape = SubResource( 1 )
 [node name="Timer" type="Timer" parent="."]
 
 [node name="Rig" parent="." instance=ExtResource( 3 )]
-position = Vector2( 0, -24.207 )
 scale = Vector2( 0.5, 0.5 )
 
 [connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]

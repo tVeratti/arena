@@ -20,6 +20,25 @@ const L_THIGH = "l_thigh"
 const L_SHIN = "l_shin"
 const L_FOOT = "l_foot"
 
+const PARTS = [
+    HEAD,
+    HAIR,
+    WAIST,
+    TORSO,
+    R_ARM,
+    R_FOREARM,
+    R_HAND,
+    L_ARM,
+    L_FOREARM,
+    L_HAND,
+    R_THIGH,
+    R_SHIN,
+    R_FOOT,
+    L_THIGH,
+    L_SHIN,
+    L_FOOT
+]
+
 var name:String
 var texture:Texture
 var polygon:PoolVector2Array

@@ -9,7 +9,6 @@ load_path = "res://.import/fb test sheet 1.png-bc14502de37e5491e985740885eb8239.
 [node name="Back" type="Node2D"]
 
 [node name="parts" type="Node2D" parent="."]
-editor/display_folded = true
 position = Vector2( 23.797, -502.608 )
 __meta__ = {
 "_edit_group_": true
@@ -113,6 +112,14 @@ polygon = PoolVector2Array( 1534, 1534, 2006, 1534, 2006, 2006, 1534, 2006 )
 uv = PoolVector2Array( 1534, 1534, 2006, 1534, 2006, 2006, 1534, 2006 )
 bones = [ NodePath("waist"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso/head"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso/r_arm"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso/r_arm/r_forearm"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso/r_arm/r_forearm/r_hand"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso/l_arm"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso/l_arm/l_forearm"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso/l_arm/l_forearm/l_hand"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/r_thigh"), PoolRealArray( 1, 1, 1, 1 ), NodePath("waist/r_thigh/r_shin"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/r_thigh/r_shin/r_foot"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/l_thigh"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/l_thigh/l_shin"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/l_thigh/l_shin/l_foot"), PoolRealArray( 0, 0, 0, 0 ) ]
 
+[node name="torso" type="Polygon2D" parent="parts"]
+position = Vector2( -842.105, -1125.53 )
+texture = SubResource( 1 )
+skeleton = NodePath("../../../Skeleton2D")
+polygon = PoolVector2Array( 590, 1062, 1062, 1062, 1062, 1534, 590, 1534 )
+uv = PoolVector2Array( 590, 1062, 1062, 1062, 1062, 1534, 590, 1534 )
+bones = [ NodePath("waist"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso"), PoolRealArray( 1, 1, 1, 1 ), NodePath("waist/torso/head"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso/r_arm"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso/r_arm/r_forearm"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso/r_arm/r_forearm/r_hand"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso/l_arm"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso/l_arm/l_forearm"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso/l_arm/l_forearm/l_hand"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/r_thigh"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/r_thigh/r_shin"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/r_thigh/r_shin/r_foot"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/l_thigh"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/l_thigh/l_shin"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/l_thigh/l_shin/l_foot"), PoolRealArray( 0, 0, 0, 0 ) ]
+
 [node name="head" type="Polygon2D" parent="parts"]
 position = Vector2( -356.318, -1883.88 )
 texture = SubResource( 1 )
@@ -120,14 +127,6 @@ skeleton = NodePath("../../Skeleton2D")
 polygon = PoolVector2Array( 118, 1652, 590, 1652, 590, 2124, 118, 2124 )
 uv = PoolVector2Array( 118, 1652, 590, 1652, 590, 2124, 118, 2124 )
 bones = [ NodePath("waist"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso/head"), PoolRealArray( 1, 1, 1, 1 ), NodePath("waist/torso/r_arm"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso/r_arm/r_forearm"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso/r_arm/r_forearm/r_hand"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso/l_arm"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso/l_arm/l_forearm"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso/l_arm/l_forearm/l_hand"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/r_thigh"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/r_thigh/r_shin"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/r_thigh/r_shin/r_foot"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/l_thigh"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/l_thigh/l_shin"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/l_thigh/l_shin/l_foot"), PoolRealArray( 0, 0, 0, 0 ) ]
-
-[node name="torso" type="Polygon2D" parent="parts/head"]
-position = Vector2( -485.787, 758.352 )
-texture = SubResource( 1 )
-skeleton = NodePath("../../../Skeleton2D")
-polygon = PoolVector2Array( 590, 1062, 1062, 1062, 1062, 1534, 590, 1534 )
-uv = PoolVector2Array( 590, 1062, 1062, 1062, 1062, 1534, 590, 1534 )
-bones = [ NodePath("waist"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso"), PoolRealArray( 1, 1, 1, 1 ), NodePath("waist/torso/head"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso/r_arm"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso/r_arm/r_forearm"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso/r_arm/r_forearm/r_hand"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso/l_arm"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso/l_arm/l_forearm"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso/l_arm/l_forearm/l_hand"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/r_thigh"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/r_thigh/r_shin"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/r_thigh/r_shin/r_foot"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/l_thigh"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/l_thigh/l_shin"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/l_thigh/l_shin/l_foot"), PoolRealArray( 0, 0, 0, 0 ) ]
 
 [node name="hair" type="Polygon2D" parent="parts/head"]
 position = Vector2( -0.161041, 567.51 )

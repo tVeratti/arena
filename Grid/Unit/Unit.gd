@@ -11,7 +11,7 @@ var shader_lighten = preload("res://Assets/lighten.shader")
 var shader_red = preload("res://Assets/red.shader")
 
 # Movement
-var speed:float = 300.0
+var speed:float = 500.0
 var path = PoolVector2Array() setget set_path
 var path_end:Vector2
 var path_index:int = 0

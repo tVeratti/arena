@@ -8,14 +8,14 @@ func _init():
     
 # Called when the node enters the scene tree for the first time.
 func _ready():
-    # start_game()
-    ScreenManager.change_to(Scenes.__DEV_GENERATOR)
+    start_game()
+    # ScreenManager.change_to(Scenes.__DEV_GENERATOR)
 
 
 func start_game():
     var battle = {
         "heroes": [
-            Character.new("Valla"),
+            Character.new("Carol"),
             Character.new("Valeera"),
             Character.new("Ashe")
         ],
