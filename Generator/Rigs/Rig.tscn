@@ -10,5 +10,4 @@ script = ExtResource( 1 )
 [node name="Back" parent="." instance=ExtResource( 2 )]
 
 [node name="Front" parent="." instance=ExtResource( 3 )]
-script = null
 

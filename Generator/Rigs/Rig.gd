@@ -11,8 +11,8 @@ var textures:Dictionary
 
 
 func _ready():
-    pass
-    #back_node.hide()
+    back_node.hide()
+
     # $AnimationPlayer.play("idle")
 
 

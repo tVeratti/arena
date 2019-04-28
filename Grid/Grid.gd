@@ -44,7 +44,7 @@ func add_characters(characters:Array, is_enemies = false):
         var unit_position = Vector2(tile_position.x, tile_position.y + cell_offset)
         var unit = Unit.instance()
         unit.setup(unit_position, character, is_enemies)
-        add_child(unit)
+        map.add_child(unit)
 
 
 # UNIT ACTICATION
@@ -161,10 +161,11 @@ func select_tile(tile):
             if _battle.action_state == Action.ATTACK:
                 return
             else:
+                pass
                 # Select the character and do NOT start pathfinding.
                 # Wait for battle to initiate movement again.
-                SignalManager.emit_signal("character_selected", unit_on_tile.character)
-                activate_unit(unit_on_tile)
+                # SignalManager.emit_signal("character_selected", unit_on_tile.character)
+                # activate_unit(unit_on_tile)
     
     elif unit_selected != null and not unit_selected.is_enemy:
         # If a unit is already selected, do pathfinding for that unit.

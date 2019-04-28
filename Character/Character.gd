@@ -1,5 +1,7 @@
 extends Object
 
+
+
 class_name Character
 
 const HEALTH_MAX = 100
@@ -18,8 +20,8 @@ var is_alive:bool setget , _alive_get
 
 # Unit & Portrait Textures
 var Textures = preload("res://Character/Textures.gd")
-var unit_texture:Texture
-var portrait_texture:Texture
+var PARTS = preload("res://Generator/Part.gd").PARTS
+var textures:Dictionary
 
 # General Info
 var health:Stat = Stat.new(HEALTH_MAX)
@@ -98,12 +100,19 @@ func _generate():
     acuity = pool_points[0]
     constitution = pool_points[1]
     agility = pool_points[2]
+        
+    textures = {}
+    for part in PARTS:
+        textures[part] = random_texture()
+
+
+func random_texture():
+    var result = int(rand_range(0.0, 3.0))
     
-    # Set portrait & unit textures
-    # TODO: Use some algorithm to create
-    # new asset combinations and unique textures.
-    unit_texture = Textures.BASE
-    portrait_texture = Textures.BASE
+    match(result):
+        0: return Textures.TEMPLATE_01
+        1: return Textures.TEMPLATE_02
+        2: return Textures.TEMPLATE_03
 
 
 func _generate_natural_pool() -> Array:

@@ -8,11 +8,13 @@ const COLOR:Color = Color(1,0,0,0.2)
 
 const CELL_SIZE = 300
 const MIN_SIZE = 150
+const MIN_ANGLE = 2
+const MAX_ANGLE = 90
 
 var _mouse:Vector2
 var _points:PoolVector2Array
 var _bodies:Array
-var _max_range:float = 75
+var _max_range:float = CELL_SIZE
 
 var _owner
 
@@ -74,10 +76,12 @@ func _draw():
 
 func _get_points():
     var angle_to_mouse = rad2deg(position.angle_to_point(_mouse)) - 90
-    var distance_to_mouse = clamp(position.distance_to(_mouse), MIN_SIZE, _max_range * 1.1)
-    var angle = clamp((_max_range * .8) - distance_to_mouse, 2, 60)
+    var distance_to_mouse = clamp(position.distance_to(_mouse), MIN_SIZE, _max_range)
+    var distance_percentage:float = float(_max_range) / float(distance_to_mouse)
+    var distance_angle = float(MAX_ANGLE) / distance_percentage
+    var angle = clamp(MAX_ANGLE - distance_angle, MIN_ANGLE, MAX_ANGLE)
     
-    var mouse_offset = _mouse.normalized() * 5
+    var mouse_offset = _mouse.normalized() * 20
     var center = position + mouse_offset
     var b = angle_to_mouse - angle
     var c = angle_to_mouse + angle

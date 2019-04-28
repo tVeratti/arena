@@ -30,7 +30,9 @@ func _ready():
     set_state(IDLE)
     
     SignalManager.connect("health_changed", self, "_on_health_changed")
-    rig.get_node("AnimationPlayer").play("base")
+    # rig.get_node("AnimationPlayer").play("base")
+    
+    rig.set_textures(character.textures)
 
 
 func setup(tile_position, character, is_enemy = false):
@@ -39,7 +41,7 @@ func setup(tile_position, character, is_enemy = false):
     self.character = character
     self.is_enemy = is_enemy
     
-    sprite_sheet = character.unit_texture
+    
     $HealthBar.setup(character)
     
     #SignalManager.connect("health_changed", self, "_on_health_changed")
@@ -120,3 +122,10 @@ func _on_health_changed(target):
 func _on_Timer_timeout():
     # I die... die.... DIE!!
         queue_free()
+
+
+func _on_Character_input_event(viewport, event, shape_idx):
+    if event is InputEventMouseButton \
+    and event.button_index == BUTTON_LEFT \
+    and event.is_pressed():
+            SignalManager.emit_signal("character_selected", character)
