@@ -1,7 +1,5 @@
 extends Object
 
-
-
 class_name Character
 
 const HEALTH_MAX = 100
@@ -19,7 +17,6 @@ var is_enemy:bool
 var is_alive:bool setget , _alive_get
 
 # Unit & Portrait Textures
-var Textures = preload("res://Character/Textures.gd")
 var PARTS = preload("res://Generator/Part.gd").PARTS
 var textures:Dictionary
 
@@ -107,12 +104,8 @@ func _generate():
 
 
 func random_texture():
-    var result = int(rand_range(0.0, 3.0))
-    
-    match(result):
-        0: return Textures.TEMPLATE_01
-        1: return Textures.TEMPLATE_02
-        2: return Textures.TEMPLATE_03
+    var index = int(rand_range(0.0, 3.0))
+    return Resources.spritesheets[index]
 
 
 func _generate_natural_pool() -> Array:

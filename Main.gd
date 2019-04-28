@@ -8,7 +8,7 @@ func _init():
     
 # Called when the node enters the scene tree for the first time.
 func _ready():
-    # start_game()
+    #start_game()
     ScreenManager.change_to(Scenes.__DEV_GENERATOR)
 
 

@@ -71,6 +71,7 @@ config/icon="res://icon.png"
 SignalManager="*res://Infrastructure/SignalManager.gd"
 ScreenManager="*res://Infrastructure/ScreenManager.gd"
 Scenes="*res://Infrastructure/Scenes.gd"
+Resources="*res://Infrastructure/Resources.gd"
 
 [display]
 
