@@ -236,8 +236,9 @@ func set_action_state(next_state):
 
     match(next_state):
         Action.MOVE:
-            pass
+            if self.active_character.is_enemy: return
         Action.ATTACK:
+            if self.active_character.is_enemy: return
             Grid.show_telegraph(self.active_character.attack_range)
         Action.WAIT:
             pass
