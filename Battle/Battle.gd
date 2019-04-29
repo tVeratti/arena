@@ -12,7 +12,7 @@ var enemies:Array
 
 var current_turn
 var current_turn_count:int = 1
-var previous_turn
+var end_turn_confirmation:bool = false
 
 var active_unit:Unit
 var active_character:Character setget , _get_active_character
@@ -25,13 +25,13 @@ var current_telegraph:Telegraph
 
 onready var Grid = $Grid
 onready var ActionTimer = $ActionTimer
+onready var EndTurnDialog = $Interface/EndTurnDialog
 
 
 func setup(battle):
     self.heroes = battle.heroes
     self.enemies = battle.enemies
     self.current_turn = Turn.new(battle.heroes, current_turn_count, false)
-    self.previous_turn = self.current_turn
     
     $Interface.setup()
     Grid.add_characters(heroes)
@@ -46,7 +46,6 @@ func _ready():
 
 
 func _input(event):
-
     if action_state != Action.FREEZE:
         if Input.is_action_pressed("actions_attack"):
             set_action_state(Action.ATTACK)
@@ -82,7 +81,6 @@ func _input(event):
                 
                 set_action_state(Action.WAIT)
                 activate_character(living_characters[character_index])
-            
 
 
 func _notification(event):
@@ -138,18 +136,26 @@ func activate_character(character:Character):
     
 
 # End the current turn, and activate the next group.
-func next_turn():
-    previous_turn = current_turn
-    
-    if previous_turn.is_enemy:
+func next_turn():    
+    if current_turn.is_enemy:
         current_turn_count += 1
         var characters = get_living_characters(heroes)
         current_turn = Turn.new(characters, current_turn_count, false)
+        end_turn_confirmation = false
+        
+        # If any characters are alive, activate now.
         if characters.size() > 0:
             activate_character(characters[0])
     else:
+        # If there are still remaining actions, ask the player
+        # to confirm the end of the turn before continuing.
+        if !current_turn.is_complete() and !end_turn_confirmation:
+            EndTurnDialog.popup_centered(Vector2.ZERO)
+            return
+        
         var characters = get_living_characters(enemies)
         current_turn = Turn.new(characters, current_turn_count, true)
+        Grid.clear_telegraph()
         activate_enemies()
 
 
@@ -357,3 +363,8 @@ func _on_movement_done():
 
 func _on_ActionTimer_timeout():
     action_debounce = false
+
+
+func _on_EndTurnDialog_confirmed():
+    end_turn_confirmation = true
+    next_turn()

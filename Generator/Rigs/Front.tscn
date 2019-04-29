@@ -5,6 +5,7 @@
 [sub_resource type="ShaderMaterial" id=1]
 
 [node name="Front" type="Node2D"]
+editor/display_folded = true
 material = SubResource( 1 )
 use_parent_material = true
 
