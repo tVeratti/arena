@@ -89,6 +89,7 @@ func set_state(next_state):
             material.shader = shader_lighten
         TARGETED:
             material.shader = shader_red
+            print('targeted')
         IDLE:
             #TEMP ENEMY SHADER
             material.shader = shader_darken if character.is_enemy else null 

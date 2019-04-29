@@ -56,8 +56,9 @@ func _input(event):
             set_action_state(Action.WAIT)
         elif Input.is_action_pressed("actions_turn"):
             next_turn()
+        elif Input.is_action_just_released("next") or Input.is_action_just_released("previous"):
+            action_debounce = false
         else:
-
             var is_next = Input.is_action_pressed("next")
             var is_prev = Input.is_action_pressed("previous")
             if is_next or is_prev:

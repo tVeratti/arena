@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://Grid/Unit/Unit.gd" type="Script" id=1]
 [ext_resource path="res://Battle/Interface/HealthBar.tscn" type="PackedScene" id=2]
@@ -7,6 +7,8 @@
 [sub_resource type="CapsuleShape2D" id=1]
 radius = 58.2941
 height = 82.2599
+
+[sub_resource type="ShaderMaterial" id=2]
 
 [node name="Character" type="KinematicBody2D" groups=[
 "units",
@@ -26,6 +28,7 @@ visible = false
 position = Vector2( -46.8296, -28.8504 )
 
 [node name="Rig" parent="." instance=ExtResource( 3 )]
+material = SubResource( 2 )
 scale = Vector2( 0.5, 0.5 )
 
 [connection signal="input_event" from="." to="." method="_on_Character_input_event"]
