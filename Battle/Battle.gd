@@ -19,10 +19,12 @@ var active_character:Character setget , _get_active_character
 
 var active_targets:Array = []
 var action_state:String = Action.WAIT
+var action_debounce:bool = false
 
 var current_telegraph:Telegraph
 
 onready var Grid = $Grid
+onready var ActionTimer = $ActionTimer
 
 
 func setup(battle):
@@ -44,6 +46,7 @@ func _ready():
 
 
 func _input(event):
+
     if action_state != Action.FREEZE:
         if Input.is_action_pressed("actions_attack"):
             set_action_state(Action.ATTACK)
@@ -54,9 +57,13 @@ func _input(event):
         elif Input.is_action_pressed("actions_turn"):
             next_turn()
         else:
+
             var is_next = Input.is_action_pressed("next")
             var is_prev = Input.is_action_pressed("previous")
             if is_next or is_prev:
+                if action_debounce: return
+                debounce_actions()
+            
                 var living_characters = get_living_characters(heroes)
                 var character_index = living_characters.find(self.active_character)
                 var max_index = living_characters.size() - 1
@@ -201,7 +208,7 @@ func character_action(type):
 
 # Change the action state of the battle and handle some
 # transitional logic between states.
-func set_action_state(next_state):
+func set_action_state(next_state):    
     # Verify that the next state is valid for the current battle state.
     if action_state == next_state or\
         not is_instance_valid(active_unit) or\
@@ -232,6 +239,11 @@ func set_action_state(next_state):
             
     action_state = next_state
     SignalManager.emit_signal("battle_state_updated", action_state)
+
+
+func debounce_actions():
+    ActionTimer.start(0.5)
+    action_debounce = true
 
 
 # ATTACK RESOLUTION
@@ -340,3 +352,7 @@ func _on_movement_done():
         activate_enemies()
     else:
         set_action_state(Action.WAIT)
+
+
+func _on_ActionTimer_timeout():
+    action_debounce = false
