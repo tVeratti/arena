@@ -18,8 +18,9 @@ func generate():
 
 
 func random_texture():
-    var index = int(rand_range(0.0, 3.0))
-    return Resources.spritesheets[index]
+    var spritesheets = Resources.spritesheets
+    var index = int(rand_range(0.0, spritesheets.size()))
+    return spritesheets[index]
 
 
 func _on_Randomize_pressed():
