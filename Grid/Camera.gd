@@ -10,7 +10,6 @@ var _speed:float = 5.0
 var _manual_speed:float = 15.0
 var _tolerance:float = 0.1
 
-
 # Zoom
 onready var _zoom_target:Vector2 = zoom
 var _zoom_speed:float = 8.0
@@ -39,8 +38,8 @@ func _process(delta):
     var zoom_distance = zoom.distance_to(_zoom_target)
     if zoom_distance >= _zoom_tolerance:
         zoom = Vector2(\
-        lerp(zoom.x, _zoom_target.x, _zoom_speed * delta),\
-        lerp(zoom.y, _zoom_target.y, _zoom_speed * delta))
+        clamp(lerp(zoom.x, _zoom_target.x, _zoom_speed * delta), MIN_ZOOM.x, MAX_ZOOM.x), \
+        clamp(lerp(zoom.y, _zoom_target.y, _zoom_speed * delta), MIN_ZOOM.y, MAX_ZOOM.y)
 
 
 func _input(event):
