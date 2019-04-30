@@ -6,6 +6,8 @@ const ACTIVE = "ACTIVE"
 const TARGETED = "TARGETED"
 const IDLE = "IDLE"
 
+var CombatText = preload("res://Battle/CombatText.tscn")
+
 var shader_darken = preload("res://Assets/darken.shader")
 var shader_lighten = preload("res://Assets/lighten.shader")
 var shader_red = preload("res://Assets/red.shader")
@@ -23,6 +25,7 @@ var state:String
 var sprite_sheet
 onready var rig = $Rig
 onready var health = $HealthBar
+onready var anchor = $PopupAnchor
 onready var click_collider = $ClickCollision
 var allow_selection:bool = true
 
@@ -112,6 +115,13 @@ func set_path(value:PoolVector2Array):
         path = valid_path
         path_end = valid_path[valid_path.size() - 1]
         set_physics_process(true)
+
+
+func show_damage(value, label):
+    # Render the damage done...
+    var damage_text = CombatText.instance()
+    anchor.add_child(damage_text)
+    damage_text.setup(value, label)
 
 
 func _on_health_changed(target):

@@ -281,10 +281,7 @@ func resolve_attack(multiplier = 1, label = ""):
         var damage = (self.active_character.deal_damage() * multiplier) / aoe_multiplier
         var final_damage = int(target_character.take_damage(damage))
         
-        # Render the damage done...
-        var damage_text = CombatText.instance()
-        target.add_child(damage_text)
-        damage_text.setup(final_damage, label)
+        target.show_damage(final_damage, label)
         
         if !target_character.is_alive:
             _handle_character_death(target_character)
@@ -373,5 +370,4 @@ func _on_EndTurnDialog_confirmed():
 
 
 func _on_AttackTimer_timeout():
-    print("attack timer timeout")
     set_action_state(Action.WAIT)
