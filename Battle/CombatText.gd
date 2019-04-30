@@ -11,10 +11,9 @@ func setup(value, extra):
     _value.text = String(value)
     _extra.text = String(extra)
     
-    $EndTimer.start(1.5)
+    $EndTimer.start(2)
     $FadeTimer.start(1)
     $AnimationPlayer.play("Fade")
-    
 
 
 func _on_EndTimer_timeout():
@@ -27,7 +26,7 @@ func _on_FadeTimer_timeout():
         "modulate", 
         Color(1, 1, 1, 1),
         Color(1, 1, 1, 0),
-        0.5, 
+        1, 
         Tween.TRANS_LINEAR,
         Tween.EASE_IN)
         
