@@ -1,6 +1,6 @@
 shader_type canvas_item;
 
-uniform float tint = 0.2;
+uniform float tint = 0.1;
 
 void fragment() {
     vec4 color = texture(TEXTURE, UV);

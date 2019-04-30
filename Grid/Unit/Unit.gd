@@ -23,6 +23,8 @@ var state:String
 var sprite_sheet
 onready var rig = $Rig
 onready var health = $HealthBar
+onready var click_collider = $ClickCollision
+var allow_selection:bool = true
 
 
 func _ready():
@@ -30,6 +32,7 @@ func _ready():
     set_state(IDLE)
     
     SignalManager.connect("health_changed", self, "_on_health_changed")
+    SignalManager.connect("battle_state_updated", self, "_on_battle_state_updated")
     # rig.get_node("AnimationPlayer").play("base")
     
     rig.set_textures(character.textures)
@@ -41,10 +44,7 @@ func setup(tile_position, character, is_enemy = false):
     self.character = character
     self.is_enemy = is_enemy
     
-    
     $HealthBar.setup(character)
-    
-    #SignalManager.connect("health_changed", self, "_on_health_changed")
 
 
 func _physics_process(delta):
@@ -91,7 +91,8 @@ func set_state(next_state):
             material.shader = shader_red
         IDLE:
             #TEMP ENEMY SHADER
-            material.shader = shader_darken if character.is_enemy else null 
+            # material.shader = shader_darken if character.is_enemy else null
+            pass
         
     rig.material = material
     state = next_state
@@ -127,5 +128,14 @@ func _on_Timer_timeout():
 func _on_Character_input_event(viewport, event, shape_idx):
     if event is InputEventMouseButton \
     and event.button_index == BUTTON_LEFT \
-    and event.is_pressed():
-            SignalManager.emit_signal("character_selected", character)
+    and event.is_pressed() \
+    and allow_selection:
+        SignalManager.emit_signal("character_selected", character)
+
+
+func _on_battle_state_updated(action_state):
+    # Disable the click collision so that the attack telegraph
+    # does not detect the oversized collision shape.
+    allow_selection = action_state == Action.WAIT
+    click_collider.disabled = action_state == Action.ATTACK
+    

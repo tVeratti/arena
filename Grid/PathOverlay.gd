@@ -1,7 +1,7 @@
 extends Node2D
 
-const BASE_LINE_WIDTH = 2.0
-const DRAW_COLOR = Color('#fff')
+const BASE_LINE_WIDTH = 5.0
+const DRAW_COLOR = Color(1,1,1,0.5)
 
 const TEXTURE_HIGHLIGHT = preload("res://Grid/Tile/textures/higlight.png")
 

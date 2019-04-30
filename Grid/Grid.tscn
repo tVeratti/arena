@@ -19,14 +19,6 @@ drag_margin_right = 1.0
 drag_margin_bottom = 1.0
 script = ExtResource( 2 )
 
-[node name="TileMap_Water" type="TileMap" parent="."]
-mode = 1
-tile_set = ExtResource( 3 )
-cell_size = Vector2( 100, 50 )
-cell_quadrant_size = 25
-cell_y_sort = true
-format = 1
-
 [node name="TileMap" type="TileMap" parent="."]
 position = Vector2( -1, 0 )
 mode = 1
@@ -40,6 +32,9 @@ tile_data = PoolIntArray( -327683, 2, 0, -327682, 2, 0, -327681, 2, 0, -262148, 
 script = ExtResource( 4 )
 
 [node name="TelegraphRoot" type="Node2D" parent="."]
+
+[node name="YSort" type="YSort" parent="."]
+position = Vector2( -1, 0 )
 
 [node name="PlayerStart" type="Node2D" parent="."]
 position = Vector2( 257.825, -149.784 )

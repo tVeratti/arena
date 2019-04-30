@@ -23,6 +23,7 @@ onready var camera = $Camera
 onready var p_start = $PlayerStart
 onready var e_start = $EnemyStart
 onready var t_root = $TelegraphRoot
+onready var y_sort = $YSort
 
 
 func _ready():
@@ -44,7 +45,7 @@ func add_characters(characters:Array, is_enemies = false):
         var unit_position = Vector2(tile_position.x, tile_position.y + cell_offset)
         var unit = Unit.instance()
         unit.setup(unit_position, character, is_enemies)
-        map.add_child(unit)
+        y_sort.add_child(unit)
 
 
 # UNIT ACTICATION

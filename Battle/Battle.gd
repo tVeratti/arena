@@ -25,6 +25,7 @@ var current_telegraph:Telegraph
 
 onready var Grid = $Grid
 onready var ActionTimer = $ActionTimer
+onready var AttackTimer = $AttackTimer
 onready var EndTurnDialog = $Interface/EndTurnDialog
 
 
@@ -185,7 +186,7 @@ func character_move() -> bool:
 # so continue with the skillcheck.
 func character_attack(targets:Array):
     if targets.size() == 0:
-        set_action_state(Action.WAIT)
+        AttackTimer.start(0.3)
         return
  
     var did_attack = character_action(Action.ATTACK)
@@ -289,10 +290,10 @@ func resolve_attack(multiplier = 1, label = ""):
             _handle_character_death(target_character)
             
         SignalManager.emit_signal("health_changed", target_character)
-    
-    if !current_turn.is_enemy:
-        set_action_state(Action.WAIT)
-    
+        
+        if !current_turn.is_enemy:
+            AttackTimer.start(0.3)
+        
     active_targets = []
 
 
@@ -351,7 +352,7 @@ func _on_ai_action_taken():
     activate_enemies()
 
 
-func _on_character_selected(character):
+func _on_character_selected(character):    
     activate_character(character)
 
 
@@ -369,3 +370,8 @@ func _on_ActionTimer_timeout():
 func _on_EndTurnDialog_confirmed():
     end_turn_confirmation = true
     next_turn()
+
+
+func _on_AttackTimer_timeout():
+    print("attack timer timeout")
+    set_action_state(Action.WAIT)
