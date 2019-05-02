@@ -9,6 +9,7 @@ material = SubResource( 1 )
 use_parent_material = true
 
 [node name="parts" type="Node2D" parent="."]
+editor/display_folded = true
 use_parent_material = true
 position = Vector2( 20.4486, -261.288 )
 
@@ -156,7 +157,6 @@ uv = PoolVector2Array( 2360, 118, 2832, 118, 2832, 590, 2360, 590 )
 bones = [ NodePath("waist"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso/head"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso/l_arm"), PoolRealArray( 1, 1, 1, 1 ), NodePath("waist/torso/l_arm/l_forearm"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso/l_arm/l_forearm/l_hand"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso/r_arm"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso/r_arm/r_forearm"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso/r_arm/r_forearm/r_hand"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/l_thigh"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/l_thigh/l_shin"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/l_thigh/l_shin/l_foot"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/r_thigh"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/r_thigh/r_shin"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/r_thigh/r_shin/r_foot"), PoolRealArray( 0, 0, 0, 0 ) ]
 
 [node name="Skeleton2D" type="Skeleton2D" parent="."]
-editor/display_folded = true
 position = Vector2( 20.4486, -264.303 )
 __meta__ = {
 "_edit_group_": true
@@ -196,39 +196,40 @@ default_length = 40.0
 
 [node name="r_arm" type="Bone2D" parent="Skeleton2D/waist/torso"]
 position = Vector2( -37.6731, -75.3462 )
-rotation = 0.111643
+rotation = 0.0384347
 rest = Transform2D( 1, 0, 0, 1, -37.6731, -75.3462 )
 
 [node name="r_forearm" type="Bone2D" parent="Skeleton2D/waist/torso/r_arm"]
 position = Vector2( -17.7285, 106.371 )
-rotation = 1.79941
+rotation = 1.89751
 rest = Transform2D( -0.218356, 0.975869, -0.975869, -0.218356, -17.7285, 106.371 )
 
 [node name="r_hand" type="Bone2D" parent="Skeleton2D/waist/torso/r_arm/r_forearm"]
 position = Vector2( 52.5145, -3.80235 )
-rotation = -0.252996
+rotation = -0.304095
 rest = Transform2D( 0.986001, -0.166742, 0.166742, 0.986001, 52.5145, -3.80235 )
 default_length = 40.0
 
 [node name="l_thigh" type="Bone2D" parent="Skeleton2D/waist"]
 position = Vector2( 45.4293, 8.86423 )
-rotation = 0.092598
+rotation = 0.0997849
 rest = Transform2D( 1, 0, 0, 1, 45.4293, 8.86423 )
 
 [node name="l_shin" type="Bone2D" parent="Skeleton2D/waist/l_thigh"]
 position = Vector2( 12.5402, 93.9506 )
-rotation = 0.010278
+rotation = -0.00781885
 rest = Transform2D( 1, 0, 0, 1, 8.86426, 94.1827 )
 
 [node name="l_foot" type="Bone2D" parent="Skeleton2D/waist/l_thigh/l_shin"]
 position = Vector2( 4.43213, 52.0775 )
-rotation = 1.76575
+rotation = 1.74762
 rest = Transform2D( -0.193721, 0.981057, -0.981057, -0.193721, 4.43213, 52.0775 )
 default_length = 25.0
 
 [node name="r_thigh" type="Bone2D" parent="Skeleton2D/waist"]
 editor/display_folded = true
 position = Vector2( -14.4044, -8.86429 )
+rotation = -0.0253084
 rest = Transform2D( 1, 0, 0, 1, -14.4044, -8.86429 )
 
 [node name="r_shin" type="Bone2D" parent="Skeleton2D/waist/r_thigh"]
