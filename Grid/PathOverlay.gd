@@ -3,13 +3,12 @@ extends Node2D
 const BASE_LINE_WIDTH = 5.0
 const DRAW_COLOR = Color(1,1,1,0.5)
 
-const TEXTURE_HIGHLIGHT = preload("res://Grid/Tile/textures/higlight.png")
-
 var _path:Array
 
 
 func _ready():
     SignalManager.connect("tile_focused", self, "_on_tile_focused")
+
 
 func _draw():
     if _path.empty():
@@ -20,7 +19,8 @@ func _draw():
     for point in _path:
         draw_line(point_prev, point, DRAW_COLOR, BASE_LINE_WIDTH, true)
         point_prev = point
-        
+
+
 func _on_tile_focused(path):
     if _path == path:
         return
