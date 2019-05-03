@@ -61,6 +61,7 @@ func _physics_process(delta):
     
     elif path_index < path.size() - 1:
         path_index += 1
+        turn_rig()
         
     else:
         SignalManager.emit_signal("unit_movement_done")
@@ -99,6 +100,22 @@ func set_state(next_state):
         
     rig.material = material
     state = next_state
+
+
+func turn_rig():
+    var direction = (path[path_index] - position).normalized()
+    var rig_scale = 0.5
+    var x = 1 if direction.x > 0 else -1
+    var y = 1 if direction.y > 0 else -1
+    
+    if (x > 0 and y < 0) or (x < 0 and y < 0):
+        rig.set_facing("BACK")
+    else:
+        x *= -1
+        rig.set_facing("FRONT")
+    
+    rig.set_scale(Vector2(x * rig_scale, rig_scale))
+
 
 
 func set_path(value:PoolVector2Array):

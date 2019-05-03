@@ -39,7 +39,7 @@ func _process(delta):
     if zoom_distance >= _zoom_tolerance:
         zoom = Vector2(\
         clamp(lerp(zoom.x, _zoom_target.x, _zoom_speed * delta), MIN_ZOOM.x, MAX_ZOOM.x), \
-        clamp(lerp(zoom.y, _zoom_target.y, _zoom_speed * delta), MIN_ZOOM.y, MAX_ZOOM.y)
+        clamp(lerp(zoom.y, _zoom_target.y, _zoom_speed * delta), MIN_ZOOM.y, MAX_ZOOM.y))
 
 
 func _input(event):
