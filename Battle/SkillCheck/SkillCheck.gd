@@ -36,26 +36,28 @@ onready var _timer_texture = $Textures/Container/TimerTexture
 # the skill check has full completed its cycle.
 var _battle
 
+onready var free_timer = $FreeTimer
+
 
 func _ready():
     # Don't start the skill check right away.
     _start_time = OS.get_ticks_msec()
     _timer_texture.max_value = TIMER_LENGTH
     
-    $AnimationPlayer.play("Enter")
+    #$AnimationPlayer.play("Enter")
 
 
 func _process(delta):
     if running:
-        if Input.is_action_pressed("actions_accept"):
-            calculate_multiplier()
-            return
-        
         # Run the skillcheck and track the value.
         _value_indicator.rect_position = Vector2(\
             lerp(self._value, _size, _speed * delta),\
             _value_indicator.rect_position.y)
-    
+        
+        if Input.is_action_pressed("actions_accept"):
+            calculate_multiplier()
+            return
+
         if self._value >= _size - 5:
             calculate_multiplier()
     else:
@@ -102,7 +104,7 @@ func calculate_multiplier():
     
     # Get the multiplier value based on the current value
     # and its position relative to the bonus ranges.
-    var value = self._value
+    var value = self._value + (_value_indicator.rect_size.x / 2)
     var label = ""
     var multiplier = 1
     if value > _crit_range[0] and value < _crit_range[1]:
@@ -119,8 +121,7 @@ func calculate_multiplier():
     # the new multiplier from this skill check.
     _battle.resolve_attack(multiplier, label)
     
-    # Delete instance entirely
-    self.queue_free()
+    free_timer.start(1)
 
 
 func start():
@@ -134,3 +135,8 @@ func _on_Button_pressed():
 
 func _get_value():
     return _value_indicator.rect_position.x
+
+
+func _on_FreeTimer_timeout():
+    self.queue_free()
+    

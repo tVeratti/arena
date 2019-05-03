@@ -48,6 +48,8 @@ func _ready():
 
 func _input(event):
     if action_state != Action.FREEZE:
+        if Input.is_action_pressed("cheat"):
+            heroes[0].agility = 10
         if Input.is_action_pressed("actions_attack"):
             set_action_state(Action.ATTACK)
         elif Input.is_action_pressed("actions_move"):
