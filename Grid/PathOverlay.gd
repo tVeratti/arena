@@ -1,7 +1,7 @@
 extends Node2D
 
-const BASE_LINE_WIDTH = 5.0
-const DRAW_COLOR = Color(1,1,1,0.5)
+const BASE_LINE_WIDTH = 8.0
+const DRAW_COLOR = Color(1,1,1,1)
 
 var _path:Array
 

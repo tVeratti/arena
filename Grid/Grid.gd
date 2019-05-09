@@ -10,8 +10,6 @@ var _battle
 enum { TILE_NONE = -1, TILE_GRASS = 0 }
 var _tile_focused
 
-var Telegraph = preload("res://Grid/Telegraph.tscn")
-
 # Character Units
 var Unit = preload("res://Grid/Unit/Unit.tscn")
 var unit_selected
@@ -20,6 +18,7 @@ var units:Array setget , _get_units
 # Cache node
 onready var map = $TileMap
 onready var camera = $Camera
+onready var range_overlay = $RangeOverlay
 onready var p_start = $PlayerStart
 onready var e_start = $EnemyStart
 onready var t_root = $TelegraphRoot
@@ -29,7 +28,9 @@ onready var y_sort = $YSort
 func _ready():
     _battle = get_parent()
     _pathfinder = AStarPathfinder.new(map)
-
+    
+    range_overlay.setup(map, _pathfinder)
+    
 
 # Create the units for the grid based on the characters given.
 func add_characters(characters:Array, is_enemies = false):
@@ -64,6 +65,7 @@ func activate_character(character:Character):
         else:
             unit.deactivate()
     
+    range_overlay.activate(unit_selected, _get_unit_positions())
     return unit_selected
 
 
@@ -86,11 +88,7 @@ func show_telegraph(max_range):
     clear_telegraph()
     
     # Show the telegraph of the character's attack
-    var new_telegraph = Telegraph.instance()
-    t_root.add_child(new_telegraph)
-    t_root.position = unit_selected.position
-    new_telegraph.set_range(max_range)
-    new_telegraph.set_owner(unit_selected)
+    range_overlay.activate(unit_selected, _get_unit_positions())
     
 
 func clear_telegraph():

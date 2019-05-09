@@ -21,8 +21,6 @@ var active_targets:Array = []
 var action_state:String = Action.WAIT
 var action_debounce:bool = false
 
-var current_telegraph:Telegraph
-
 onready var Grid = $Grid
 onready var ActionTimer = $ActionTimer
 onready var AttackTimer = $AttackTimer

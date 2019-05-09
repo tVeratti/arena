@@ -15,6 +15,7 @@ var _walkable_bounds:Rect2
 var _walkable_tiles:Array
 
 var _obstacles:Array
+var _distance_map:Dictionary = {}
 
 
 func _init(map:TileMap):
@@ -42,7 +43,7 @@ func _get_map_data(new_obstacles):
         walkable_tiles()
         _set_astar_points()
         _connect_astar_points()
-    
+            
 
 # Loop through walkable tiles and create astar points for each.
 func _set_astar_points():
@@ -66,16 +67,15 @@ func _connect_astar_points():
         # (0, -1)      (0, 0)      (0, 1)
         # (1, -1)      (1, 0)      (1, 1)
         var adjacent_tiles = [
-            Vector2(1, 0), # up
-            Vector2(0, -1), # left
-            Vector2(0, 1), # right
-            Vector2(1, 0) # down
+            Vector2.UP,
+            Vector2.LEFT,
+            Vector2.RIGHT,
+            Vector2.DOWN
         ]
         
         for offset in adjacent_tiles:
             var adjacent_tile = tile + offset
             var adjacent_index = _get_point_index(adjacent_tile)
-            
             
             if tile == adjacent_tile or \
             not _astar.has_point(adjacent_index):
@@ -123,6 +123,16 @@ func calculate_path(world_start, world_end):
     return _astar.get_point_path(start_index, end_index)
 
 
+func _convert_points_to_world(points):
+    var points_world = []
+    for i in range(points.size()):
+        var point = points[i]
+        var point_world = _map.map_to_world(Vector2(point.x, point.y)) + _half_cell_size
+        points_world.append(point_world)
+    
+    return points_world
+
+
 # Convert a coordinate position to a unique point index.
 # Astar tracks all points by their unique point index.
 func _get_point_index(point):
@@ -130,3 +140,30 @@ func _get_point_index(point):
     var y = point.y - _walkable_bounds.position.y
 
     return x + y * _walkable_bounds.size.x
+
+func _make_distance_map():
+    pass
+
+
+func get_distance(origin, target) -> int:
+    var origin_index = _get_point_index(origin)
+    var target_index = _get_point_index(target)
+    
+    #if not _astar.has_point(origin_index) or not _astar.has_point(target_index):
+        #return 1000
+        
+    return _astar.get_point_path(origin_index, target_index).size()
+
+
+func has_point(coord):
+    var index = _get_point_index(coord)
+    print(_astar.has_point(index))
+    return _astar.has_point(index)
+
+
+func get_adjacent_tiles(origin):
+    var point = _map.world_to_map(origin)
+    var index = _get_point_index(point)
+    var points = _astar.get_point_connections(index)
+    print("index (%s), point (%s)" % [index, point])
+    return _convert_points_to_world(points)

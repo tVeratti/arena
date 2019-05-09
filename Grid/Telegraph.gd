@@ -7,7 +7,7 @@ const CONE = "CONE"
 const COLOR:Color = Color(1,0,0,0.2)
 
 const CELL_SIZE = 300
-const MIN_SIZE = 150
+const MIN_SIZE = 90
 const MIN_ANGLE = 2
 const MAX_ANGLE = 90
 
@@ -77,7 +77,7 @@ func _draw():
 func _get_points():
     var angle_to_mouse = rad2deg(position.angle_to_point(_mouse)) - 90
     var distance_to_mouse = clamp(position.distance_to(_mouse), MIN_SIZE, _max_range)
-    var distance_percentage:float = float(_max_range) / float(distance_to_mouse)
+    var distance_percentage:float = (float(_max_range) * 0.8) / float(distance_to_mouse)
     var distance_angle = float(MAX_ANGLE) / distance_percentage
     var angle = clamp(MAX_ANGLE - distance_angle, MIN_ANGLE, MAX_ANGLE)
     
@@ -128,7 +128,7 @@ func _get_arc(center, angle_from, angle_to, radius, angle_to_mouse) -> PoolVecto
 
 func _get_deg_vector(angle) -> Vector2:
     var rad = deg2rad(angle)
-    return Vector2(cos(rad), sin(rad))   
+    return _get_rad_vector(rad)  
 
 
 func _get_rad_vector(rad) -> Vector2:
