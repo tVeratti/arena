@@ -65,7 +65,7 @@ func activate_character(character:Character):
         else:
             unit.deactivate()
     
-    range_overlay.activate(unit_selected, _get_unit_positions())
+    range_overlay.activate(unit_selected, _get_unit_positions(), _battle.action_state)
     return unit_selected
 
 
@@ -78,6 +78,7 @@ func activate_unit(unit):
             
 
 func deactivate():
+    range_overlay.deactivate()
     SignalManager.emit_signal("tile_focused", [])
 
 
@@ -88,7 +89,7 @@ func show_telegraph(max_range):
     clear_telegraph()
     
     # Show the telegraph of the character's attack
-    range_overlay.activate(unit_selected, _get_unit_positions())
+    range_overlay.activate(unit_selected, _get_unit_positions(), _battle.action_state)
     
 
 func clear_telegraph():

@@ -26,8 +26,10 @@ var sprite_sheet
 onready var rig = $Rig
 onready var health = $HealthBar
 onready var anchor = $PopupAnchor
+
 onready var click_collider = $ClickCollision
 var allow_selection:bool = true
+var allow_targeting:bool = false
 
 
 func _ready():
@@ -155,14 +157,17 @@ func _on_Timer_timeout():
 func _on_Character_input_event(viewport, event, shape_idx):
     if event is InputEventMouseButton \
     and event.button_index == BUTTON_LEFT \
-    and event.is_pressed() \
-    and allow_selection:
-        SignalManager.emit_signal("character_selected", character)
+    and event.is_pressed():
+        if allow_selection:
+            SignalManager.emit_signal("character_selected", character)
+        elif allow_targeting:
+            SignalManager.emit_signal("unit_targeted", self)
 
 
 func _on_battle_state_updated(action_state):
     # Disable the click collision so that the attack telegraph
     # does not detect the oversized collision shape.
     allow_selection = action_state == Action.WAIT
-    click_collider.disabled = action_state == Action.ATTACK
+    allow_targeting = action_state == Action.ATTACK
+    click_collider.disabled = action_state == Action.MOVE
     

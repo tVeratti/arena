@@ -39,7 +39,7 @@ func setup(battle):
 
 func _ready():
     SignalManager.connect("character_selected", self, "_on_character_selected")
-    SignalManager.connect("telegraph_executed", self, "_on_telegraph_executed")
+    SignalManager.connect("unit_targeted", self, "_on_unit_targeted")
     SignalManager.connect("ai_action_taken", self, "_on_ai_action_taken")
     SignalManager.connect("unit_movement_done", self, "_on_movement_done")
 
@@ -205,6 +205,7 @@ func character_attack(targets:Array):
         add_child(skill_check)
         skill_check.setup(self, active_unit, target_speed)
         set_action_state(Action.FREEZE)
+        Grid.deactivate()
 
 
 func character_action(type):
@@ -263,14 +264,6 @@ func resolve_attack(multiplier = 1, label = ""):
     
     if not active_targets or not active_unit:
         return
-    
-    #f multiplier == 0:
-        #var avoid_text = CombatText.instance()
-        #active_target.add_child(avoid_text)
-        #avoid_text.setup(label, "")
-        #set_action_state(Action.WAIT)
-        #active_targets = []
-        #return false
         
     # Reduce damage by how many targets are being hit (spread)
     var aoe_multiplier:float = float(active_targets.size()) / 2
@@ -318,16 +311,9 @@ func _handle_character_death(target):
         })
 
 
-# Player has compelted a telegraph target so continue 
-# with the attack resolution.
-func _on_telegraph_executed(bodies):
-    var targets = []
-    for body in bodies:
-        var unit = body as Unit
-        if unit.character.id != self.active_character.id:
-            targets.append(unit)
-        
-    character_attack(targets)
+# Player has targeted an enemy in attack phase.
+func _on_unit_targeted(unit):
+    character_attack([unit])
 
 
 # GETTERS
