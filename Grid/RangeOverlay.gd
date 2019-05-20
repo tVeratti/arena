@@ -3,9 +3,7 @@ extends Node2D
 const PADDING = 10
 const MOVE_COLOR = Color.white
 const ATTACK_COLOR = Color.red
-var _alpha:float = 0.15
 
-var _mouse:Vector2
 var _movement_points:Array
 var _attack_points:Array
 var _movement_range:int = 1
@@ -47,7 +45,6 @@ func deactivate():
 
 
 func _draw():
-    var first = true
     for shape in _movement_points:
         draw_polygon(shape, PoolColorArray([MOVE_COLOR]))
     
@@ -59,32 +56,25 @@ func _get_range_points():
     _movement_points = []
     _attack_points = []
     
-    var adjacent_tiles = [
-        Vector2.LEFT,
-        Vector2.LEFT + Vector2.UP,
-        Vector2.UP,
-        Vector2.UP + Vector2.RIGHT,
-        Vector2.RIGHT,
-        Vector2.RIGHT + Vector2.DOWN,
-        Vector2.DOWN,
-        Vector2.DOWN + Vector2.LEFT
-    ]
-    
     var current_range = _movement_range if _show_movement else _attack_range
     var max_range = current_range if current_range % 2 != 0 else current_range + 1
     
     for x in range(max_range * 2):
         for y in range(max_range * 2):
+
             var offset =  Vector2(max_range - x, max_range - y)
+            offset.x = abs(offset.x)
+            offset.y = abs(offset.y)
+
             var target_coord = _origin_coord + offset
             
-            var distance = abs(offset.x) + abs(offset.y)
+            var distance = offset.x + offset.y
             if distance > current_range or target_coord == _origin_coord:
                 continue
             
             var point = _map.map_to_world(target_coord)
             var shape = get_outer_points(target_coord)
-            if abs(offset.x) <= _attack_range and abs(offset.y) <= _attack_range:
+            if offset.x <= _attack_range and offset.y <= _attack_range:
                 if !_attack_points.has(point):
                     _attack_points.append(shape)
             elif !_exclusions.has(target_coord) and _show_movement:
