@@ -18,7 +18,15 @@ var is_alive:bool setget , _alive_get
 
 # Unit & Portrait Textures
 var PARTS = preload("res://Generator/Part.gd").PARTS
+var Colors = preload("res://Character/Colors.gd");
 var textures:Dictionary
+
+var colors:Dictionary = {
+    'hair': '',
+    'skin': '',
+    'clothes': '',
+    'eyes': ''
+}
 
 # General Info
 var health:Stat = Stat.new(HEALTH_MAX)
@@ -101,6 +109,12 @@ func _generate():
     textures = {}
     for part in PARTS:
         textures[part] = random_texture()
+    
+    # Colors
+    colors.hair = Colors.random_hair()
+    colors.skin = Colors.random_skin()
+    colors.clothes = Colors.random_clothes()
+    colors.eyes = Colors.random_eyes()
 
 
 func random_texture():

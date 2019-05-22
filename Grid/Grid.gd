@@ -45,7 +45,7 @@ func add_characters(characters:Array, is_enemies = false):
         var tile_position = map.map_to_world(coords)
         var unit_position = Vector2(tile_position.x, tile_position.y + cell_offset)
         var unit = Unit.instance()
-        unit.setup(unit_position, character, is_enemies)
+        unit.setup(unit_position, coords, character, is_enemies)
         y_sort.add_child(unit)
 
 
@@ -173,6 +173,7 @@ func select_tile(tile):
                 unit_selected.character.speed,\
                 _get_unit_positions())
             unit_selected.path = new_path
+            unit_selected.coord = map.world_to_map(new_path[new_path.size() - 1])
             
             deactivate()
 

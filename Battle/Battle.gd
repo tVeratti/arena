@@ -229,10 +229,6 @@ func set_action_state(next_state):
 
     if action_state == Action.MOVE and next_state != Action.MOVE:
         Grid.deactivate()
-        
-    # Clear out any telegraphs that weren't consumed by this turn
-    if action_state == Action.ATTACK and next_state != Action.FREEZE:
-        Grid.clear_telegraph()
 
     match(next_state):
         Action.MOVE:
@@ -312,7 +308,9 @@ func _handle_character_death(target):
 
 # Player has targeted an enemy in attack phase.
 func _on_unit_targeted(unit):
-    character_attack([unit])
+    var distance = unit.coord - active_unit.coord
+    if abs(distance.x) + abs(distance.y) <= self.active_character.attack_range:
+        character_attack([unit])
 
 
 # GETTERS

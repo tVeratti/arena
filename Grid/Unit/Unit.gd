@@ -2,7 +2,8 @@ extends KinematicBody2D
 
 class_name Unit
 
-const ACTIVE = "ACTIVE"
+const SELECTED = "SELECTED"
+const HOVERED = "HOVERED"
 const TARGETED = "TARGETED"
 const IDLE = "IDLE"
 
@@ -21,10 +22,12 @@ var speed:float = 500.0
 var path = PoolVector2Array() setget set_path
 var path_end:Vector2
 var path_index:int = 0
+var coord:Vector2
 
 var character:Character
 var is_enemy:bool
 var state:String
+var prev_state:String
 
 var sprite_sheet
 onready var rig = $Viewport/Rig
@@ -35,6 +38,7 @@ onready var sprite = $Sprite
 onready var click_collider = $ClickCollision
 var allow_selection:bool = true
 var allow_targeting:bool = false
+var is_hovered:bool = false
 
 
 func _ready():
@@ -46,13 +50,15 @@ func _ready():
     # rig.get_node("AnimationPlayer").play("base")
     
     rig.set_textures(character.textures)
+    rig.set_colors(character.colors)
     if is_enemy:
         rig.set_facing("BACK")
 
 
-func setup(tile_position, character, is_enemy = false):
+func setup(tile_position, coord, character, is_enemy = false):
     position = tile_position
     path_end = tile_position
+    self.coord = coord
     self.character = character
     self.is_enemy = is_enemy
     
@@ -78,7 +84,7 @@ func _physics_process(delta):
 
 
 func activate():
-    set_state(ACTIVE)
+    set_state(SELECTED)
     SignalManager.emit_signal("character_selected", character)
 
 
@@ -101,17 +107,20 @@ func set_state(next_state):
     material.set_shader_param("outline_width", 10.0)
     
     var color = ENEMY_OUTLINE_COLOR if is_enemy else FRIENDLY_OUTLINE_COLOR
+    var outline_color;
     
     match(next_state):
-        ACTIVE:
-            material.set_shader_param("outline_color", color)
+        SELECTED, HOVERED:
+            outline_color = color
         TARGETED:
-            material.set_shader_param("outline_color", ENEMY_OUTLINE_COLOR)
+           outline_color = ENEMY_OUTLINE_COLOR
         IDLE:
-            material.set_shader_param("outline_color", color - Color(0, 0, 0, 0.8))
-            pass
+            outline_color = Color(0,0,0,0)
         
+    material.set_shader_param("outline_color", outline_color)
     sprite.material = material
+    
+    prev_state = state
     state = next_state
 
 
@@ -184,8 +193,8 @@ func _on_battle_state_updated(action_state):
 
 
 func _on_Character_mouse_entered():
-    set_state(ACTIVE)
+    set_state(HOVERED)
 
 
 func _on_Character_mouse_exited():
-    set_state(IDLE)
+    set_state(prev_state)

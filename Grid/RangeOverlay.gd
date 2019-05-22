@@ -1,6 +1,6 @@
 extends Node2D
 
-const PADDING = 10
+const PADDING = 20
 const MOVE_COLOR = Color.white - Color(0, 0, 0, .8)
 const ATTACK_COLOR = Color.tomato - Color(0, 0, 0, .8)
 const ACTIVE_COLOR = Color.white - Color(0, 0, 0, .5)
@@ -127,7 +127,6 @@ func _get_range_points():
             var distance = abs(offset.x) + abs(offset.y)
             if distance > max_range or target_coord == _origin_coord:
                 continue
-            print(distance, " V ", max_range)
             
             # Create a reference to this tile's shape, location, and coordinates
             # for future drawing and collision detection (mouse).

@@ -1,6 +1,6 @@
 extends Control
 
-var outline_shader = preload("res://Assets/outline_white.shader")
+var colors_shader = preload("res://Assets/colors.shader")
 
 var character:Character
 
@@ -12,6 +12,19 @@ func setup(character):
     $Head/head.texture = character.textures["head"]
     $Head/hair.texture = character.textures["hair"]
     
+    var new_material = ShaderMaterial.new()
+    new_material.shader = colors_shader
+    
+    var colors = character.colors
+    var darken_amount = 0.4
+    new_material.set_shader_param("hair_normal", colors.hair)
+    new_material.set_shader_param("hair_shadow", colors.hair.darkened(darken_amount))
+    
+    new_material.set_shader_param("skin_normal", colors.skin)
+    new_material.set_shader_param("skin_shadow", colors.skin.darkened(darken_amount))
+    
+    $Head.material = new_material
+    
     SignalManager.connect("health_changed", self, "_on_health_changed")
 
 
@@ -21,7 +34,7 @@ func set_outline(value):
         # ShaderMaterial is shared by all instances,
         # so it is necessary to create a new one each time.
         var material = ShaderMaterial.new()
-        material.shader = outline_shader
+        #material.shader = outline_shader
         #image.material = material
     else:
         pass
