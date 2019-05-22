@@ -1,4 +1,4 @@
-extends Node2D
+extends Node
 
 const FRONT = "FRONT"
 const BACK = "BACK"

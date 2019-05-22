@@ -182,5 +182,5 @@ cheat={
 
 [rendering]
 
-environment/default_clear_color=Color( 0.164706, 0.133333, 0.152941, 1 )
+environment/default_clear_color=Color( 0.156863, 0.156863, 0.156863, 1 )
 environment/default_environment="res://default_env.tres"

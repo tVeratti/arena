@@ -82,7 +82,7 @@ region_rect = Rect2( 2100, 200, 300, 300 )
 
 [node name="r_shin" type="Sprite" parent="parts"]
 use_parent_material = true
-position = Vector2( -42.4851, 112.358 )
+position = Vector2( -42.4851, 112.359 )
 rotation = -0.0672347
 texture = ExtResource( 1 )
 region_enabled = true

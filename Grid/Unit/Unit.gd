@@ -9,7 +9,7 @@ const IDLE = "IDLE"
 var CombatText = preload("res://Battle/CombatText.tscn")
 
 var shader_darken = preload("res://Assets/darken.shader")
-var shader_lighten = preload("res://Assets/lighten.shader")
+var shader_lighten = preload("res://Assets/outline.shader")
 var shader_red = preload("res://Assets/red.shader")
 
 # Movement
@@ -23,7 +23,7 @@ var is_enemy:bool
 var state:String
 
 var sprite_sheet
-onready var rig = $Rig
+onready var rig = $Viewport/Rig
 onready var health = $HealthBar
 onready var anchor = $PopupAnchor
 
@@ -100,7 +100,7 @@ func set_state(next_state):
             # material.shader = shader_darken if character.is_enemy else null
             pass
         
-    rig.material = material
+    #rig.material = material
     state = next_state
 
 
@@ -171,3 +171,7 @@ func _on_battle_state_updated(action_state):
     allow_targeting = action_state == Action.ATTACK
     click_collider.disabled = action_state == Action.MOVE
     
+
+
+func _on_Character_mouse_entered():
+    set_state(ACTIVE)

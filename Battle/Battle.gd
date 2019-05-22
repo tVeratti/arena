@@ -239,9 +239,10 @@ func set_action_state(next_state):
     match(next_state):
         Action.MOVE:
             if self.active_character.is_enemy: return
+            Grid.show_movement_overlay()
         Action.ATTACK:
             if self.active_character.is_enemy: return
-            Grid.show_telegraph(self.active_character.attack_range)
+            Grid.show_attack_overlay()
         Action.WAIT:
             pass
         Action.FREEZE:

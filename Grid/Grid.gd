@@ -65,7 +65,6 @@ func activate_character(character:Character):
         else:
             unit.deactivate()
     
-    range_overlay.activate(unit_selected, _get_unit_positions(), _battle.action_state)
     return unit_selected
 
 
@@ -85,16 +84,14 @@ func deactivate():
 # TELEGRAPHS
 # -----------------------------
     
-func show_telegraph(max_range):
-    clear_telegraph()
-    
-    # Show the telegraph of the character's attack
-    range_overlay.activate(unit_selected, _get_unit_positions(), _battle.action_state)
+func show_movement_overlay():    
+    # Show the telegraph of the character's movement
+    range_overlay.activate(unit_selected, _get_unit_positions(), Action.MOVE)
     
 
-func clear_telegraph():
-    for old_telegraph in t_root.get_children():
-        old_telegraph.queue_free()
+func show_attack_overlay():
+    # Show the telegraph of the character's attack
+    range_overlay.activate(unit_selected, _get_unit_positions(), Action.ATTACK)
 
 
 # INPUT

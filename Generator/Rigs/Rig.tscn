@@ -8,8 +8,10 @@
 script = ExtResource( 1 )
 
 [node name="Front" parent="." instance=ExtResource( 2 )]
-position = Vector2( 4.2959, -199.045 )
+use_parent_material = false
+position = Vector2( 149.414, 457.13 )
 
 [node name="Back" parent="." instance=ExtResource( 3 )]
-position = Vector2( 31.5007, -165.633 )
+use_parent_material = false
+position = Vector2( 176.618, 490.542 )
 

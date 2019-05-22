@@ -1,9 +1,9 @@
 extends Node2D
 
-const PADDING = 2
-const MOVE_COLOR = Color.white
-const ATTACK_COLOR = Color.red
-const ACTIVE_COLOR = Color.yellow
+const PADDING = 10
+const MOVE_COLOR = Color.white - Color(0, 0, 0, .8)
+const ATTACK_COLOR = Color.red - Color(0, 0, 0, .8)
+const ACTIVE_COLOR = Color.white - Color(0, 0, 0, .5)
 
 var _movement_points:Array
 var _attack_points:Array
@@ -19,21 +19,49 @@ var _pathfinder:AStarPathfinder
 var _x:float
 var _y:float
 
+var tile_change_time
+
 class RangeTile:
     var name:String
     var coord:Vector2
     var points:Array
-    var position:Vector2
+    var location:Vector2
+    var area:Area2D
+    var parent
 
-    func _init(coord, points, position):
+    func _init(coord, points, parent):
         self.coord = coord
         self.points = points
-        self.position = position
+        self.parent = parent
         name = "range_tile_[%s_%s]" % [coord.x, coord.y]
+    
+    
+    func connect_area():
+        area.connect("area_entered", self, "_on_area_entered")
+        #area.connect("area_exited", self, "_on_area_exited")
+    
+    
+    func _on_area_entered(area):
+        if area.name == 'Cursor':
+            parent.on_range_tile_entered(self)
+
+
+    func _on_area_exited(area):
+        if area.name == 'Cursor':
+            parent.on_range_tile_entered(null)
+        
 
 var _range_tiles:Dictionary = {}
 var _active_tile:RangeTile
 
+
+func _ready():
+    SignalManager.connect("range_tile_entered", self, "_on_range_tile_entered")
+    
+    # Used to debounce entering/exiting areas to prevent
+    # entering from being canceled out by exiting.
+    tile_change_time = OS.get_ticks_msec()
+    
 
 func setup(map:TileMap, pathfinder:AStarPathfinder):
     _map = map
@@ -58,23 +86,29 @@ func activate(unit:Unit, exclusions:Array = [], action_state:String = Action.MOV
 
     # Create collisions for mouse interaction.
     _create_all_collisions()
-
+    
 
 func deactivate():
     _movement_points = []
     _attack_points = []
+    _range_tiles = {}
+    _active_tile = null
+    
+    for child in get_children():
+        child.free()
+    
     update()
 
 
 func _draw():
-    #for tile in _movement_points:
-        #draw_polygon(tile.points, PoolColorArray([MOVE_COLOR]))
+    for tile in _movement_points:
+        draw_polygon(tile.points, PoolColorArray([MOVE_COLOR]), [], null, null, true)
     
-    #for tile in _attack_points:
-        #draw_polygon(tile.points, PoolColorArray([ATTACK_COLOR]))
+    for tile in _attack_points:
+        draw_polygon(tile.points, PoolColorArray([ATTACK_COLOR]))
     
-    if _active_tile != null:
-        draw_polyline(_active_tile.points, ACTIVE_COLOR)
+    if _active_tile != null and _show_movement:
+        draw_polyline(_active_tile.points + [_active_tile.points[0]], ACTIVE_COLOR, 3, true)
 
 
 func _get_range_points():
@@ -88,24 +122,24 @@ func _get_range_points():
         for y in range(max_range * 2):
 
             var offset =  Vector2(max_range - x, max_range - y)
-            var abs_offset = Vector2(abs(offset.x), abs(offset.y))
             var target_coord = _origin_coord + offset
             
-            var distance = abs_offset.x + abs_offset.y
-            if distance > display_range or target_coord == _origin_coord:
+            var distance = abs(offset.x) + abs(offset.y)
+            if distance > max_range or target_coord == _origin_coord:
                 continue
+            print(distance, " V ", max_range)
             
             # Create a reference to this tile's shape, location, and coordinates
             # for future drawing and collision detection (mouse).
             var world_pos = _map.map_to_world(target_coord)
             var points = _get_outer_points(target_coord)
-            var tile = RangeTile.new(target_coord, points, world_pos)
-            
-            if abs_offset.x <= _attack_range and abs_offset.y <= _attack_range and !_show_movement:
+            var tile = RangeTile.new(target_coord, points, self)
+ 
+            if !_show_movement:
                 # Render these tiles in red (attack)
                 if !_attack_points.has(tile):
                     _attack_points.append(tile)
-            elif !_exclusions.has(target_coord) and _show_movement:
+            elif !_exclusions.has(target_coord):
                 # Render these tiles in white (movement)
                 if !_movement_points.has(tile):
                     _movement_points.append(tile)
@@ -142,32 +176,24 @@ func _create_all_collisions():
     for tile in all_points:
         # Only create new collisions if they don't already exist.
         if !_range_tiles.keys().has(tile.name):
-            _create_collision(tile)
+            var shape = CollisionPolygon2D.new()
+            shape.polygon = tile.points
+            
+            var area = Area2D.new()
+            area.add_child(shape)
+            area.name = tile.name
+            area.transform = Transform2D(0, tile.location)
+            
+            tile.area = area
+            tile.connect_area()
+            add_child(area)
+            
+            
+            # Add this as an entry to the reference dictionary by name in order
+            # to access it easily/quickly in future mouse events.
+            _range_tiles[tile.name] = tile
     
 
-func _create_collision(tile):
-    var area = Area2D.new()
-    var shape = CollisionPolygon2D.new()
-
-    shape.polygon = tile.points
-    area.add_child(shape)
-    area.name = tile.name
-    print(area.name)
-
-    add_child(area)
-    area.world_position = tile.position
-    area.connect("area_entered", self, "_on_area_entered")
-    area.connect("area_exited", self, "_on_area_exited")
-
-    # Add this as an entry to the reference dictionary by name in order
-    # to access it easily/quickly in future mouse events.
-    _range_tiles[area.name] = tile
-
-
-func _on_area_entered(area):
-    print("ENTERED %s" % area.name)
-    _active_tile = _range_tiles[area.name]
-
-
-func _on_area_exited():
-    _active_tile = null
+func on_range_tile_entered(tile):
+    _active_tile = tile
+    update()
