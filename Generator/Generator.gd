@@ -2,7 +2,7 @@ extends Node2D
 
 var PARTS = preload("res://Generator/Part.gd").PARTS
 
-onready var source = $Source
+onready var source = $Rig
 var _source:Dictionary
 
 func _ready():

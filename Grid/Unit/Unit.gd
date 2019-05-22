@@ -6,10 +6,14 @@ const ACTIVE = "ACTIVE"
 const TARGETED = "TARGETED"
 const IDLE = "IDLE"
 
+const ACTIVE_OUTLINE_COLOR = Color.white
+const FRIENDLY_OUTLINE_COLOR = Color.aqua
+const ENEMY_OUTLINE_COLOR = Color.tomato
+
 var CombatText = preload("res://Battle/CombatText.tscn")
 
 var shader_darken = preload("res://Assets/darken.shader")
-var shader_lighten = preload("res://Assets/outline.shader")
+var shader_outline = preload("res://Assets/outline.shader")
 var shader_red = preload("res://Assets/red.shader")
 
 # Movement
@@ -26,6 +30,7 @@ var sprite_sheet
 onready var rig = $Viewport/Rig
 onready var health = $HealthBar
 onready var anchor = $PopupAnchor
+onready var sprite = $Sprite
 
 onready var click_collider = $ClickCollision
 var allow_selection:bool = true
@@ -41,6 +46,8 @@ func _ready():
     # rig.get_node("AnimationPlayer").play("base")
     
     rig.set_textures(character.textures)
+    if is_enemy:
+        rig.set_facing("BACK")
 
 
 func setup(tile_position, character, is_enemy = false):
@@ -90,17 +97,21 @@ func set_state(next_state):
     # ShaderMaterial is shared by all instances,
     # so it is necessary to create a new one each time.
     var material = ShaderMaterial.new()
+    material.shader = shader_outline
+    material.set_shader_param("outline_width", 10.0)
+    
+    var color = ENEMY_OUTLINE_COLOR if is_enemy else FRIENDLY_OUTLINE_COLOR
+    
     match(next_state):
         ACTIVE:
-            material.shader = shader_lighten
+            material.set_shader_param("outline_color", color)
         TARGETED:
-            material.shader = shader_red
+            material.set_shader_param("outline_color", ENEMY_OUTLINE_COLOR)
         IDLE:
-            #TEMP ENEMY SHADER
-            # material.shader = shader_darken if character.is_enemy else null
+            material.set_shader_param("outline_color", color - Color(0, 0, 0, 0.8))
             pass
         
-    #rig.material = material
+    sprite.material = material
     state = next_state
 
 
@@ -116,7 +127,7 @@ func turn_rig():
         x *= -1
         rig.set_facing("FRONT")
     
-    rig.set_scale(Vector2(x * rig_scale, rig_scale))
+    sprite.set_scale(Vector2(x * rig_scale, rig_scale))
 
 
 
@@ -170,8 +181,11 @@ func _on_battle_state_updated(action_state):
     allow_selection = action_state == Action.WAIT
     allow_targeting = action_state == Action.ATTACK
     click_collider.disabled = action_state == Action.MOVE
-    
 
 
 func _on_Character_mouse_entered():
     set_state(ACTIVE)
+
+
+func _on_Character_mouse_exited():
+    set_state(IDLE)

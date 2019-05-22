@@ -32,7 +32,6 @@ tracks/1/keys = {
 }
 
 [node name="Front" type="Node2D"]
-use_parent_material = true
 
 [node name="parts" type="Node2D" parent="."]
 use_parent_material = true

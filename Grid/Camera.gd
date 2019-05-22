@@ -2,7 +2,7 @@ extends Camera2D
 
 const MIN_ZOOM = Vector2.ZERO
 const MAX_ZOOM = Vector2(10, 10)
-const DEFAULT_ZOOM = Vector2(3, 3)
+const DEFAULT_ZOOM = Vector2(2, 2)
 
 # Target
 onready var _target:Vector2 = position

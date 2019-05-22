@@ -31,7 +31,7 @@ void fragment(){
     }
 
     // Fill transparent pixels only, don't overlap texture
-    if(col.a == 0.0) {
+    if(col.a < 0.2) {
         COLOR = mix(col, outline_color, maxa-mina);
     } else {
         // Note on old code: if the last mix value is always 0, why even use it?

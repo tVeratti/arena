@@ -40,7 +40,6 @@ func setup(battle):
 func _ready():
     SignalManager.connect("character_selected", self, "_on_character_selected")
     SignalManager.connect("unit_targeted", self, "_on_unit_targeted")
-    SignalManager.connect("ai_action_taken", self, "_on_ai_action_taken")
     SignalManager.connect("unit_movement_done", self, "_on_movement_done")
 
 
@@ -156,7 +155,6 @@ func next_turn():
         
         var characters = get_living_characters(enemies)
         current_turn = Turn.new(characters, current_turn_count, true)
-        Grid.clear_telegraph()
         activate_enemies()
 
 

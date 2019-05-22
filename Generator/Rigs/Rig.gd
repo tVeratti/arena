@@ -29,10 +29,10 @@ func set_facing_textures(parts):
         if part is Sprite:
             var rect = part.region_rect
             part.region_rect = Rect2(\
-                rect.position.x - region_padding, \
-                rect.position.y - region_padding, \
-                rect.size.x + region_padding, \
-                rect.size.y + region_padding)
+                rect.position.x, #- region_padding, \
+                rect.position.y, #- region_padding, \
+                rect.size.x, #+ region_padding, \
+                rect.size.y) #+ region_padding)
             part.texture = textures[part.name]
             
             if part.get_child_count() > 0:

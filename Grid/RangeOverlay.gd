@@ -2,7 +2,7 @@ extends Node2D
 
 const PADDING = 10
 const MOVE_COLOR = Color.white - Color(0, 0, 0, .8)
-const ATTACK_COLOR = Color.red - Color(0, 0, 0, .8)
+const ATTACK_COLOR = Color.tomato - Color(0, 0, 0, .8)
 const ACTIVE_COLOR = Color.white - Color(0, 0, 0, .5)
 
 var _movement_points:Array
