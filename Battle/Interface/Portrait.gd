@@ -1,6 +1,6 @@
 extends Control
 
-var colors_shader = preload("res://Assets/colors.shader")
+var Colors = load("res://Character/Colors.gd")
 
 var character:Character
 
@@ -13,16 +13,8 @@ func setup(character):
     $Head/hair.texture = character.textures["hair"]
     
     var new_material = ShaderMaterial.new()
-    new_material.shader = colors_shader
-    
     var colors = character.colors
-    var darken_amount = 0.4
-    new_material.set_shader_param("hair_normal", colors.hair)
-    new_material.set_shader_param("hair_shadow", colors.hair.darkened(darken_amount))
-    
-    new_material.set_shader_param("skin_normal", colors.skin)
-    new_material.set_shader_param("skin_shadow", colors.skin.darkened(darken_amount))
-    
+    Colors.set_shader_params(new_material, colors)
     $Head.material = new_material
     
     SignalManager.connect("health_changed", self, "_on_health_changed")

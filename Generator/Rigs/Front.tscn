@@ -2,7 +2,7 @@
 
 [ext_resource path="res://Character/textures/spritesheets/nin_m_02.png" type="Texture" id=1]
 
-[sub_resource type="Animation" id=2]
+[sub_resource type="Animation" id=1]
 length = 2.0
 loop = true
 tracks/0/type = "value"
@@ -226,5 +226,5 @@ remote_path = NodePath("../../../../../r_hand")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 autoplay = "Idle"
-anims/Idle = SubResource( 2 )
+anims/Idle = SubResource( 1 )
 

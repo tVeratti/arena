@@ -22,10 +22,10 @@ var Colors = preload("res://Character/Colors.gd");
 var textures:Dictionary
 
 var colors:Dictionary = {
-    'hair': '',
-    'skin': '',
-    'clothes': '',
-    'eyes': ''
+    'hair': [],
+    'skin': [],
+    'clothes': [],
+    'eyes': []
 }
 
 # General Info

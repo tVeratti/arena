@@ -7,7 +7,6 @@ signal character_selected(character)
 signal unit_targeted(unit)
 signal unit_movement_done()
 signal telegraph_executed(units)
-signal range_tile_entered(tile)
 
 signal turn_updated(turn)
 signal battle_state_updated(state)

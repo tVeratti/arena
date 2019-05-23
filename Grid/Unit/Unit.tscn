@@ -16,7 +16,7 @@ height = 188.046
 render_priority = 2
 shader = ExtResource( 4 )
 shader_param/outline_width = 5.0
-shader_param/outline_color = Plane( 0, 1, 1, 1 )
+shader_param/outline_color = Plane( 1, 1, 1, 1 )
 
 [sub_resource type="ViewportTexture" id=4]
 viewport_path = NodePath("Viewport")

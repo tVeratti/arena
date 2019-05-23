@@ -1,5 +1,7 @@
 extends Object
 
+const colors_shader = preload("res://Assets/colors.shader")
+
 const HAIR = [
     '88292F',
     'A77464',
@@ -55,25 +57,62 @@ const EYES = [
     'FAB2EA'
 ]
 
-static func random_hair():
-    var index = int(rand_range(0.0, HAIR.size()))
-    return as_color(HAIR[index])
+const DARKEN_RANGE = 0.5
+const LIGHTEN_RANGE = 0.5
+
+static func set_shader_params(material, colors) -> void:
+    material.shader = colors_shader
+    
+    material.set_shader_param("hair_normal", colors.hair[0])
+    material.set_shader_param("hair_shadow", colors.hair[1])
+    
+    material.set_shader_param("skin_normal", colors.skin[0])
+    material.set_shader_param("skin_shadow", colors.skin[1])
+    
+    material.set_shader_param("clothes_normal", colors.clothes[0])
+    material.set_shader_param("clothes_shadow", colors.clothes[1])
+    
+    material.set_shader_param("eyes", colors.eyes[0])
 
 
-static func random_skin():
-    var index = int(rand_range(0.0, SKIN.size()))
-    return as_color(SKIN[index])
+static func random_hair() -> Array:
+    return random_color(HAIR)
 
 
-static func random_clothes():
-    var index = int(rand_range(0.0, CLOTHES.size()))
-    return as_color(CLOTHES[index])
+static func random_skin() -> Array:
+    return random_color(SKIN)
 
 
-static func random_eyes():
-    var index = int(rand_range(0.0, EYES.size()))
-    return as_color(EYES[index])
+static func random_clothes() -> Array:
+    return random_color(CLOTHES)
+
+
+static func random_eyes() -> Array:
+    return random_color(EYES)
+
+
+static func random_color(array):
+    var index = _rand(array.size())
+    var color = as_color(array[index])
+    var do_lighten = _rand(2) % 2 == 0
+    if do_lighten: color = color.lightened(_rand_lighten())
+    else: color = color.darkened(_rand_darken())
+    
+    return [color, color.darkened(0.5)]
 
 
 static func as_color(hex):
     return Color("#%s" % hex)
+
+
+static func _rand(limit):
+    return int(rand_range(0.0, limit))
+
+
+static func _rand_lighten():
+    return rand_range(0.0, LIGHTEN_RANGE)
+
+
+static func _rand_darken():
+    return rand_range(0.0, DARKEN_RANGE)
+    

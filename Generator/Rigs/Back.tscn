@@ -12,7 +12,7 @@ __meta__ = {
 
 [node name="l_hand" type="Sprite" parent="parts"]
 use_parent_material = true
-position = Vector2( -129.669, 55.2204 )
+position = Vector2( -129.669, 50.7882 )
 rotation = -0.0205106
 scale = Vector2( 1, 1 )
 texture = ExtResource( 1 )
@@ -21,7 +21,7 @@ region_rect = Rect2( 3000, 2600, 300, 300 )
 
 [node name="l_forearm" type="Sprite" parent="parts"]
 use_parent_material = true
-position = Vector2( -100.685, -16.8654 )
+position = Vector2( -100.685, -21.2975 )
 rotation = 0.0512065
 scale = Vector2( 1, 1 )
 texture = ExtResource( 1 )
@@ -64,24 +64,25 @@ region_rect = Rect2( 2100, 1600, 300, 300 )
 
 [node name="r_foot" type="Sprite" parent="parts"]
 use_parent_material = true
-position = Vector2( -27.8054, 171.682 )
-rotation = 0.251024
+position = Vector2( -31.9958, 159.94 )
+rotation = 0.210661
 texture = ExtResource( 1 )
 region_enabled = true
 region_rect = Rect2( 1560, 2520, 360, 360 )
 
 [node name="r_shin" type="Sprite" parent="parts"]
 use_parent_material = true
-position = Vector2( -36.6296, 123.041 )
-rotation = 0.081569
+position = Vector2( -42.7755, 111.696 )
+rotation = 0.0412056
 texture = ExtResource( 1 )
 region_enabled = true
 region_rect = Rect2( 1560, 2040, 360, 360 )
 
 [node name="r_thigh" type="Sprite" parent="parts"]
 use_parent_material = true
-position = Vector2( -37.7443, 45.9892 )
-rotation = -0.133034
+position = Vector2( -39.48, 33.5098 )
+rotation = -0.0594105
+scale = Vector2( 1, 1 )
 texture = ExtResource( 1 )
 region_enabled = true
 region_rect = Rect2( 1560, 1560, 360, 360 )
@@ -108,13 +109,13 @@ rotation = 0.209238
 remote_path = NodePath("../../../../l_foot")
 
 [node name="remote_r_thigh" type="RemoteTransform2D" parent="parts/waist"]
-position = Vector2( -37.7443, 45.9892 )
-rotation = -0.133034
+position = Vector2( -39.48, 33.5098 )
+rotation = -0.0594105
 remote_path = NodePath("../../r_thigh")
 
 [node name="remote_r_shin" type="RemoteTransform2D" parent="parts/waist/remote_r_thigh"]
-position = Vector2( -9.11543, 76.519 )
-rotation = 0.214603
+position = Vector2( -7.93198, 77.8521 )
+rotation = 0.100616
 remote_path = NodePath("../../../r_shin")
 
 [node name="remote_r_foot" type="RemoteTransform2D" parent="parts/waist/remote_r_thigh/remote_r_shin"]
@@ -147,7 +148,7 @@ region_rect = Rect2( 600, 1080, 480, 480 )
 
 [node name="r_hand" type="Sprite" parent="parts/waist/torso"]
 use_parent_material = true
-position = Vector2( 77.4005, 184.581 )
+position = Vector2( 84.0237, 176.803 )
 rotation = -0.0683711
 scale = Vector2( 1, 1 )
 texture = ExtResource( 1 )
@@ -156,7 +157,7 @@ region_rect = Rect2( 2650, 2760, 150, 160 )
 
 [node name="r_forearm" type="Sprite" parent="parts/waist/torso"]
 use_parent_material = true
-position = Vector2( 39.1532, 112.449 )
+position = Vector2( 40.2541, 110.23 )
 rotation = -0.179207
 scale = Vector2( 1, 1 )
 texture = ExtResource( 1 )
@@ -178,7 +179,7 @@ rotation = -0.00509765
 remote_path = NodePath("../../../l_arm")
 
 [node name="remote_l_forearm" type="RemoteTransform2D" parent="parts/waist/torso/remote_l_arm"]
-position = Vector2( 38.6995, 115.008 )
+position = Vector2( 38.7078, 110.576 )
 rotation = 0.0530874
 remote_path = NodePath("../../../../l_forearm")
 
@@ -193,12 +194,12 @@ rotation = -0.110147
 remote_path = NodePath("../r_arm")
 
 [node name="remote_r_forearm" type="RemoteTransform2D" parent="parts/waist/torso/remote_r_arm"]
-position = Vector2( -3.34986, 95.5219 )
+position = Vector2( -2.01164, 93.4367 )
 rotation = -0.0690601
 remote_path = NodePath("../../r_forearm")
 
 [node name="remote_r_hand" type="RemoteTransform2D" parent="parts/waist/torso/remote_r_arm/remote_r_forearm"]
-position = Vector2( 24.7773, 77.794 )
+position = Vector2( 31.2019, 73.3094 )
 rotation = 0.110836
 remote_path = NodePath("../../../r_hand")
 

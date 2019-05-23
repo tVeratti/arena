@@ -308,8 +308,9 @@ func _handle_character_death(target):
 
 # Player has targeted an enemy in attack phase.
 func _on_unit_targeted(unit):
+    var attack_range = self.active_character.attack_range
     var distance = unit.coord - active_unit.coord
-    if abs(distance.x) + abs(distance.y) <= self.active_character.attack_range:
+    if abs(distance.x) <= attack_range and abs(distance.y) <= attack_range:
         character_attack([unit])
 
 

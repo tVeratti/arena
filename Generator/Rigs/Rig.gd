@@ -1,6 +1,6 @@
 extends Node2D
 
-var colors_shader = preload("res://Assets/colors.shader")
+var Colors = load("res://Character/Colors.gd")
 
 const FRONT = "FRONT"
 const BACK = "BACK"
@@ -19,23 +19,8 @@ func _ready():
 
 
 func set_colors(colors:Dictionary):
-    var darken_amount = 0.4
-    
     var new_material = ShaderMaterial.new()
-    new_material.shader = colors_shader
-    
-    new_material.set_shader_param("hair_normal", colors.hair)
-    new_material.set_shader_param("hair_shadow", colors.hair.darkened(darken_amount))
-    
-    new_material.set_shader_param("skin_normal", colors.skin)
-    new_material.set_shader_param("skin_shadow", colors.skin.darkened(darken_amount))
-    
-    new_material.set_shader_param("clothes_normal", colors.clothes)
-    new_material.set_shader_param("clothes_shadow", colors.clothes.darkened(darken_amount))
-    
-    new_material.set_shader_param("eyes", colors.eyes)
-    
-    
+    Colors.set_shader_params(new_material, colors)
     material = new_material
 
 

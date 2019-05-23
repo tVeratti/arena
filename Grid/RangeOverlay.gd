@@ -1,8 +1,8 @@
 extends Node2D
 
-const PADDING = 20
-const MOVE_COLOR = Color.white - Color(0, 0, 0, .8)
-const ATTACK_COLOR = Color.tomato - Color(0, 0, 0, .8)
+const PADDING = 10
+const MOVE_COLOR = Color.white - Color(0, 0, 0, .9)
+const ATTACK_COLOR = Color.tomato - Color(0, 0, 0, .7)
 const ACTIVE_COLOR = Color.white - Color(0, 0, 0, .5)
 
 var _movement_points:Array
@@ -54,14 +54,6 @@ class RangeTile:
 var _range_tiles:Dictionary = {}
 var _active_tile:RangeTile
 
-
-func _ready():
-    SignalManager.connect("range_tile_entered", self, "_on_range_tile_entered")
-    
-    # Used to debounce entering/exiting areas to prevent
-    # entering from being canceled out by exiting.
-    tile_change_time = OS.get_ticks_msec()
-    
 
 func setup(map:TileMap, pathfinder:AStarPathfinder):
     _map = map
@@ -120,13 +112,17 @@ func _get_range_points():
     
     for x in range(max_range * 2):
         for y in range(max_range * 2):
-
             var offset =  Vector2(max_range - x, max_range - y)
             var target_coord = _origin_coord + offset
+            if target_coord == _origin_coord: continue
             
             var distance = abs(offset.x) + abs(offset.y)
-            if distance > max_range or target_coord == _origin_coord:
-                continue
+            if _show_movement:
+                if distance > display_range:
+                    continue
+            elif abs(offset.x) > display_range or abs(offset.y) > display_range:
+                    # Attacks can do diagonal
+                    continue
             
             # Create a reference to this tile's shape, location, and coordinates
             # for future drawing and collision detection (mouse).

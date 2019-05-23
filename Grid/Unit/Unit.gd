@@ -8,8 +8,8 @@ const TARGETED = "TARGETED"
 const IDLE = "IDLE"
 
 const ACTIVE_OUTLINE_COLOR = Color.white
-const FRIENDLY_OUTLINE_COLOR = Color.aqua
-const ENEMY_OUTLINE_COLOR = Color.tomato
+const FRIENDLY_OUTLINE_COLOR = Color('#0FFF95')
+const ENEMY_OUTLINE_COLOR = Color('#CD533B')
 
 var CombatText = preload("res://Battle/CombatText.tscn")
 
