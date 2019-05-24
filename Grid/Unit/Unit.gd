@@ -116,6 +116,7 @@ func set_state(next_state):
            outline_color = ENEMY_OUTLINE_COLOR
         IDLE:
             outline_color = Color(0,0,0,0)
+            rig.set_animation("Idle")
         
     material.set_shader_param("outline_color", outline_color)
     sprite.material = material
@@ -138,6 +139,9 @@ func turn_rig(target_world_position):
     
     sprite.set_scale(Vector2(x * rig_scale, rig_scale))
 
+
+func set_animation(state:String):
+    rig.set_animation(state)
 
 
 func set_path(value:PoolVector2Array):

@@ -47,7 +47,7 @@ visible = false
 position = Vector2( -48.4211, -356.842 )
 
 [node name="Viewport" type="Viewport" parent="."]
-size = Vector2( 400, 800 )
+size = Vector2( 500, 800 )
 transparent_bg = true
 handle_input_locally = false
 hdr = false

@@ -5,6 +5,9 @@ var Colors = load("res://Character/Colors.gd")
 const FRONT = "FRONT"
 const BACK = "BACK"
 
+const ANIM_IDLE = "Idle"
+const ANIM_ATTACK = "Attack"
+
 onready var back_node = $Back/parts
 onready var front_node = $Front/parts
 
@@ -57,3 +60,7 @@ func set_facing(facing:String):
         BACK:
             back_node.show()
             front_node.hide()
+
+
+func set_animation(anim:String):
+    $Front.get_node("AnimationPlayer").play(anim)

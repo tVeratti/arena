@@ -53,6 +53,7 @@ func _input(event):
             set_action_state(Action.MOVE)
         elif Input.is_action_pressed("actions_cancel"):
             set_action_state(Action.WAIT)
+            Grid.deactivate()
         elif Input.is_action_pressed("actions_turn"):
             next_turn()
         elif Input.is_action_just_released("next") or Input.is_action_just_released("previous"):
@@ -63,6 +64,7 @@ func _input(event):
             if is_next or is_prev:
                 if action_debounce: return
                 debounce_actions()
+                Grid.deactivate()
             
                 var living_characters = get_living_characters(heroes)
                 var character_index = living_characters.find(self.active_character)
@@ -286,6 +288,7 @@ func resolve_attack(multiplier = 1, label = ""):
             AttackTimer.start(0.3)
         
     active_targets = []
+    active_unit.set_animation("Idle")
 
 
 # When a character dies, remove them fom the turns list

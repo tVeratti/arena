@@ -87,11 +87,13 @@ func deactivate():
 func show_movement_overlay():    
     # Show the telegraph of the character's movement
     range_overlay.activate(unit_selected, _get_unit_positions(), Action.MOVE)
+    unit_selected.set_animation("Idle")
     
 
 func show_attack_overlay():
     # Show the telegraph of the character's attack
     range_overlay.activate(unit_selected, _get_unit_positions(), Action.ATTACK)
+    unit_selected.set_animation("Attack")
 
 
 # INPUT
