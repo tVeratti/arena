@@ -181,13 +181,17 @@ func select_tile(tile):
 # ENEMIES
 # -----------------------------
 
-func move_to_nearest_unit(origin_unit):  
-    var target_unit = get_nearest_unit(origin_unit)      
-    var obstacle_positions = _get_unit_positions([origin_unit, target_unit])
+func move_to_nearest_unit(origin_unit) -> bool:  
+    var target_unit = get_nearest_unit(origin_unit)
     
     if origin_unit == null or target_unit == null:
         return false
-    
+        
+    var distance = get_coord_distance(origin_unit.position, target_unit.position).length()
+    if distance <= 1:
+        return false
+          
+    var obstacle_positions = _get_unit_positions([origin_unit, target_unit])    
     var new_path = _pathfinder.find_path(\
         origin_unit.position,\
         target_unit.position,\
