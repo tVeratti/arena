@@ -116,11 +116,12 @@ func activate_enemies():
             return
         
     elif next_action == Action.ATTACK:
-        var nearest_unit = Grid.get_nearest_unit(active_unit)
-        if is_instance_valid(nearest_unit) and is_instance_valid(active_unit) and \
-            nearest_unit.position.distance_to(active_unit.position) <= active_enemy.attack_range * Grid.map.cell_size.x:
-                active_targets = [nearest_unit]
-                resolve_attack(1, "")
+            var nearest_unit = Grid.get_nearest_unit(active_unit)
+            if is_instance_valid(nearest_unit) and is_instance_valid(active_unit) \
+                and attack_within_range(active_unit, nearest_unit):
+                    active_targets = [nearest_unit]
+                    active_unit.turn_rig(nearest_unit.position)
+                    resolve_attack(1, "")
       
     activate_enemies()
 
@@ -196,6 +197,11 @@ func character_attack(targets:Array):
         for target in targets:
             target_speed += target.character.speed
         target_speed /= targets.size()
+        
+        
+        # Face toward the target(s)
+        var first_target = targets[0]
+        active_unit.turn_rig(first_target.position)
         
         # Initiate a skill check which will call
         # resolve_attack when the player compeletes it.
@@ -308,10 +314,14 @@ func _handle_character_death(target):
 
 # Player has targeted an enemy in attack phase.
 func _on_unit_targeted(unit):
-    var attack_range = self.active_character.attack_range
-    var distance = unit.coord - active_unit.coord
-    if abs(distance.x) <= attack_range and abs(distance.y) <= attack_range:
+    if attack_within_range(active_unit, unit):
         character_attack([unit])
+
+
+func attack_within_range(attacker, victim):
+    var attack_range = attacker.character.attack_range
+    var distance = Grid.get_coord_distance(attacker.position, victim.position)
+    return abs(distance.x) <= attack_range and abs(distance.y) <= attack_range
 
 
 # GETTERS

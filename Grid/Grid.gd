@@ -233,6 +233,10 @@ func get_unit_by_character(character):
             return unit
 
 
+func get_coord_distance(start, end):
+    return map.world_to_map(start) - map.world_to_map(end)
+
+
 func _get_unit_on_tile(tile):
     # Check if there is a unit occupying this tile...
     for unit in self.units:

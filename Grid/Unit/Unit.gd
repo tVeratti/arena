@@ -76,7 +76,7 @@ func _physics_process(delta):
     
     elif path_index < path.size() - 1:
         path_index += 1
-        turn_rig()
+        turn_rig(path[path_index])
         
     else:
         SignalManager.emit_signal("unit_movement_done")
@@ -124,8 +124,8 @@ func set_state(next_state):
     state = next_state
 
 
-func turn_rig():
-    var direction = (path[path_index] - position).normalized()
+func turn_rig(target_world_position):
+    var direction = (target_world_position - position).normalized()
     var rig_scale = 0.5
     var x = 1 if direction.x > 0 else -1
     var y = 1 if direction.y > 0 else -1
