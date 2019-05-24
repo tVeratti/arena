@@ -1,4 +1,4 @@
-extends CanvasLayer
+extends Control
 
 # Types
 const SWORD = "SWORD"

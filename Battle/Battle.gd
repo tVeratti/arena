@@ -206,7 +206,7 @@ func character_attack(targets:Array):
         # Initiate a skill check which will call
         # resolve_attack when the player compeletes it.
         var skill_check = SkillCheck.instance()
-        add_child(skill_check)
+        $Interface.add_child(skill_check)
         skill_check.setup(self, active_unit, target_speed)
         set_action_state(Action.FREEZE)
         Grid.deactivate()

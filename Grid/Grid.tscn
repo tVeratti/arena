@@ -1,11 +1,10 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://Grid/Grid.gd" type="Script" id=1]
 [ext_resource path="res://Grid/Tile/floor_tilest.tres" type="TileSet" id=2]
 [ext_resource path="res://Grid/RangeOverlay.gd" type="Script" id=3]
 [ext_resource path="res://Grid/PathOverlay.gd" type="Script" id=4]
 [ext_resource path="res://Grid/Camera.gd" type="Script" id=5]
-[ext_resource path="res://Cursor/Cursor.tscn" type="PackedScene" id=6]
 
 [node name="Grid" type="Node2D"]
 script = ExtResource( 1 )
@@ -45,6 +44,4 @@ position = Vector2( 257.825, -149.784 )
 
 [node name="EnemyStart" type="Node2D" parent="."]
 position = Vector2( -94.4199, 72.6639 )
-
-[node name="Cursor" parent="." instance=ExtResource( 6 )]
 
