@@ -17,7 +17,7 @@ func _get_spritesheets():
         # base_m_01,
         # base_m_02,
         # base_m_03,
-        # nin_m_01,
+        nin_m_01,
         nin_m_02
     ]
     
