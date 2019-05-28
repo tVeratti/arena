@@ -12,7 +12,7 @@ __meta__ = {
 
 [node name="l_hand" type="Sprite" parent="parts"]
 use_parent_material = true
-position = Vector2( -129.669, 50.7882 )
+position = Vector2( -129.67, 50.7884 )
 rotation = -0.0205106
 scale = Vector2( 1, 1 )
 texture = ExtResource( 1 )
@@ -21,7 +21,7 @@ region_rect = Rect2( 3000, 2600, 300, 300 )
 
 [node name="l_forearm" type="Sprite" parent="parts"]
 use_parent_material = true
-position = Vector2( -100.685, -21.2975 )
+position = Vector2( -100.685, -21.2974 )
 rotation = 0.0512065
 scale = Vector2( 1, 1 )
 texture = ExtResource( 1 )
@@ -64,8 +64,9 @@ region_rect = Rect2( 2100, 1600, 300, 300 )
 
 [node name="r_foot" type="Sprite" parent="parts"]
 use_parent_material = true
-position = Vector2( -31.9958, 159.94 )
+position = Vector2( -31.9957, 159.94 )
 rotation = 0.210661
+scale = Vector2( 1, 1 )
 texture = ExtResource( 1 )
 region_enabled = true
 region_rect = Rect2( 1560, 2520, 360, 360 )
@@ -73,7 +74,7 @@ region_rect = Rect2( 1560, 2520, 360, 360 )
 [node name="r_shin" type="Sprite" parent="parts"]
 use_parent_material = true
 position = Vector2( -42.7755, 111.696 )
-rotation = 0.0412056
+rotation = 0.0412055
 texture = ExtResource( 1 )
 region_enabled = true
 region_rect = Rect2( 1560, 2040, 360, 360 )
@@ -133,7 +134,7 @@ region_rect = Rect2( 120, 1560, 480, 480 )
 
 [node name="hair" type="Sprite" parent="parts/waist/head"]
 use_parent_material = true
-position = Vector2( -0.215641, 28.889 )
+position = Vector2( 0.387356, 42.0269 )
 texture = ExtResource( 1 )
 region_enabled = true
 region_rect = Rect2( 120, 1080, 480, 360 )

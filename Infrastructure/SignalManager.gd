@@ -12,3 +12,4 @@ signal turn_updated(turn)
 signal battle_state_updated(state)
 
 signal health_changed(character)
+signal stat_changed(character)

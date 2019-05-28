@@ -5,8 +5,7 @@ var Battle = preload("res://Battle/Battle.tscn")
 func _init():
     ScreenManager.main = self
     
-    
-# Called when the node enters the scene tree for the first time.
+
 func _ready():
     start_game()
     #ScreenManager.change_to(Scenes.__DEV_GENERATOR)
@@ -22,7 +21,7 @@ func start_game():
         "enemies": [
             Character.new("Sovereign", true),
             Character.new("Caleb", true),
-            Character.new("Detlaff", true)
+            Character.new("Beastie", true)
         ]
     }
     

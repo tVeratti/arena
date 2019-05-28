@@ -25,11 +25,16 @@ _global_script_classes=[ {
 "path": "res://Character/Character.gd"
 }, {
 "base": "Object",
+"class": "MinMax",
+"language": "GDScript",
+"path": "res://Character/MinMax.gd"
+}, {
+"base": "Object",
 "class": "Part",
 "language": "GDScript",
 "path": "res://Generator/Part.gd"
 }, {
-"base": "Node",
+"base": "Object",
 "class": "Stat",
 "language": "GDScript",
 "path": "res://Character/Stat.gd"
@@ -53,6 +58,7 @@ _global_script_class_icons={
 "AStarPathfinder": "",
 "Action": "",
 "Character": "",
+"MinMax": "",
 "Part": "",
 "Stat": "",
 "Telegraph": "",

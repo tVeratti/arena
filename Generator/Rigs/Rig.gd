@@ -18,8 +18,6 @@ var textures:Dictionary
 func _ready():
     back_node.hide()
 
-    # $AnimationPlayer.play("idle")
-
 
 func set_colors(colors:Dictionary):
     var new_material = ShaderMaterial.new()

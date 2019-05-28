@@ -42,6 +42,10 @@ margin_bottom = 50.0
 margin_top = 54.0
 margin_bottom = 68.0
 
+[node name="Rating" type="Label" parent="Layout/Details"]
+margin_top = 72.0
+margin_bottom = 86.0
+
 [node name="Health" type="ProgressBar" parent="."]
 margin_top = 94.0
 margin_right = 94.0

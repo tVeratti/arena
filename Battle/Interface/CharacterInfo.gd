@@ -8,15 +8,17 @@ onready var _name = $Layout/Details/Name
 onready var _speed = $Layout/Details/Speed
 onready var _toughness = $Layout/Details/Toughness
 onready var _power = $Layout/Details/Power
+onready var _rating = $Layout/Details/Rating
 onready var _health = $Health
 
 
 func _ready():
     SignalManager.connect("character_selected", self, "_on_character_selected")
+    SignalManager.connect("stat_changed", self, "_on_stat_changed")
     hide()
-    
 
-func _on_character_selected(character:Character):
+
+func set_character(character:Character):
     if character != null:
         show()
     else:
@@ -37,3 +39,18 @@ func _on_character_selected(character:Character):
     _health.value = \
         character.health.value_current / \
         character.health.value_maximum * 100
+    
+    # Rating stars
+    var rating = ""
+    for star in range(character.rating):
+        rating += "*"
+    
+    _rating.text = rating
+    
+
+func _on_character_selected(character:Character):
+    set_character(character)
+
+
+func _on_stat_changed(character):
+    set_character(character)

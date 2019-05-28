@@ -1,34 +1,38 @@
-extends Node
+extends Object
 
 class_name Stat
 
-var value_maximum:float = 0
-var value_minimum:float = 0
-var value_current:float = 0 setget _set_current, _get_current
+var name:String
+var value:int setget , _value_get
 
-var modifiers:Array = []
+var base:int = 1
+var rank:int = 1
 
-
-func _init(maximum, minimum = 0, current = null):
-    value_minimum = minimum
-    value_maximum = maximum
-    self.value_current = current if current != null else maximum
+# Progress range [0.0 - 1.0]
+var progress:float = 0.0
+var progress_factor:float = 1.0
 
 
-func _set_current(value):
-    value_current = clamp(value, value_minimum, value_maximum)
+func _init(name:String, progress_factor:int):
+    self.name = name
+    self.progress_factor = progress_factor
 
 
-func _get_current():
-    var initial = value_current
-    
-    for mod in modifiers:
-        initial += mod
+func add_progress(amount:float):
+    var progress_step:float = amount / progress_factor / rank
+    var progress_new:float = progress + progress_step
+    if (progress_new >= 1):
+        var carry_over = max(0, progress_new - 1)
+        progress = 0
+        rank_up()
+        add_progress(carry_over * progress_factor)
+    else:
+        progress = progress_new
 
-    return clamp(initial, value_minimum, value_maximum)
+
+func rank_up():
+    rank += 1
 
 
-func set_base(value):
-    value_maximum = value
-    value_current = value
-
+func _value_get():
+    return base + rank

@@ -5,36 +5,48 @@ class_name Character
 const HEALTH_MAX = 100
 const EXPERIENCE_MAX = 1000
 
+# Stat generation (pool range).
 const NATURAL_BASE = 2
 const NATURAL_POOL = 10
+const NATURAL_POOL_VARIANCE = 3
+const NATURAL_POOL_AVERAGE = NATURAL_POOL + (NATURAL_POOL_VARIANCE / 2)
 
 const DAMAGE_MULTIPLIER = 2
+const ACUITY_MULTIPLIER = 0.25
 
+# Stat constants for outside reference.
+const ACUITY = "Acuity"
+const CONSTITUTION = "Constitution"
+const AGILITY = "Agility"
+
+
+# General Info
+# ------------------------------
 var id:String
 var name:String
 var gender:String
 var is_enemy:bool
 var is_alive:bool setget , _alive_get
+var attack_range:int = 1
+
+var health:MinMax = MinMax.new(HEALTH_MAX)
+
+# Rating is a rough estimate of the character's overal combat strength.
+var rating:int = 1 setget , _rating_get
+var talent:int = 1 setget , _talent_get
 
 # Unit & Portrait Textures
+# ------------------------------
+# These properties are use to generate unqiue character textures and colors.
 var PARTS = preload("res://Generator/Part.gd").PARTS
 var Colors = preload("res://Character/Colors.gd");
 var textures:Dictionary
-
 var colors:Dictionary = {
     'hair': [],
     'skin': [],
     'clothes': [],
     'eyes': []
 }
-
-# General Info
-var health:Stat = Stat.new(HEALTH_MAX)
-var experience:Stat = Stat.new(EXPERIENCE_MAX, 0, 0)
-var level:int = 1
-var rating:int = 1
-
-var attack_range:int = 1
 
 
 # Natural Stats
@@ -46,21 +58,27 @@ var attack_range:int = 1
 # + experience gain increased
 # + weaknesses exposed if greater than opponent
 # * improve by observing enemies, countering weaknesses
-var acuity:int
+var acuity:int setget , _acuity_get
+var acuity_stat:Stat
+const ACUITY_PROGRESS_FACTOR = 5
 
 # Constitution
 # + toughness
 # + power
 # - speed
 # * improve by taking damage, dealing damage
-var constitution:int
+var constitution:int setget , _constitution_get
+var constitution_stat:Stat
+const CONSTITUTION_PROGRESS_FACTOR = 5
 
 # Agility
 # + speed
 # + accuracy
 # - toughness
 # * improve by moving, dealing damage
-var agility:int
+var agility:int setget , _agility_get
+var agility_stat:Stat
+const AGILITY_PROGRESS_FACTOR = 10
 
 # Calculated Stats
 # ------------------------------
@@ -88,23 +106,27 @@ func _init(name, is_enemy = false):
     self.id = "%s_%s" % [name, randi()]
     self.is_enemy = is_enemy
     
+    acuity_stat = Stat.new(ACUITY, ACUITY_PROGRESS_FACTOR)
+    constitution_stat = Stat.new(CONSTITUTION, CONSTITUTION_PROGRESS_FACTOR)
+    agility_stat = Stat.new(AGILITY, AGILITY_PROGRESS_FACTOR)
+    
     # Load character or create new one...
     # _load_stats or
-    _generate()
+    generate()
 
 
 func _load_stats():
     pass
 
 
-func _generate():
+func generate():
     randomize()
     
     # Character stats
     var pool_points = _generate_natural_pool()
-    acuity = pool_points[0]
-    constitution = pool_points[1]
-    agility = pool_points[2]
+    acuity_stat.base = pool_points[0]
+    constitution_stat.base = pool_points[1]
+    agility_stat.base = pool_points[2]
         
     textures = {}
     for part in PARTS:
@@ -124,18 +146,17 @@ func random_texture():
 
 
 func _generate_natural_pool() -> Array:
-    var pool = int(rand_range(NATURAL_POOL - 2, NATURAL_POOL + 2))
-    rating = pool
+    var pool = int(rand_range(\
+        NATURAL_POOL - NATURAL_POOL_VARIANCE,\
+        NATURAL_POOL + NATURAL_POOL_VARIANCE))
+    
 
     var points = [NATURAL_BASE, NATURAL_BASE, NATURAL_BASE]
     for i in range(pool):
         var rand = rand_range(0, 3)
-        if rand > 2:
-            points[0] += 1
-        elif rand > 1:
-            points[1] += 1
-        else:
-            points[2] += 1
+        if rand > 2: points[0] += 1
+        elif rand > 1: points[1] += 1
+        else: points[2] += 1
         
     return points
 
@@ -152,20 +173,60 @@ func deal_damage():
     return self.power + power_bonus + acuity_bonus
 
 
+func progress_stat(stat:String, amount:int):
+    match(stat):
+        ACUITY: acuity_stat.add_progress(amount)
+        CONSTITUTION: constitution_stat.add_progress(amount)
+        AGILITY: agility_stat.add_progress(amount)
+    
+    SignalManager.emit_signal("stat_changed", self)
+        
+
+# Base Stat Getters
+# ------------------------------
+
+func _acuity_get() -> int:
+    return acuity_stat.value
+
+
+func _constitution_get() -> int:
+    return constitution_stat.value
+
+
+func _agility_get() -> int:
+    return agility_stat.value
+
+
+
+# Derived Stat Getters
+# ------------------------------
+
 func _toughness_get() -> int:
-    return int(constitution - int(agility / 3))
+    return int(self.constitution - int(self.agility / 3))
 
 
 func _speed_get() -> int:
-    var base = agility - int(constitution / 2)
-    if base <= 0:
-        base = 1
+    var base = self.agility - int(self.constitution / 2)
+    if base <= 0: base = 1
     return base
 
 
 func _power_get() -> int:
-    return int(constitution * 1.2)
-    
+    return int(self.constitution * 1.2)
+
+
+# Getters
+# ------------------------------
 
 func _alive_get() -> bool:
     return health.value_current > 0
+
+
+func _talent_get() -> int:
+    var base_sum = acuity_stat.base + constitution_stat.base + agility_stat.base
+    return base_sum - NATURAL_POOL_AVERAGE
+
+
+func _rating_get() -> int:
+    var value_sum = self.power + self.speed + self.constitution + self.acuity
+    return value_sum / NATURAL_POOL_AVERAGE

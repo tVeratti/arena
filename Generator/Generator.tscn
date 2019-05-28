@@ -1,7 +1,9 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://Generator/Generator.gd" type="Script" id=1]
 [ext_resource path="res://Generator/Rigs/Rig.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Battle/Interface/CharacterInfo.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Generator/Stat.tscn" type="PackedScene" id=4]
 
 [node name="Generator" type="Node2D"]
 script = ExtResource( 1 )
@@ -33,6 +35,32 @@ margin_bottom = 68.0
 text = "Randomize"
 
 [node name="Rig" parent="." instance=ExtResource( 2 )]
+position = Vector2( 503.259, 196.629 )
+scale = Vector2( 0.5, 0.5 )
+
+[node name="CharacterInfo" parent="." instance=ExtResource( 3 )]
+margin_left = 474.0
+margin_top = 27.0
+margin_right = 568.0
+margin_bottom = 141.0
+
+[node name="Stats" type="VBoxContainer" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
+
+[node name="Acuity" parent="Stats" instance=ExtResource( 4 )]
+margin_right = 160.0
+margin_bottom = 20.0
+
+[node name="Constitution" parent="Stats" instance=ExtResource( 4 )]
+margin_top = 24.0
+margin_right = 160.0
+margin_bottom = 44.0
+
+[node name="Agility" parent="Stats" instance=ExtResource( 4 )]
+margin_top = 48.0
+margin_right = 160.0
+margin_bottom = 68.0
 
 [connection signal="pressed" from="VBoxContainer/Back" to="." method="_on_Back_pressed"]
 [connection signal="pressed" from="VBoxContainer/Front" to="." method="_on_Front_pressed"]
