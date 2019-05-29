@@ -7,7 +7,6 @@ var Action = preload("res://Battle/Action.gd")
 var actions_taken = {}
 var last_actions = {}
 var characters_total = []
-var characters_done = []
 var turn_count:int
 
 var is_enemy:bool = false

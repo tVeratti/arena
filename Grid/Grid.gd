@@ -11,7 +11,7 @@ enum { TILE_NONE = -1, TILE_GRASS = 0 }
 var _tile_focused
 
 # Character Units
-var Unit = preload("res://Grid/Unit/Unit.tscn")
+var Unit = load("res://Grid/Unit/Unit.tscn")
 var unit_selected
 var units:Array setget , _get_units
 

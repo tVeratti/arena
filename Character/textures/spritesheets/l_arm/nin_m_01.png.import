@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/nin_m_02.png-a400fe66bea148049f6be82a92c84a56.stex"
+path="res://.import/nin_m_01.png-38292e91e40fb6f7f2d72a0ae4b776cc.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Character/textures/spritesheets/nin_m_02.png"
-dest_files=[ "res://.import/nin_m_02.png-a400fe66bea148049f6be82a92c84a56.stex" ]
+source_file="res://Character/textures/spritesheets/l_arm/nin_m_01.png"
+dest_files=[ "res://.import/nin_m_01.png-38292e91e40fb6f7f2d72a0ae4b776cc.stex" ]
 
 [params]
 
@@ -20,7 +20,7 @@ compress/hdr_mode=0
 compress/bptc_ldr=0
 compress/normal_map=0
 flags/repeat=0
-flags/filter=false
+flags/filter=true
 flags/mipmaps=false
 flags/anisotropic=false
 flags/srgb=2

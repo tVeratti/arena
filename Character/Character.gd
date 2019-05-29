@@ -130,7 +130,7 @@ func generate():
         
     textures = {}
     for part in PARTS:
-        textures[part] = random_texture()
+        textures[part] = random_texture(part)
     
     # Colors
     colors.hair = Colors.random_hair()
@@ -139,10 +139,10 @@ func generate():
     colors.eyes = Colors.random_eyes()
 
 
-func random_texture():
-    var spritesheets = Resources.spritesheets
-    var index = int(rand_range(0.0, spritesheets.size()))
-    return spritesheets[index]
+func random_texture(part):
+    var textures = Resources.spritesheets[part]
+    var index = int(rand_range(0.0, textures.size()))
+    return textures[index]
 
 
 func _generate_natural_pool() -> Array:

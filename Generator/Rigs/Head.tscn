@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://Assets/colors.shader" type="Shader" id=1]
-[ext_resource path="res://Character/textures/spritesheets/nin_m_02.png" type="Texture" id=2]
+[ext_resource path="res://Character/textures/spritesheets/head/nin_m_02.png" type="Texture" id=2]
+[ext_resource path="res://Character/textures/spritesheets/hair/nin_m_02.png" type="Texture" id=3]
 
 [sub_resource type="ShaderMaterial" id=1]
 shader = ExtResource( 1 )
@@ -17,21 +18,17 @@ shader_param/tolerance = 0.3
 [node name="Head" type="Node2D"]
 material = SubResource( 1 )
 
-[node name="head" type="Polygon2D" parent="."]
+[node name="head" type="Sprite" parent="."]
 use_parent_material = true
-position = Vector2( -228.799, -199.698 )
+position = Vector2( 147.757, 169.763 )
 texture = ExtResource( 2 )
-skeleton = NodePath("../../Skeleton2D")
-polygon = PoolVector2Array( 0, 118, 472, 118, 472, 590, 0, 590 )
-uv = PoolVector2Array( 0, 118, 472, 118, 472, 590, 0, 590 )
-bones = [ NodePath("waist"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso/head"), PoolRealArray( 1, 1, 1, 1 ), NodePath("waist/torso/l_arm"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso/l_arm/l_forearm"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso/l_arm/l_forearm/l_hand"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso/r_arm"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso/r_arm/r_forearm"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso/r_arm/r_forearm/r_hand"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/l_thigh"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/l_thigh/l_shin"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/l_thigh/l_shin/l_foot"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/r_thigh"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/r_thigh/r_shin"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/r_thigh/r_shin/r_foot"), PoolRealArray( 0, 0, 0, 0 ) ]
+region_enabled = true
+region_rect = Rect2( 0, 0, 512, 512 )
 
-[node name="hair" type="Polygon2D" parent="."]
+[node name="hair" type="Sprite" parent="."]
 use_parent_material = true
-position = Vector2( -228.799, -743.634 )
-texture = ExtResource( 2 )
-skeleton = NodePath("../../../Skeleton2D")
-polygon = PoolVector2Array( 0, 590, 472, 590, 472, 1062, 0, 1062 )
-uv = PoolVector2Array( 0, 590, 472, 590, 472, 1062, 0, 1062 )
-bones = [ NodePath("waist"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso/head"), PoolRealArray( 1, 1, 1, 1 ), NodePath("waist/torso/l_arm"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso/l_arm/l_forearm"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso/l_arm/l_forearm/l_hand"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso/r_arm"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso/r_arm/r_forearm"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/torso/r_arm/r_forearm/r_hand"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/l_thigh"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/l_thigh/l_shin"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/l_thigh/l_shin/l_foot"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/r_thigh"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/r_thigh/r_shin"), PoolRealArray( 0, 0, 0, 0 ), NodePath("waist/r_thigh/r_shin/r_foot"), PoolRealArray( 0, 0, 0, 0 ) ]
+position = Vector2( 155.913, 188.157 )
+texture = ExtResource( 3 )
+region_enabled = true
+region_rect = Rect2( 0, 0, 512, 512 )
 
