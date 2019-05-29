@@ -26,6 +26,7 @@ var coord:Vector2
 
 var character:Character
 var is_enemy:bool
+var color:Color
 var state:String
 var prev_state:String
 
@@ -61,8 +62,9 @@ func setup(tile_position, coord, character, is_enemy = false):
     self.coord = coord
     self.character = character
     self.is_enemy = is_enemy
+    self.color = ENEMY_OUTLINE_COLOR if character.is_enemy else FRIENDLY_OUTLINE_COLOR
     
-    $HealthBar.setup(character)
+    $HealthBar.setup(character, self.color)
 
 
 func _physics_process(delta):
@@ -106,18 +108,18 @@ func set_state(next_state):
     material.shader = shader_outline
     material.set_shader_param("outline_width", 10.0)
     
-    var color = ENEMY_OUTLINE_COLOR if is_enemy else FRIENDLY_OUTLINE_COLOR
     var outline_color;
-    
     match(next_state):
         SELECTED, HOVERED:
             outline_color = color
+            health.show()
         TARGETED:
-           outline_color = ENEMY_OUTLINE_COLOR
+            outline_color = ENEMY_OUTLINE_COLOR
         IDLE:
             outline_color = Color(0,0,0,0)
             rig.set_animation("Idle")
-        
+            health.try_hide()
+    
     material.set_shader_param("outline_color", outline_color)
     sprite.material = material
     

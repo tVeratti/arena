@@ -1,9 +1,9 @@
 [gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://Grid/Unit/Unit.gd" type="Script" id=1]
-[ext_resource path="res://Battle/Interface/HealthBar.tscn" type="PackedScene" id=2]
-[ext_resource path="res://Generator/Rigs/Rig.tscn" type="PackedScene" id=3]
-[ext_resource path="res://Assets/outline.shader" type="Shader" id=4]
+[ext_resource path="res://Generator/Rigs/Rig.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Assets/outline.shader" type="Shader" id=3]
+[ext_resource path="res://Battle/Interface/HealthBar.tscn" type="PackedScene" id=4]
 
 [sub_resource type="CircleShape2D" id=1]
 radius = 37.9766
@@ -14,7 +14,7 @@ height = 188.046
 
 [sub_resource type="ShaderMaterial" id=3]
 render_priority = 2
-shader = ExtResource( 4 )
+shader = ExtResource( 3 )
 shader_param/outline_width = 5.0
 shader_param/outline_color = Plane( 1, 1, 1, 1 )
 
@@ -39,14 +39,8 @@ position = Vector2( -16.076, -146.978 )
 shape = SubResource( 2 )
 one_way_collision = true
 
-[node name="PopupAnchor" type="Node2D" parent="."]
-position = Vector2( 78.1563, -177.805 )
-
-[node name="HealthBar" parent="." instance=ExtResource( 2 )]
-visible = false
-position = Vector2( -48.4211, -356.842 )
-
 [node name="Viewport" type="Viewport" parent="."]
+editor/display_folded = true
 size = Vector2( 500, 800 )
 transparent_bg = true
 handle_input_locally = false
@@ -56,13 +50,19 @@ usage = 0
 render_target_v_flip = true
 render_target_update_mode = 3
 
-[node name="Rig" parent="Viewport" instance=ExtResource( 3 )]
+[node name="Rig" parent="Viewport" instance=ExtResource( 2 )]
 
 [node name="Sprite" type="Sprite" parent="."]
 material = SubResource( 3 )
 position = Vector2( -5.88824, -160.9 )
 scale = Vector2( 0.5, 0.5 )
 texture = SubResource( 4 )
+
+[node name="PopupAnchor" type="Node2D" parent="."]
+position = Vector2( 78.1563, -177.805 )
+
+[node name="HealthBar" parent="." instance=ExtResource( 4 )]
+position = Vector2( -102.073, -375.504 )
 
 [connection signal="input_event" from="." to="." method="_on_Character_input_event"]
 [connection signal="mouse_entered" from="." to="." method="_on_Character_mouse_entered"]

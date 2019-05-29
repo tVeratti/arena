@@ -109,10 +109,10 @@ func calculate_multiplier():
     var multiplier = 1
     if value > _crit_range[0] and value < _crit_range[1]:
         multiplier = CRIT_MULTIPLIER
-        label = "Great!"
+        label = "CRITICAL!"
     elif value > _bonus_range[0] and value < _bonus_range[1]:
         multiplier = BONUS_MULTIPLIER
-        label = "Good!"
+        label = ""
     else:
         multiplier = 0
         label = "Missed!"

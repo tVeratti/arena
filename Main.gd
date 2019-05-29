@@ -7,8 +7,8 @@ func _init():
     
 
 func _ready():
-    #start_game()
-    ScreenManager.change_to(Scenes.__DEV_GENERATOR)
+    start_game()
+    #ScreenManager.change_to(Scenes.__DEV_GENERATOR)
 
 
 func start_game():

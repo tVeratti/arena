@@ -5,7 +5,6 @@ var Turn = load("res://Battle/Turn.gd")
 var Action = load("res://Battle/Action.gd")
 
 var SkillCheck = preload("res://Battle/SkillCheck/SkillCheck.tscn")
-var CombatText = preload("res://Battle/CombatText.tscn")
 
 var heroes:Array
 var enemies:Array
