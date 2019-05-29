@@ -36,6 +36,7 @@ func set_character(character:Character):
     _speed.text = "Speed: %s" % character.speed
     _toughness.text = "Toughness: %s" % character.toughness
     _power.text = "Power: %s" % character.power
+    _health.tint_progress = Colors.ENEMY if character.is_enemy else Colors.FRIENDLY
     _health.value = \
         character.health.value_current / \
         character.health.value_maximum * 100

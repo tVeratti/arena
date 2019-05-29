@@ -8,9 +8,8 @@ const TARGETED = "TARGETED"
 const IDLE = "IDLE"
 
 const ACTIVE_OUTLINE_COLOR = Color.white
-const FRIENDLY_OUTLINE_COLOR = Color('#0FFF95')
-const ENEMY_OUTLINE_COLOR = Color('#CD533B')
 
+var Colors = preload("res://Character/Colors.gd")
 var CombatText = preload("res://Battle/CombatText.tscn")
 
 var shader_darken = preload("res://Assets/darken.shader")
@@ -62,7 +61,7 @@ func setup(tile_position, coord, character, is_enemy = false):
     self.coord = coord
     self.character = character
     self.is_enemy = is_enemy
-    self.color = ENEMY_OUTLINE_COLOR if character.is_enemy else FRIENDLY_OUTLINE_COLOR
+    self.color = Colors.ENEMY if character.is_enemy else Colors.FRIENDLY
     
     $HealthBar.setup(character, self.color)
 
@@ -114,7 +113,7 @@ func set_state(next_state):
             outline_color = color
             health.show()
         TARGETED:
-            outline_color = ENEMY_OUTLINE_COLOR
+            outline_color = Colors.ENEMY
         IDLE:
             outline_color = Color(0,0,0,0)
             rig.set_animation("Idle")

@@ -3,7 +3,7 @@
 [ext_resource path="res://Battle/Interface/CharacterInfo.gd" type="Script" id=1]
 [ext_resource path="res://Generator/Rigs/Head.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Battle/Interface/textures/health_under.png" type="Texture" id=3]
-[ext_resource path="res://Battle/Interface/textures/health_progress.png" type="Texture" id=4]
+[ext_resource path="res://Battle/Interface/textures/health_progress_flash.png" type="Texture" id=4]
 
 [node name="CharacterInfo" type="VBoxContainer"]
 margin_bottom = 68.0
