@@ -51,17 +51,17 @@ margin_right = 902.197
 margin_bottom = 371.892
 
 [node name="Acuity" parent="Stats" instance=ExtResource( 4 )]
-margin_right = 160.0
+margin_right = 236.0
 margin_bottom = 20.0
 
 [node name="Constitution" parent="Stats" instance=ExtResource( 4 )]
 margin_top = 24.0
-margin_right = 160.0
+margin_right = 236.0
 margin_bottom = 44.0
 
 [node name="Agility" parent="Stats" instance=ExtResource( 4 )]
 margin_top = 48.0
-margin_right = 160.0
+margin_right = 236.0
 margin_bottom = 68.0
 
 [connection signal="pressed" from="VBoxContainer/Back" to="." method="_on_Back_pressed"]
