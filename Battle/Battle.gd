@@ -196,6 +196,7 @@ func character_attack(targets:Array):
         # Get average target speed.
         var target_speed = 0
         for target in targets:
+            target.lock_targeted()
             target_speed += target.character.speed
         target_speed /= targets.size()
         
@@ -276,6 +277,7 @@ func resolve_attack(multiplier = 1, label = ""):
         var damage = (self.active_character.deal_damage() * multiplier) / aoe_multiplier
         var final_damage = int(target_character.take_damage(damage))
         
+        target.unlock_targeted()
         target.show_damage(final_damage, label)
         
         if !target_character.is_alive:

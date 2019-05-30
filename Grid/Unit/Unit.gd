@@ -7,18 +7,14 @@ const HOVERED = "HOVERED"
 const TARGETED = "TARGETED"
 const IDLE = "IDLE"
 
-const ACTIVE_OUTLINE_COLOR = Color.white
-
 var Colors = preload("res://Character/Colors.gd")
 var CombatText = preload("res://Battle/CombatText.tscn")
 
-var shader_darken = preload("res://Assets/darken.shader")
 var shader_outline = preload("res://Assets/outline.shader")
-var shader_red = preload("res://Assets/red.shader")
 
 # Movement
 var speed:float = 500.0
-var path = PoolVector2Array() setget set_path
+var path:PoolVector2Array = [] setget set_path
 var path_end:Vector2
 var path_index:int = 0
 var coord:Vector2
@@ -29,7 +25,9 @@ var color:Color
 var state:String
 var prev_state:String
 
-var sprite_sheet
+var is_target_locked:bool
+var prev_target_locked:bool
+
 onready var rig = $Viewport/Rig
 onready var health = $HealthBar
 onready var anchor = $PopupAnchor
@@ -38,7 +36,6 @@ onready var sprite = $Sprite
 onready var click_collider = $ClickCollision
 var allow_selection:bool = true
 var allow_targeting:bool = false
-var is_hovered:bool = false
 
 
 func _ready():
@@ -47,7 +44,6 @@ func _ready():
     
     SignalManager.connect("health_changed", self, "_on_health_changed")
     SignalManager.connect("battle_state_updated", self, "_on_battle_state_updated")
-    # rig.get_node("AnimationPlayer").play("base")
     
     rig.set_textures(character.textures)
     rig.set_colors(character.colors)
@@ -93,12 +89,18 @@ func deactivate():
     set_state(IDLE)
 
 
-func target(is_targeted):
-    set_state(TARGETED if is_targeted else IDLE)
+func lock_targeted():
+    prev_target_locked = is_target_locked
+    is_target_locked = true
+
+
+func unlock_targeted():
+    prev_target_locked = is_target_locked
+    is_target_locked = false
 
 
 func set_state(next_state):
-    if next_state == state:
+    if next_state == state and prev_target_locked == is_target_locked:
         return
     
     # ShaderMaterial is shared by all instances,
@@ -107,17 +109,15 @@ func set_state(next_state):
     material.shader = shader_outline
     material.set_shader_param("outline_width", 10.0)
     
-    var outline_color;
+    var outline_color = color;
     match(next_state):
-        SELECTED, HOVERED:
-            outline_color = color
+        SELECTED, HOVERED, TARGETED:
             health.show()
-        TARGETED:
-            outline_color = Colors.ENEMY
         IDLE:
-            outline_color = Color(0,0,0,0)
-            rig.set_animation("Idle")
-            health.try_hide()
+            if !is_target_locked:
+                outline_color = Color(0,0,0,0)
+                rig.set_animation("Idle")
+                health.try_hide()
     
     material.set_shader_param("outline_color", outline_color)
     sprite.material = material

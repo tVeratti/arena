@@ -1,18 +1,9 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://Battle/SkillCheck/SkillCheck.gd" type="Script" id=1]
-[ext_resource path="res://Battle/SkillCheck/textures/bar.png" type="Texture" id=2]
-[ext_resource path="res://Battle/SkillCheck/textures/target.png" type="Texture" id=3]
-[ext_resource path="res://Battle/SkillCheck/textures/critical.png" type="Texture" id=4]
-[ext_resource path="res://Battle/SkillCheck/textures/value.png" type="Texture" id=5]
-[ext_resource path="res://Battle/SkillCheck/textures/button.png" type="Texture" id=6]
-[ext_resource path="res://Assets/darken.shader" type="Shader" id=7]
+[ext_resource path="res://Battle/SkillCheck/Bar.tscn" type="PackedScene" id=2]
 
-[sub_resource type="ShaderMaterial" id=1]
-shader = ExtResource( 7 )
-shader_param/tint = 0.2
-
-[sub_resource type="Animation" id=2]
+[sub_resource type="Animation" id=1]
 tracks/0/type = "value"
 tracks/0/path = NodePath(".:rect_position")
 tracks/0/interp = 1
@@ -26,70 +17,20 @@ tracks/0/keys = {
 "values": [ Vector2( 0, 50 ), Vector2( 0, 0 ) ]
 }
 
-[sub_resource type="Animation" id=3]
+[sub_resource type="Animation" id=2]
 resource_name = "Grow"
 
 [node name="SkillCheck" type="Control"]
 script = ExtResource( 1 )
 
-[node name="Textures" type="Control" parent="."]
-margin_right = 40.0
-margin_bottom = 40.0
-
-[node name="Bar" type="TextureRect" parent="Textures"]
-margin_top = 17.0
-margin_right = 200.0
-margin_bottom = 37.0
-texture = ExtResource( 2 )
-
-[node name="Target" type="TextureRect" parent="Textures"]
-margin_top = 17.0
-margin_right = 50.0
-margin_bottom = 37.0
-texture = ExtResource( 3 )
-expand = true
-
-[node name="Critical" type="TextureRect" parent="Textures"]
-margin_top = 17.0
-margin_right = 10.0
-margin_bottom = 37.0
-texture = ExtResource( 4 )
-expand = true
-
-[node name="Value" type="TextureRect" parent="Textures"]
-margin_left = -2.49059
-margin_top = 12.3395
-margin_right = 2.50941
-margin_bottom = 42.3395
-texture = ExtResource( 5 )
-
-[node name="Container" type="Control" parent="Textures"]
-margin_left = 192.594
-margin_top = 5.88072
-margin_right = 192.594
-margin_bottom = 5.88072
-
-[node name="Button" type="TextureButton" parent="Textures/Container"]
-margin_right = 42.0
-margin_bottom = 42.0
-texture_normal = ExtResource( 6 )
-
-[node name="TimerTexture" type="TextureProgress" parent="Textures/Container"]
-material = SubResource( 1 )
-margin_right = 42.0
-margin_bottom = 42.0
-max_value = 120.0
-value = 120.0
-texture_progress = ExtResource( 6 )
-fill_mode = 5
-
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 autoplay = "Enter"
 playback_speed = 5.0
-anims/Enter = SubResource( 2 )
-anims/Grow = SubResource( 3 )
+anims/Enter = SubResource( 1 )
+anims/Grow = SubResource( 2 )
 
 [node name="FreeTimer" type="Timer" parent="."]
 
-[connection signal="pressed" from="Textures/Container/Button" to="." method="_on_Button_pressed"]
+[node name="Bar" parent="." instance=ExtResource( 2 )]
+
 [connection signal="timeout" from="FreeTimer" to="." method="_on_FreeTimer_timeout"]

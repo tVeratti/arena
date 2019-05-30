@@ -20,6 +20,7 @@ func setup(character, color):
     id = character.id
     health = character.health.value_current
     
+    $Background.tint_progress = color.darkened(0.4)
     $Progress.tint_progress = color
     $Progress.max_value = character.health.value_maximum
     $Progress.value = health
@@ -36,10 +37,10 @@ func set_health(new_health):
     _background.value = health
     
     show()
-    _tween.interpolate_property(_progress, "value", health, new_health, 1, Tween.TRANS_ELASTIC, Tween.EASE_IN_OUT)
+    _tween.interpolate_property(_progress, "value", health, new_health, 0.5, Tween.TRANS_ELASTIC, Tween.EASE_IN_OUT)
     _tween.start()
     
-    _flash_timer.start(1)
+    _flash_timer.start(0.8)
 
     prev_health = health
     health = new_health
