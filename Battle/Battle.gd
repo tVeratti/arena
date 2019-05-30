@@ -4,7 +4,7 @@ var Character = load("res://Character/Character.gd")
 var Turn = load("res://Battle/Turn.gd")
 var Action = load("res://Battle/Action.gd")
 
-var SkillCheck = preload("res://Battle/SkillCheck/SkillCheck.tscn")
+var SkillBar = load("res://Battle/SkillCheck/SkillBar.tscn")
 
 var heroes:Array
 var enemies:Array
@@ -207,7 +207,7 @@ func character_attack(targets:Array):
         
         # Initiate a skill check which will call
         # resolve_attack when the player compeletes it.
-        var skill_check = SkillCheck.instance()
+        var skill_check = SkillBar.instance()
         $Interface.add_child(skill_check)
         skill_check.setup(self, active_unit, target_speed)
         set_action_state(Action.FREEZE)

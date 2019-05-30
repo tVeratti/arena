@@ -7,13 +7,16 @@ const DAGGER = "DAGGER"
 const BOW = "BOW"
 
 # Multipliers
-const HIT_MULTIPLIER = 1
-const CRIT_MULTIPLIER = 1.5
+const HIT_MULTIPLIER:float = 1.0
+const CRIT_MULTIPLIER:float = 1.5
+const HIT_LABEL = ""
+const CRIT_LABEL = "CRIT!"
+const MISSED_LABEL = "Missed"
 
-var _relative_size_ratio:float
+var _relative_size_ratio:float = 1.0
 
 var _value:int = 0 setget , _get_value
-var _multiplier:int = 1 setget , _get_multiplier
+var _multiplier:float = 1 setget , _get_multiplier
 
 # Preparation Timer
 const PREP_TIMER_LENGTH:float = 2000.0
@@ -26,8 +29,16 @@ var _is_running:bool = false
 var _battle
 var _unit
 
+var _free_timer:Timer
+
 
 func _ready():
+    _free_timer = Timer.new()
+    _free_timer.one_shot = true
+    _free_timer.connect("timeout", self, "_on_FreeTimer_timeout")
+    add_child(_free_timer)
+    
+    
     # Don't start the skill check right away.
     _start_time = OS.get_ticks_msec()
 
@@ -47,14 +58,21 @@ func setup(battle, unit:Unit, target_speed:float):
     _unit = unit
 
     # Calculate the size of the targets based on attacker/target speeds.
-    var speed_total:float = unit.character.speed + target_speed
-    _relative_size_ratio = unit.character.speed / speed_total
+    var speed_total:float = float(unit.character.speed) + target_speed
+    _relative_size_ratio = float(unit.character.speed) / speed_total
 
 
 # Each type overrides this to determine how to set up the textures
 # based on the crit and hit ranges calculated on setup.
 func _prepare_textures():
-    pass
+    # Position the skill check beside the player unit, but within the viewport.
+    var window_size = OS.window_size
+    var skill_width_half = rect_size.x / 2
+    var skill_height_half = rect_size.y / 2
+    rect_position = Vector2(\
+        (window_size.x / 2) - skill_width_half, \
+        (window_size.y / 2) - skill_height_half)
+
 
 
 func _resolve():
@@ -62,10 +80,17 @@ func _resolve():
     
     # Allow battle to finish resolving the attack with
     # the new multiplier from this skill check.
-    _battle.resolve_attack(self._multiplier)
+    var multiplier:float = self._multiplier
+    var label:String
+    match(multiplier):
+        HIT_MULTIPLIER: label = HIT_LABEL
+        CRIT_MULTIPLIER: label = CRIT_LABEL
+        0.0: label = MISSED_LABEL
+
+    _battle.resolve_attack(multiplier, label)
     
     # Delay removing from UI so the player can see the result.
-    $FreeTimer.start(1)
+    _free_timer.start(1)
 
 
 func start():
@@ -80,6 +105,6 @@ func _get_value():
     pass
 
 
-func _get_multiplier():
-    pass
+func _get_multiplier() -> float:
+    return 1.0
     
