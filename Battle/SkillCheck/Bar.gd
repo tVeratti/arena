@@ -16,9 +16,6 @@ onready var _val = $Textures/Value
 
 onready var _timer_texture = $Textures/Container/TimerTexture
 
-func _ready():
-    rect_size.x = _size
-
 
 func _process(delta):
     if _is_running:        

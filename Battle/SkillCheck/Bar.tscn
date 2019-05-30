@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=2]
 
-[ext_resource path="res://Battle/SkillCheck/SkillBar.gd" type="Script" id=1]
+[ext_resource path="res://Battle/SkillCheck/Bar.gd" type="Script" id=1]
 [ext_resource path="res://Battle/SkillCheck/textures/bar.png" type="Texture" id=2]
 [ext_resource path="res://Battle/SkillCheck/textures/target.png" type="Texture" id=3]
 [ext_resource path="res://Battle/SkillCheck/textures/critical.png" type="Texture" id=4]
@@ -12,11 +12,7 @@
 shader = ExtResource( 7 )
 shader_param/tint = 0.2
 
-[node name="SkillBar" type="Control"]
-margin_right = 200.0
-margin_bottom = 56.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
+[node name="Bar" type="Control"]
 script = ExtResource( 1 )
 
 [node name="Textures" type="Control" parent="."]
@@ -52,10 +48,10 @@ margin_bottom = 42.3395
 texture = ExtResource( 5 )
 
 [node name="Container" type="Control" parent="Textures"]
-margin_left = 84.5516
-margin_top = -29.4714
-margin_right = 84.5516
-margin_bottom = -29.4714
+margin_left = 195.772
+margin_top = 4.68907
+margin_right = 195.772
+margin_bottom = 4.68907
 
 [node name="Button" type="TextureButton" parent="Textures/Container"]
 margin_right = 42.0

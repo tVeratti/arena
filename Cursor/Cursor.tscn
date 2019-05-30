@@ -7,16 +7,16 @@
 
 [node name="Cursor" type="CanvasLayer"]
 
-[node name="Area" type="Area2D" parent="."]
+[node name="Cursor" type="Area2D" parent="."]
 script = ExtResource( 1 )
 
-[node name="CollisionPolygon2D" type="CollisionShape2D" parent="Area"]
-position = Vector2( 11.119, 19.9215 )
-rotation = -0.362968
-scale = Vector2( -2.20856, 2.63441 )
-shape = SubResource( 1 )
-
-[node name="Sprite" type="Sprite" parent="Area"]
+[node name="Sprite" type="Sprite" parent="Cursor"]
 position = Vector2( 14.362, 18.0684 )
 texture = ExtResource( 2 )
+
+[node name="CollisionPolygon2D" type="CollisionShape2D" parent="Cursor"]
+position = Vector2( 5.55951, 6.94934 )
+rotation = -3.52193
+scale = Vector2( 0.614981, -0.643207 )
+shape = SubResource( 1 )
 

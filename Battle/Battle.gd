@@ -4,7 +4,11 @@ var Character = load("res://Character/Character.gd")
 var Turn = load("res://Battle/Turn.gd")
 var Action = load("res://Battle/Action.gd")
 
-var SkillBar = load("res://Battle/SkillCheck/SkillBar.tscn")
+# SkillCheck Types
+var SkillChecks = {
+    "Bar": load("res://Battle/SkillCheck/Bar.tscn"),
+    "Swing": load("res://Battle/SkillCheck/Swing.tscn")
+}
 
 var heroes:Array
 var enemies:Array
@@ -207,7 +211,7 @@ func character_attack(targets:Array):
         
         # Initiate a skill check which will call
         # resolve_attack when the player compeletes it.
-        var skill_check = SkillBar.instance()
+        var skill_check = SkillChecks.Swing.instance()
         $Interface.add_child(skill_check)
         skill_check.setup(self, active_unit, target_speed)
         set_action_state(Action.FREEZE)
@@ -237,7 +241,7 @@ func set_action_state(next_state):
 
     if action_state == Action.MOVE and next_state != Action.MOVE:
         Grid.deactivate()
-
+    
     match(next_state):
         Action.MOVE:
             if self.active_character.is_enemy: return

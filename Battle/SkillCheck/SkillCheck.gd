@@ -52,7 +52,6 @@ func _process(delta):
             start()
 
 
-
 func setup(battle, unit:Unit, target_speed:float):
     _battle = battle
     _unit = unit
@@ -67,12 +66,9 @@ func setup(battle, unit:Unit, target_speed:float):
 func _prepare_textures():
     # Position the skill check beside the player unit, but within the viewport.
     var window_size = OS.window_size
-    var skill_width_half = rect_size.x / 2
-    var skill_height_half = rect_size.y / 2
     rect_position = Vector2(\
-        (window_size.x / 2) - skill_width_half, \
-        (window_size.y / 2) - skill_height_half)
-
+        (window_size.x / 2), \
+        (window_size.y / 2))
 
 
 func _resolve():
@@ -81,6 +77,8 @@ func _resolve():
     # Allow battle to finish resolving the attack with
     # the new multiplier from this skill check.
     var multiplier:float = self._multiplier
+    print("multiplier: ", multiplier)
+    
     var label:String
     match(multiplier):
         HIT_MULTIPLIER: label = HIT_LABEL
