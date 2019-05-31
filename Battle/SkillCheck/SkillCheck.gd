@@ -7,6 +7,7 @@ const DAGGER = "DAGGER"
 const BOW = "BOW"
 
 # Multipliers
+const MISS_MULTIPLIER:float = 0.0
 const HIT_MULTIPLIER:float = 1.0
 const CRIT_MULTIPLIER:float = 1.5
 const HIT_LABEL = ""

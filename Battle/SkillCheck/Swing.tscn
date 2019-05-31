@@ -20,12 +20,9 @@ texture_progress = ExtResource( 3 )
 tint_progress = Color( 1, 0.584314, 0, 1 )
 nine_patch_stretch = true
 
-[node name="Arc" type="Control" parent="."]
-margin_left = 0.514191
-margin_top = -36.1193
-margin_right = 0.514191
-margin_bottom = -36.1193
-mouse_filter = 1
+[node name="Arc" type="Polygon2D" parent="."]
+
+[node name="Swoosh" type="Polygon2D" parent="."]
 
 [node name="MouseTargetArea" type="Area2D" parent="."]
 

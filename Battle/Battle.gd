@@ -134,7 +134,8 @@ func activate_enemies():
 # When a character is selected, activate it on the grid
 # and apply any other changes necessary.
 func activate_character(character:Character):
-    active_unit = Grid.activate_character(character)
+    if character.is_alive:
+        active_unit = Grid.activate_character(character)
     
     # Allow auto-selection of next action... maybe a setting later.
     # var next_action = current_turn.next_possible_action(character.id)

@@ -18,13 +18,11 @@ const POWER_MAX = 1
 const POWER_MIN = 0
 var _power:float = 0.0
 
-const VELOCITY_MIN = 50.0
-const VELOCITY_MAX = 1000.0
-var _velocity:Vector2 = Vector2.ZERO
-var _abs_velocity:float setget , _get_velocity
+const VELOCITY_MIN = 0.1
+const VELOCITY_MAX = 0.2
 var _average_velocity:float = 0.0
 
-const SCORE_STEP = 2.0
+const SCORE_STEP = 8.0
 var _score:float = 0.0
 
 var _has_entered_once:bool = false
@@ -35,44 +33,54 @@ var _is_mouse_down:bool = false
 var _is_swinging:bool = false
 
 var _points:PoolVector2Array = []
-var _mouse_points:PoolVector2Array = []
 
-onready var _power_progress = $Power
-onready var _arc = $Arc
-onready var _target = $MouseTargetArea
+const MOUSE_MAX_WIDTH:float = 20.0
+var _prev_mouse_position:Vector2
+var _mouse_points:Array
+
+onready var _power_progress:TextureProgress = $Power
+onready var _target:Area2D = $MouseTargetArea
+onready var _arc:Polygon2D = $Arc
+onready var _swoosh:Polygon2D = $Swoosh
 
 
 func start():
     .start()
+    
+    _score = 0.0
+    _mouse_points = []
+    
     _get_points()
     _set_collision_polygon()
-    update()
     
 
 func _process(delta):
     if _is_running:
         var prev_power = _power
         var prev_swinging = _is_swinging
+        var current_velocity = _get_velocity(delta)
         
         # The mouse needs to be moving a minimum speed
         # to count as a swing to prevent the player from
         # holding it still within the area.
-        _is_swinging = self._abs_velocity > VELOCITY_MIN and _is_mouse_down
-        
-        yield(get_tree(), "physics_frame")
-        var is_within_target = false
-        if _is_mouse_down:
-            var overlapping_areas = _target.get_overlapping_areas()
-            for area in overlapping_areas:
-                if area.name == "Cursor":
-                    is_within_target = true
-                    break
+        _is_mouse_down = Input.is_mouse_button_pressed(1)
+        _is_swinging = current_velocity > VELOCITY_MIN and _is_mouse_down
 
+        # Collisions being removed and added need a frame to init.
+        yield(get_tree(), "physics_frame")
+        var is_within_target = _get_is_within_target()
+
+        # End the skillcheck if the player stopped swinging, or if they've exited the target.
         if (prev_swinging and !_is_swinging and _has_entered_once) or \
             (_has_entered_once and !is_within_target):
             ._resolve()
         
+        if _is_swinging:
+            _average_velocity = (_average_velocity + current_velocity) / 2
+        
         if _is_swinging and is_within_target:
+            # Update the score and track that the target has
+            # been entered at least once (to prevent tiny misclicks).
             _has_entered_once = true
             _score += SCORE_STEP * delta
             _color = Color.yellow
@@ -86,45 +94,75 @@ func _process(delta):
                 _power -= POWER_STEP
                 _color = Color.gray
             
+            # Clamp the power and update the progress texture.
             _power = clamp(_power, POWER_MIN, POWER_MAX)
             _power_progress.value = _power
         
-        if _is_mouse_down:
-            var mouse_position = get_local_mouse_position()
-            _mouse_points.append(mouse_position)
+        _arc.color = _color
         
+        if _is_swinging:
+            # Add a point to draw the mouse's trail while down.
+            var mouse_position = get_local_mouse_position()
+            _add_mouse_points(mouse_position)
+
         if prev_power != _power:
+            # Recalculate the target's area and recreate all collision boxes.
             _get_points()
             _set_collision_polygon()
-            update()
-        elif _is_swinging:
-            update()
             
 
-func _input(event):
-    _is_mouse_down = Input.is_mouse_button_pressed(1)
+func _get_is_within_target() -> bool:
+    if _is_mouse_down:
+        # Get all overlapping areas but only register the cursor.
+        var overlapping_areas = _target.get_overlapping_areas()
+        for area in overlapping_areas:
+            if area.name == "Cursor":
+                return true
     
-    if event is InputEventMouseMotion and _is_mouse_down:
-        _velocity = event.get_speed()
-
-
-func _draw():
-    if _points.size() > 2:
-        draw_polygon(_points, PoolColorArray([_color]))
-    
-    if _mouse_points.size() > 2:
-        draw_polyline(_mouse_points, Color.blue, 5.0)
+    return false
 
 
 func _get_points():
     var angle_half = (MAX_ANGLE - ((_power / 1.5) * MAX_ANGLE)) / 2
     
-    var center = _arc.rect_position
+    var center = _arc.position
     var b = angle_half
     var c = angle_half * -1
     
     _points = _get_arc(center, b, c)
+    _arc.polygon = _points
 
+
+func _add_mouse_points(mouse_position:Vector2):
+    var angle:float
+    var num_points = _mouse_points.size()
+    if num_points > 0:
+        var prev_position:Vector2 = _mouse_points[num_points - 1].origin;
+        var diff = mouse_position - prev_position
+        
+        if abs(diff.x) + abs(diff.y) < 10: return
+        angle = diff.x
+    else:
+        angle = 0.0
+        
+    var size = _get_velocity_score(_average_velocity) * 3
+    _mouse_points.append({
+        "origin": mouse_position,
+        "size": pow(size, 2),
+        "angle": angle
+    })
+    
+    var top_points = []
+    var bottom_points = []
+    for point in _mouse_points:
+        var offset = Vector2(point.size, point.size)
+        top_points.append(point.origin + offset)
+        bottom_points.append(point.origin - offset)
+    
+    bottom_points.invert()
+    _swoosh.polygon = top_points + bottom_points
+    
+    
 
 func _set_collision_polygon():
     for collision in _target.get_children():
@@ -164,19 +202,24 @@ func _prepare_textures():
     ._prepare_textures()
 
 
-func _get_multiplier():
-    var velocity_score = clamp(_average_velocity, VELOCITY_MIN, VELOCITY_MAX) / VELOCITY_MAX
-    var rating = _power + (_score * velocity_score)
+func _get_multiplier():   
+    var velocity_score = _get_velocity_score(_average_velocity)
+    var rating = (_power / 2) + (_score * velocity_score)
     
     print("%s + (%s * %s) = %s" % [_power, _score, velocity_score, rating])
     
-    if rating > 2: return CRIT_MULTIPLIER
-    elif rating > 1: return HIT_MULTIPLIER
+    if rating > 0.6: return CRIT_MULTIPLIER
+    elif rating > 0.3: return HIT_MULTIPLIER
     elif rating > 0.1: return rating
-    else: return 0.0
+    else: return MISS_MULTIPLIER
 
 
-func _get_velocity():
-    var velocity = abs(_velocity.x) + abs(_velocity.y)
-    _average_velocity = (_average_velocity + velocity) / 2
-    return velocity
+func _get_velocity_score(velocity) -> float:
+    return clamp(velocity, VELOCITY_MIN, VELOCITY_MAX) / VELOCITY_MAX
+
+
+func _get_velocity(delta):
+    var mouse_position = get_local_mouse_position()
+    var velocity = mouse_position - _prev_mouse_position
+    _prev_mouse_position = mouse_position
+    return (abs(velocity.x) + abs(velocity.y)) * delta
