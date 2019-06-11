@@ -17,12 +17,19 @@ const POWER_STEP = 0.01
 const POWER_MAX = 1
 const POWER_MIN = 0
 var _power:float = 0.0
+var _power_points:Array = []
 
 const VELOCITY_MIN = 0.1
 const VELOCITY_MAX = 0.2
 var _average_velocity:float = 0.0
 
-const SCORE_STEP = 8.0
+const ROTATION_BASE = 5.0
+const ROTATION_SPEED = 100
+const ROTATION_SPREAD = 100
+var _rotation_start = 0
+var _rotate_clockwise:bool = true
+
+const SCORE_STEP = 3.0
 var _score:float = 0.0
 
 var _has_entered_once:bool = false
@@ -38,8 +45,9 @@ const MOUSE_MAX_WIDTH:float = 20.0
 var _prev_mouse_position:Vector2
 var _mouse_points:Array
 
-onready var _power_progress:TextureProgress = $Power
+onready var _power_polygon:Polygon2D = $Power
 onready var _target:Area2D = $MouseTargetArea
+onready var _negative = $NegativeTargetArea
 onready var _arc:Polygon2D = $Arc
 onready var _swoosh:Polygon2D = $Swoosh
 
@@ -47,6 +55,11 @@ onready var _swoosh:Polygon2D = $Swoosh
 func start():
     .start()
     
+    # Initialize rotation data for target and arc.
+    _rotation_start = randi() % 360
+    _arc.rotation_degrees = _rotation_start
+    _target.rotation_degrees = _arc.rotation_degrees
+
     _score = 0.0
     _mouse_points = []
     
@@ -69,6 +82,13 @@ func _process(delta):
         # Collisions being removed and added need a frame to init.
         yield(get_tree(), "physics_frame")
         var is_within_target = _get_is_within_target()
+        
+        if !is_within_target:
+            _rotate(delta)
+        
+        if !prev_swinging and _is_swinging:
+            _score = 0.0
+            _mouse_points = []
 
         # End the skillcheck if the player stopped swinging, or if they've exited the target.
         if (prev_swinging and !_is_swinging and _has_entered_once) or \
@@ -96,7 +116,6 @@ func _process(delta):
             
             # Clamp the power and update the progress texture.
             _power = clamp(_power, POWER_MIN, POWER_MAX)
-            _power_progress.value = _power
         
         _arc.color = _color
         
@@ -109,7 +128,26 @@ func _process(delta):
             # Recalculate the target's area and recreate all collision boxes.
             _get_points()
             _set_collision_polygon()
-            
+
+
+func _draw():
+    draw_circle(Vector2.ZERO, RADIUS, Color(1, 1 , 1, 0.1))
+
+
+func _rotate(delta):
+    var direction = 1 if _rotate_clockwise else -1
+    var rotation_end = _rotation_start + (ROTATION_SPREAD / _relative_size_ratio)
+    var rotation_target =  rotation_end if _rotate_clockwise else _rotation_start
+    var relative_rotation_speed = clamp(ROTATION_SPEED / (_relative_size_ratio / 0.5), 50, 100)
+    
+    _arc.rotation_degrees += relative_rotation_speed * delta * direction
+    _power_polygon.rotation_degrees = _arc.rotation_degrees
+    _target.rotation_degrees = _arc.rotation_degrees
+    
+    # Flip the direction of the arc if it is close enough to one end of the spread.
+    if abs(_arc.rotation_degrees - rotation_target) < 10:
+        _rotate_clockwise = !_rotate_clockwise
+    
 
 func _get_is_within_target() -> bool:
     if _is_mouse_down:
@@ -129,8 +167,9 @@ func _get_points():
     var b = angle_half
     var c = angle_half * -1
     
-    _points = _get_arc(center, b, c)
+    _get_arc(center, b, c)
     _arc.polygon = _points
+    _power_polygon.polygon = _power_points
 
 
 func _add_mouse_points(mouse_position:Vector2):
@@ -162,7 +201,11 @@ func _add_mouse_points(mouse_position:Vector2):
     bottom_points.invert()
     _swoosh.polygon = top_points + bottom_points
     
-    
+
+func _set_negative_collision_shape():
+    var negative_shape:CircleShape2D = CircleShape2D.new()
+    negative_shape.radius = RADIUS
+
 
 func _set_collision_polygon():
     for collision in _target.get_children():
@@ -177,16 +220,16 @@ func _get_cone_point(angle, distance) -> Vector2 :
     return Vector2(cos(angle), sin(angle)) * distance
 
 
-func _get_arc(center, angle_from, angle_to) -> PoolVector2Array:
+func _get_arc(center, angle_from, angle_to):
     var num_points = 8
-    var points_arc = PoolVector2Array([center])
+    _points = PoolVector2Array([center])
+    _power_points = PoolVector2Array([center])
     
     for i in range(num_points + 1):
         var angle_point = deg2rad(angle_from + i * (angle_to - angle_from) / num_points - 90)
         var angle_vector = _get_rad_vector(angle_point)       
-        points_arc.push_back(center + angle_vector * RADIUS)
-        
-    return points_arc
+        _points.push_back(center + angle_vector * RADIUS)
+        _power_points.push_back(center + angle_vector * (RADIUS * _power))
 
 
 func _get_deg_vector(angle) -> Vector2:
