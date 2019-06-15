@@ -122,4 +122,4 @@ func _on_Attack_pressed():
 
 
 func _on_Analyze_pressed():
-    pass # Replace with function body.
+    _battle.set_action_state(Action.ANALYZE)

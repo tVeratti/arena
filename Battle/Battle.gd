@@ -3,6 +3,7 @@ extends Node
 var Character = load("res://Character/Character.gd")
 var Turn = load("res://Battle/Turn.gd")
 var Action = load("res://Battle/Action.gd")
+var Challenge = load("res://Battle/Challenge/Challenge.gd")
 
 # SkillCheck Types
 var SkillChecks = {
@@ -23,6 +24,8 @@ var active_character:Character setget , _get_active_character
 var active_targets:Array = []
 var action_state:String = Action.WAIT
 var action_debounce:bool = false
+
+var challenges:Dictionary = {}
 
 onready var Grid = $Grid
 onready var ActionTimer = $ActionTimer
@@ -177,12 +180,22 @@ func get_living_characters(all):
 # CHARACTER ACTIONS
 # -----------------------------
 
+# Expose a challenge for the character to gain an advantage.
+func character_analyze(target):
+    var did_analyze = character_action(Action.ANALYZE)
+    if did_analyze:
+        var challenge = Challenge.new(target, Vector2.UP, self.active_character.acuity)
+        challenges[target.character.id] = challenge
+        Grid.show_challenge_overlay(challenge.target, challenge.direction)
+
+
 # Check if the character can move, then return if
 # the action has been logged in the turn.
-func character_move() -> bool:
+func character_move(distance) -> bool:
     var did_move = character_action(Action.MOVE)
     if did_move:
         set_action_state(Action.FREEZE)
+        self.active_character.progress_action(Action.MOVE, distance)
 
     return did_move
 
@@ -278,9 +291,26 @@ func resolve_attack(multiplier = 1, label = ""):
     
     # Calculate final damage after target's mitigation.
     for target in active_targets:
+        var challenge_bonus = 1
+        # Get challenge bonus if one is present.
+        if challenges.keys().has(target.character.id):
+            var challenge = challenges[target.character.id]
+            var direction = (target.coord - active_unit.coord).normalized()
+            challenge_bonus = challenge.check(target, direction)
+            
+            if challenge_bonus > 1:
+                challenge_bonus = (0.1 * challenge_bonus) + 1
+                challenges[target.character.id] = null
+                label += " BONUS"
+        
+        # Calculate final damage.
         var target_character = target.character
-        var damage = (self.active_character.deal_damage() * multiplier) / aoe_multiplier
+        var damage = ((self.active_character.deal_damage() * multiplier) * challenge_bonus) / aoe_multiplier
         var final_damage = int(target_character.take_damage(damage))
+        
+        # Progress stats based on the attack for both characters
+        self.active_character.progress_stat(Action.ATTACK, damage)
+        target_character.progress_action(Action.ATTACK, final_damage)
         
         target.unlock_targeted()
         target.show_damage(final_damage, label)
@@ -321,10 +351,13 @@ func _handle_character_death(target):
         })
 
 
-# Player has targeted an enemy in attack phase.
+# Player has targeted an enemy in attack/analyze phase.
 func _on_unit_targeted(unit):
-    if attack_within_range(active_unit, unit):
-        character_attack([unit])
+    match(action_state):
+        Action.ANALYZE: character_analyze(unit)
+        Action.ATTACK:
+            if attack_within_range(active_unit, unit):
+                character_attack([unit])
 
 
 func attack_within_range(attacker, victim):

@@ -173,6 +173,13 @@ func deal_damage():
     return self.power + power_bonus + acuity_bonus
 
 
+func progress_action(action:String, value:int):
+    match(action):
+        Action.MOVE: progress_stat(AGILITY, value)
+        Action.ATTACK: progress_stat(CONSTITUTION, value)
+        Action.ANALYZE: progress_stat(ACUITY, value)
+
+
 func progress_stat(stat:String, amount:int):
     match(stat):
         ACUITY: acuity_stat.add_progress(amount)

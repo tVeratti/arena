@@ -19,6 +19,7 @@ var units:Array setget , _get_units
 onready var map = $TileMap
 onready var camera = $Camera
 onready var range_overlay = $RangeOverlay
+onready var challenge_overlay = $ChallengeOverlay
 onready var p_start = $PlayerStart
 onready var e_start = $EnemyStart
 onready var t_root = $TelegraphRoot
@@ -35,7 +36,6 @@ func _ready():
 # Create the units for the grid based on the characters given.
 func add_characters(characters:Array, is_enemies = false):
     var walkable_tiles = _pathfinder.walkable_tiles()
-    var cell_offset = map.cell_size.y / 2
     var start_position = map.world_to_map(e_start.position if is_enemies else p_start.position)
 
     for i in range(characters.size()):
@@ -43,7 +43,7 @@ func add_characters(characters:Array, is_enemies = false):
         var character:Character = characters[i]
         
         var tile_position = map.map_to_world(coords)
-        var unit_position = Vector2(tile_position.x, tile_position.y + cell_offset)
+        var unit_position =  get_centered(tile_position)
         var unit = Unit.instance()
         unit.setup(unit_position, coords, character, is_enemies)
         y_sort.add_child(unit)
@@ -94,6 +94,17 @@ func show_attack_overlay():
     # Show the telegraph of the character's attack
     range_overlay.activate(unit_selected, _get_unit_positions(), Action.ATTACK)
     unit_selected.set_animation("Attack")
+
+
+func show_challenge_overlay(target:Unit, direction:Vector2):
+    var grid_position = map.world_to_map(target.position)
+    var map_position = map.map_to_world(grid_position - direction)
+    var angle = rad2deg(grid_position.angle_to_point(grid_position - direction) - 45)
+    
+    challenge_overlay.position = get_centered(map_position)
+    challenge_overlay.rotation_degrees = angle
+    
+    challenge_overlay.show()
 
 
 # INPUT
@@ -168,14 +179,16 @@ func select_tile(tile):
     
     elif unit_selected != null and not unit_selected.is_enemy:
         # If a unit is already selected, do pathfinding for that unit.
-        if _battle.action_state == Action.MOVE and _battle.character_move():
+        if _battle.action_state == Action.MOVE:
             var new_path = _pathfinder.find_path(\
                 unit_selected.position,\
                 tile_position,\
                 unit_selected.character.speed,\
                 _get_unit_positions())
-            unit_selected.path = new_path
-            unit_selected.coord = map.world_to_map(new_path[new_path.size() - 1])
+                
+            if _battle.character_move(new_path.size()):
+                unit_selected.path = new_path
+                unit_selected.coord = map.world_to_map(new_path[new_path.size() - 1])
             
             deactivate()
 
@@ -232,6 +245,11 @@ func get_nearest_unit(origin_unit):
 
 # HELPERS
 # -----------------------------
+
+func get_centered(position:Vector2) -> Vector2:
+    var cell_offset = map.cell_size.y / 2
+    return Vector2(position.x, position.y + cell_offset)
+
 
 func get_unit_by_character(character):
     for unit in self.units:

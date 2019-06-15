@@ -87,9 +87,6 @@ func take_action(character:Character, action:String) -> bool:
     if can_take_action:
         SignalManager.emit_signal("turn_updated", self)
     
-    # TODO:
-    # update "characters_awaiting" or another array to store the CURRENT list
-    
     last_actions[c_id] = a_id
     
     # Return true to indicate that the action was taken.

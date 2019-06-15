@@ -33,6 +33,7 @@ const SCORE_STEP = 3.0
 var _score:float = 0.0
 
 var _has_entered_once:bool = false
+var _missed:bool = false
 
 var _color:Color = Color.white
 
@@ -51,9 +52,8 @@ onready var _negative = $NegativeTargetArea
 onready var _arc:Polygon2D = $Arc
 onready var _swoosh:Polygon2D = $Swoosh
 
-
-func start():
-    .start()
+func _ready():
+    _color = Color.green
     
     # Initialize rotation data for target and arc.
     _rotation_start = randi() % 360
@@ -65,7 +65,12 @@ func start():
     
     _get_points()
     _set_collision_polygon()
-    
+    _set_negative_collision_shape()
+
+
+func start():
+    .start()
+
 
 func _process(delta):
     if _is_running:
@@ -81,7 +86,7 @@ func _process(delta):
 
         # Collisions being removed and added need a frame to init.
         yield(get_tree(), "physics_frame")
-        var is_within_target = _get_is_within_target()
+        var is_within_target = _get_is_within_area(_target)
         
         if !is_within_target:
             _rotate(delta)
@@ -97,22 +102,23 @@ func _process(delta):
         
         if _is_swinging:
             _average_velocity = (_average_velocity + current_velocity) / 2
+            
+            if !is_within_target and _get_is_within_area(_negative):
+                _missed = true
+                ._resolve()
         
         if _is_swinging and is_within_target:
             # Update the score and track that the target has
             # been entered at least once (to prevent tiny misclicks).
             _has_entered_once = true
             _score += SCORE_STEP * delta
-            _color = Color.yellow
         else:
             # Adjust the current power based on if the mouse
             # is being held down (charged) or not.
             if _is_mouse_down:
                 _power += POWER_STEP
-                _color = Color.green
             else:
                 _power -= POWER_STEP
-                _color = Color.gray
             
             # Clamp the power and update the progress texture.
             _power = clamp(_power, POWER_MIN, POWER_MAX)
@@ -149,10 +155,10 @@ func _rotate(delta):
         _rotate_clockwise = !_rotate_clockwise
     
 
-func _get_is_within_target() -> bool:
+func _get_is_within_area(area:Area2D) -> bool:
     if _is_mouse_down:
         # Get all overlapping areas but only register the cursor.
-        var overlapping_areas = _target.get_overlapping_areas()
+        var overlapping_areas = area.get_overlapping_areas()
         for area in overlapping_areas:
             if area.name == "Cursor":
                 return true
@@ -203,8 +209,11 @@ func _add_mouse_points(mouse_position:Vector2):
     
 
 func _set_negative_collision_shape():
-    var negative_shape:CircleShape2D = CircleShape2D.new()
-    negative_shape.radius = RADIUS
+    var negative_shape:CollisionShape2D = CollisionShape2D.new()
+    negative_shape.shape = CircleShape2D.new()
+    negative_shape.shape.radius = RADIUS
+    
+    _negative.add_child(negative_shape)
 
 
 func _set_collision_polygon():
@@ -245,7 +254,9 @@ func _prepare_textures():
     ._prepare_textures()
 
 
-func _get_multiplier():   
+func _get_multiplier():
+    if _missed: return MISS_MULTIPLIER
+    
     var velocity_score = _get_velocity_score(_average_velocity)
     var rating = (_power / 2) + (_score * velocity_score)
     
@@ -253,8 +264,7 @@ func _get_multiplier():
     
     if rating > 0.6: return CRIT_MULTIPLIER
     elif rating > 0.3: return HIT_MULTIPLIER
-    elif rating > 0.1: return rating
-    else: return MISS_MULTIPLIER
+    else: return rating
 
 
 func _get_velocity_score(velocity) -> float:

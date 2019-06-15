@@ -193,7 +193,7 @@ func _on_battle_state_updated(action_state):
     # Disable the click collision so that the attack telegraph
     # does not detect the oversized collision shape.
     allow_selection = action_state == Action.WAIT
-    allow_targeting = action_state == Action.ATTACK
+    allow_targeting = action_state == Action.ATTACK or action_state == Action.ANALYZE
     click_collider.disabled = action_state == Action.MOVE
 
 
