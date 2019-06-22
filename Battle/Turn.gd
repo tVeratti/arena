@@ -10,6 +10,7 @@ var characters_total = []
 var turn_count:int
 
 var is_enemy:bool = false
+var taunts = []
 
 func _init(characters, turn_count, is_enemy):
     self.characters_total = characters
@@ -91,3 +92,9 @@ func take_action(character:Character, action:String) -> bool:
     
     # Return true to indicate that the action was taken.
     return can_take_action
+
+func can_be_taunted(id) -> bool:
+    if !taunts.has(id):
+        taunts.append(id)
+        return true
+    else: return false

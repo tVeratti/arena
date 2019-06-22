@@ -218,6 +218,7 @@ func character_attack(targets:Array):
         for target in targets:
             target.lock_targeted()
             target_speed += target.character.speed
+            attempt_taunt(target)
         target_speed /= targets.size()
         
         
@@ -318,6 +319,13 @@ func resolve_attack(multiplier = 1, label = ""):
         
     active_targets = []
     active_unit.set_animation("Idle")
+
+# The first time a character is attacked in a turn,
+# they will turn to face their attacker.
+func attempt_taunt(target):
+    var did_taunt = current_turn.can_be_taunted(target.character.id)
+    if did_taunt:
+        target.turn_rig(active_unit.position)
 
 
 # When a character dies, remove them fom the turns list
