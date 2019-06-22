@@ -78,8 +78,7 @@ func _resolve():
     # Allow battle to finish resolving the attack with
     # the new multiplier from this skill check.
     var multiplier:float = self._multiplier
-    print("multiplier: ", multiplier)
-    
+   
     var label:String
     match(multiplier):
         HIT_MULTIPLIER: label = HIT_LABEL

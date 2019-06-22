@@ -16,7 +16,13 @@ var _zoom_speed:float = 8.0
 var _zoom_step:Vector2 = Vector2(0.3, 0.3)
 var _zoom_tolerance:float = 0.1
 
+# Cinematic
+var _playing_cinematic:bool = false
+var _prev_target:Vector2 = _target
+var _prev_zoom_target:Vector2 = _zoom_target
+
 var _camera_locked:bool = false
+var _input_active:bool = false
 
 
 func _ready():
@@ -46,27 +52,64 @@ func _input(event):
     if not _camera_locked:
         if event is InputEventMouse and event.is_pressed():
             if event.button_index == BUTTON_WHEEL_UP:
-                _zoom_target = zoom - _zoom_step
+                adjust_zoom(-1)
+                cancel_cinematic()
             elif event.button_index == BUTTON_WHEEL_DOWN:
-                _zoom_target = zoom + _zoom_step
+                adjust_zoom(1)
+                cancel_cinematic()
 
        
 func _manual_camera_input():
     if not _camera_locked:
+        _input_active = false
+        
         # Manual camera _target movement
         if Input.is_action_pressed("ui_up"):
-            _target.y -= _manual_speed
+            adjust_target(Vector2.UP)
         if Input.is_action_pressed("ui_down"):
-            _target.y += _manual_speed
+            adjust_target(Vector2.DOWN)
         if Input.is_action_pressed("ui_right"):
-            _target.x += _manual_speed
+            adjust_target(Vector2.RIGHT)
         if Input.is_action_pressed("ui_left"):
-            _target.x -= _manual_speed
+            adjust_target(Vector2.LEFT)
+            
+        if _input_active: cancel_cinematic()
 
+func adjust_target(direction:Vector2):
+    _target += direction * _manual_speed
+    _input_active = true
+    
 
 func set_target(target):
     if not _camera_locked:
         _target = target
+
+
+func adjust_zoom(factor:float):
+    _zoom_target = zoom + (_zoom_step * factor)
+
+
+func set_zoom_target(target:Vector2):
+    _zoom_target = target
+
+
+func start_cinematic_target(target):
+    _playing_cinematic = true
+    _prev_target = _target
+    _prev_zoom_target = _zoom_target
+    set_target(target)
+    set_zoom_target(Vector2(1, 1))
+
+
+func end_cinematic_target():
+    if _playing_cinematic:
+        _playing_cinematic = false
+        set_target(_prev_target)
+        set_zoom_target(_prev_zoom_target)
+
+
+func cancel_cinematic():
+    _playing_cinematic = false
 
 
 func lock():

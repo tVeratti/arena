@@ -24,6 +24,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://Character/Character.gd"
 }, {
+"base": "Node",
+"class": "Facing",
+"language": "GDScript",
+"path": "res://Battle/Facing.gd"
+}, {
 "base": "Object",
 "class": "MinMax",
 "language": "GDScript",
@@ -44,6 +49,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://Grid/Telegraph.gd"
 }, {
+"base": "Node",
+"class": "TilePoints",
+"language": "GDScript",
+"path": "res://Grid/TilePoints.gd"
+}, {
 "base": "Object",
 "class": "Turn",
 "language": "GDScript",
@@ -58,10 +68,12 @@ _global_script_class_icons={
 "AStarPathfinder": "",
 "Action": "",
 "Character": "",
+"Facing": "",
 "MinMax": "",
 "Part": "",
 "Stat": "",
 "Telegraph": "",
+"TilePoints": "",
 "Turn": "",
 "Unit": ""
 }

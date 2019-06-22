@@ -260,7 +260,7 @@ func _get_multiplier():
     var velocity_score = _get_velocity_score(_average_velocity)
     var rating = (_power / 2) + (_score * velocity_score)
     
-    print("%s + (%s * %s) = %s" % [_power, _score, velocity_score, rating])
+    # print("%s + (%s * %s) = %s" % [_power, _score, velocity_score, rating])
     
     if rating > 0.6: return CRIT_MULTIPLIER
     elif rating > 0.3: return HIT_MULTIPLIER

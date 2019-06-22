@@ -15,6 +15,9 @@ var Unit = load("res://Grid/Unit/Unit.tscn")
 var unit_selected
 var units:Array setget , _get_units
 
+const CINEMATIC_TIMER:float = 2.0
+var _end_cinematic_callbacks:Array = []
+
 # Cache node
 onready var map = $TileMap
 onready var camera = $Camera
@@ -24,6 +27,8 @@ onready var p_start = $PlayerStart
 onready var e_start = $EnemyStart
 onready var t_root = $TelegraphRoot
 onready var y_sort = $YSort
+
+onready var timer:Timer = $CinematicTimer
 
 
 func _ready():
@@ -45,7 +50,7 @@ func add_characters(characters:Array, is_enemies = false):
         var tile_position = map.map_to_world(coords)
         var unit_position =  get_centered(tile_position)
         var unit = Unit.instance()
-        unit.setup(unit_position, coords, character, is_enemies)
+        unit.setup(unit_position, map, character, is_enemies)
         y_sort.add_child(unit)
 
 
@@ -96,15 +101,19 @@ func show_attack_overlay():
     unit_selected.set_animation("Attack")
 
 
-func show_challenge_overlay(target:Unit, direction:Vector2):
-    var grid_position = map.world_to_map(target.position)
-    var map_position = map.map_to_world(grid_position - direction)
-    var angle = rad2deg(grid_position.angle_to_point(grid_position - direction) - 45)
+func show_challenge_overlay(challenge):
+    var origin = map.world_to_map(challenge.target.position)
+    var offset = challenge.tile - origin
+    var map_position = map.map_to_world(offset)
+    var angle = rad2deg(origin.angle_to_point(offset)) - 45
     
     challenge_overlay.position = get_centered(map_position)
-    challenge_overlay.rotation_degrees = angle
+    challenge_overlay.set_rotation(angle)
     
     challenge_overlay.show()
+    
+    var hide_ref:FuncRef = funcref(challenge_overlay, "hide")
+    start_cinematic(challenge_overlay.position, [challenge.target], [hide_ref])
 
 
 # INPUT
@@ -127,6 +136,7 @@ func _unhandled_input(event):
             _battle.action_state == Action.MOVE:
                 # Mouse OVER tile (focus)
                 focus_tile(tile)
+                #if unit_selected != null: print((unit_selected.coord - tile).dot(unit_selected.facing))
 
 
 # TILE SELECTION
@@ -188,7 +198,6 @@ func select_tile(tile):
                 
             if _battle.character_move(new_path.size()):
                 unit_selected.path = new_path
-                unit_selected.coord = map.world_to_map(new_path[new_path.size() - 1])
             
             deactivate()
 
@@ -246,6 +255,35 @@ func get_nearest_unit(origin_unit):
 # HELPERS
 # -----------------------------
 
+func start_cinematic(tile, fade_exceptions:Array, end_callbacks:Array):
+    _end_cinematic_callbacks = end_callbacks
+    
+    # Fade all units
+    var units = self.units
+    for unit in units:
+        if not fade_exceptions.has(unit):
+            unit.modulate = Color(1, 1, 1, 0.3)
+    
+    # Move camera to focus the tile
+    camera.start_cinematic_target(tile)
+    
+    timer.start(CINEMATIC_TIMER)
+    
+
+func end_cinematic():
+    # Fade all units
+    var units = self.units
+    for unit in units:
+        unit.modulate = Color(1, 1, 1, 1)
+    
+    camera.end_cinematic_target()
+    
+    # Call all end of cinematic callbacks.
+    for end_callback in _end_cinematic_callbacks:
+        end_callback.call_func()
+    _end_cinematic_callbacks = []
+    
+
 func get_centered(position:Vector2) -> Vector2:
     var cell_offset = map.cell_size.y / 2
     return Vector2(position.x, position.y + cell_offset)
@@ -286,3 +324,10 @@ func _get_unit_positions(exceptions = []):
 
 func _get_units():
     return get_tree().get_nodes_in_group("units")
+
+
+# SIGNALS
+# -----------------------------
+
+func _on_CinematicTimer_timeout():
+    end_cinematic()

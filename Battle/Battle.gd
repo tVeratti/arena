@@ -52,7 +52,7 @@ func _ready():
 func _input(event):
     if action_state != Action.FREEZE:
         if Input.is_action_pressed("cheat"):
-            heroes[0].agility = 10
+            self.current_turn = Turn.new(self.heroes, current_turn_count, false)
         if Input.is_action_pressed("actions_attack"):
             set_action_state(Action.ATTACK)
         elif Input.is_action_pressed("actions_move"):
@@ -184,9 +184,11 @@ func get_living_characters(all):
 func character_analyze(target):
     var did_analyze = character_action(Action.ANALYZE)
     if did_analyze:
-        var challenge = Challenge.new(target, Vector2.UP, self.active_character.acuity)
+        var challenge = Challenge.new(target, active_unit)
         challenges[target.character.id] = challenge
-        Grid.show_challenge_overlay(challenge.target, challenge.direction)
+        Grid.show_challenge_overlay(challenge)
+    
+    set_action_state(Action.WAIT)
 
 
 # Check if the character can move, then return if
@@ -282,7 +284,6 @@ func debounce_actions():
 
 # Skill check completed, calculate damage(s)
 func resolve_attack(multiplier = 1, label = ""):
-    
     if not active_targets or not active_unit:
         return
         
@@ -291,17 +292,9 @@ func resolve_attack(multiplier = 1, label = ""):
     
     # Calculate final damage after target's mitigation.
     for target in active_targets:
-        var challenge_bonus = 1
-        # Get challenge bonus if one is present.
-        if challenges.keys().has(target.character.id):
-            var challenge = challenges[target.character.id]
-            var direction = (target.coord - active_unit.coord).normalized()
-            challenge_bonus = challenge.check(target, direction)
-            
-            if challenge_bonus > 1:
-                challenge_bonus = (0.1 * challenge_bonus) + 1
-                challenges[target.character.id] = null
-                label += " BONUS"
+        var challenge_bonus = get_challenge_bonus(target)
+        if challenge_bonus > 1:
+            label += " BONUS"
         
         # Calculate final damage.
         var target_character = target.character
@@ -364,6 +357,21 @@ func attack_within_range(attacker, victim):
     var attack_range = attacker.character.attack_range
     var distance = Grid.get_coord_distance(attacker.position, victim.position)
     return abs(distance.x) <= attack_range and abs(distance.y) <= attack_range
+
+
+func get_challenge_bonus(target) -> float:
+    var challenge_bonus = 1
+    
+    # Get challenge bonus if one is present.
+    if challenges.keys().has(target.character.id):
+        var challenge = challenges[target.character.id]
+        challenge_bonus = challenge.check(target, active_unit)
+        
+        if challenge_bonus > 1:
+            challenge_bonus = (0.1 * challenge_bonus) + 1
+            challenges.erase(target.character.id)
+    
+    return challenge_bonus
 
 
 # GETTERS

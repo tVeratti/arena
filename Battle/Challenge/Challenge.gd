@@ -1,17 +1,33 @@
 extends Object
 
-var direction:Vector2
+const DIRECTIONS = [
+    Vector2.UP,
+    Vector2.DOWN,
+    Vector2.RIGHT,
+    Vector2.LEFT
+]
+
+var tile:Vector2
 var target:Unit
+var _relative_facing:String
 var _bonus:float
 
-func _init(target:Unit, direction:Vector2, bonus:float):
-    _bonus = bonus
+func _init(target:Unit, attacker:Unit):
+    _bonus = attacker.character.acuity
     self.target = target
-    self.direction = direction
+    
+    # Generate a direction
+    tile = DIRECTIONS[randi() % DIRECTIONS.size()]
+    _relative_facing = Facing.get_relative_facing(target, tile)
 
 
-func check(target:Unit, direction:Vector2) -> float:
-    if target == self.target and direction == self.direction:
-        print("BONUS ", _bonus)
+func check(target:Unit, attacker:Unit) -> float:
+    var relative_facing = Facing.get_relative_facing(target, attacker.coord)
+    if target == self.target and relative_facing == _relative_facing:
         return _bonus
     else: return 1.0
+
+func _get_facing_angle(facing:Vector2, direction:Vector2):
+    var rad = facing.angle_to_point(direction)
+    return round(rad2deg(rad))
+    

@@ -17,13 +17,15 @@ var speed:float = 500.0
 var path:PoolVector2Array = [] setget set_path
 var path_end:Vector2
 var path_index:int = 0
-var coord:Vector2
+var coord:Vector2 setget , _get_coord
+var map
 
 var character:Character
 var is_enemy:bool
 var color:Color
 var state:String
 var prev_state:String
+var facing:Vector2
 
 var is_target_locked:bool
 var prev_target_locked:bool
@@ -49,12 +51,16 @@ func _ready():
     rig.set_colors(character.colors)
     if is_enemy:
         rig.set_facing("BACK")
+        facing = get_facing("BACK", 1)
+    else:
+        rig.set_facing("FRONT")
+        facing = get_facing("FRONT", 1)
 
 
-func setup(tile_position, coord, character, is_enemy = false):
+func setup(tile_position, map, character, is_enemy = false):
     position = tile_position
     path_end = tile_position
-    self.coord = coord
+    self.map = map
     self.character = character
     self.is_enemy = is_enemy
     self.color = Colors.ENEMY if character.is_enemy else Colors.FRIENDLY
@@ -128,17 +134,30 @@ func set_state(next_state):
 
 func turn_rig(target_world_position):
     var direction = (target_world_position - position).normalized()
+    var rig_facing = ""
     var rig_scale = 0.5
     var x = 1 if direction.x > 0 else -1
     var y = 1 if direction.y > 0 else -1
     
     if (x > 0 and y < 0) or (x < 0 and y < 0):
-        rig.set_facing("BACK")
+        rig_facing = "BACK"
     else:
         x *= -1
-        rig.set_facing("FRONT")
+        rig_facing = "FRONT"
     
+    rig.set_facing(rig_facing)
     sprite.set_scale(Vector2(x * rig_scale, rig_scale))
+    
+    facing = get_facing(rig_facing, x)
+
+
+func get_facing(rig_facing:String, x_scale:int) -> Vector2:
+    if rig_facing == "FRONT":
+        if x_scale == -1: return Facing.RIGHT
+        else: return Facing.DOWN
+    else:
+        if x_scale == -1: return Facing.LEFT
+        else: return Facing.UP
 
 
 func set_animation(state:String):
@@ -167,6 +186,9 @@ func show_damage(value, label):
     anchor.add_child(damage_text)
     damage_text.setup(value, label)
 
+
+func _get_coord() -> Vector2:
+    return map.world_to_map(position)
 
 func _on_health_changed(target):
     if character == target and not target.is_alive:
