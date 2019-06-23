@@ -120,7 +120,7 @@ func set_state(next_state):
     # so it is necessary to create a new one each time.
     var material = ShaderMaterial.new()
     material.shader = shader_outline
-    material.set_shader_param("outline_width", 20.0)
+    material.set_shader_param("outline_width", 10.0)
     
     var outline_color = color;
     match(next_state):
