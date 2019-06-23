@@ -184,7 +184,8 @@ func get_living_characters(all):
 func character_analyze(target):
     var did_analyze = character_action(Action.ANALYZE)
     if did_analyze:
-        var challenge = Challenge.new(target, active_unit)
+        var challenge = Challenge.new()
+        challenge.setup(target, active_unit)
         challenges[target.character.id] = challenge
         Grid.show_challenge_overlay(challenge)
     
@@ -216,11 +217,11 @@ func character_attack(targets:Array):
         # Get average target speed.
         var target_speed = 0
         for target in targets:
-            target.lock_targeted()
             target_speed += target.character.speed
             attempt_taunt(target)
+            target.lock_targeted()
+            
         target_speed /= targets.size()
-        
         
         # Face toward the target(s)
         var first_target = targets[0]

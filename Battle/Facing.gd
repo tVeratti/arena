@@ -6,6 +6,10 @@ const UP = Vector2.UP        # (0, -1)
 const DOWN = Vector2.DOWN    # (0, 1)
 const LEFT = Vector2.LEFT    # (-1, 0)
 const RIGHT = Vector2.RIGHT  # (1,  0)
+const UP_RIGHT = Vector2(1, -1)
+const UP_LEFT = Vector2(-1, -1)
+const DOWN_RIGHT = Vector2(1, 1)
+const DOWN_LEFT = Vector2(-1, 1)
 
 const FRONT = "FRONT"
 const BEHIND = "BEHIND"
@@ -15,8 +19,8 @@ const FLANK_LEFT = "LEFT"
 
 # Get the facing of a directional vector relatic to an incoming direction
 static func get_relative_facing(target, tile:Vector2) -> String:
-    var offset = tile - target.coord
-    
+    var offset = (tile - target.coord).normalized()
+    print(target.facing, " and ", offset)
     match(target.facing):
         UP: # ---------- ^ -----------
             match(offset):

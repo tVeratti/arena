@@ -27,8 +27,11 @@ var state:String
 var prev_state:String
 var facing:Vector2
 
-var is_target_locked:bool
-var prev_target_locked:bool
+var _action_state:String
+
+var _is_target_locked:bool
+var _prev_target_locked:bool
+var _lock_state:String
 
 onready var rig = $Viewport/Rig
 onready var health = $HealthBar
@@ -95,32 +98,38 @@ func deactivate():
     set_state(IDLE)
 
 
-func lock_targeted():
-    prev_target_locked = is_target_locked
-    is_target_locked = true
+func lock_targeted(action_state = Action.ATTACK):
+    _prev_target_locked = _is_target_locked
+    _is_target_locked = true
+    _lock_state = action_state
+    set_state(TARGETED)
 
 
 func unlock_targeted():
-    prev_target_locked = is_target_locked
-    is_target_locked = false
+    _prev_target_locked = _is_target_locked
+    _is_target_locked = false
+    _lock_state = Action.WAIT
+    set_state(IDLE)
 
 
 func set_state(next_state):
-    if next_state == state and prev_target_locked == is_target_locked:
+    if next_state == state and _prev_target_locked == _is_target_locked:
         return
     
     # ShaderMaterial is shared by all instances,
     # so it is necessary to create a new one each time.
     var material = ShaderMaterial.new()
     material.shader = shader_outline
-    material.set_shader_param("outline_width", 10.0)
+    material.set_shader_param("outline_width", 20.0)
     
     var outline_color = color;
     match(next_state):
         SELECTED, HOVERED, TARGETED:
+            if _lock_state == Action.ANALYZE:
+                outline_color = Color("#e3afff")
             health.show()
         IDLE:
-            if !is_target_locked:
+            if !_is_target_locked:
                 outline_color = Color(0,0,0,0)
                 rig.set_animation("Idle")
                 health.try_hide()
@@ -212,6 +221,8 @@ func _on_Character_input_event(viewport, event, shape_idx):
 
 
 func _on_battle_state_updated(action_state):
+    _action_state = action_state
+    
     # Disable the click collision so that the attack telegraph
     # does not detect the oversized collision shape.
     allow_selection = action_state == Action.WAIT

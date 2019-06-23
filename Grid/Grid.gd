@@ -102,8 +102,8 @@ func show_attack_overlay():
 
 
 func show_challenge_overlay(challenge):
-    var origin = map.world_to_map(challenge.target.position)
-    var offset = challenge.tile - origin
+    var origin = challenge.target.coord
+    var offset = origin + challenge.tile 
     var map_position = map.map_to_world(offset)
     var angle = rad2deg(origin.angle_to_point(offset)) - 45
     
@@ -113,7 +113,10 @@ func show_challenge_overlay(challenge):
     challenge_overlay.show()
     
     var hide_ref:FuncRef = funcref(challenge_overlay, "hide")
-    start_cinematic(challenge_overlay.position, [challenge.target], [hide_ref])
+    var unlock:FuncRef = funcref(challenge.target, "unlock_targeted")
+    start_cinematic(challenge_overlay.position, [challenge.target], [hide_ref, unlock])
+    
+    challenge.target.lock_targeted(Action.ANALYZE)
 
 
 # INPUT

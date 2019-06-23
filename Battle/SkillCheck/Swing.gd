@@ -18,6 +18,9 @@ const POWER_MAX = 1
 const POWER_MIN = 0
 var _power:float = 0.0
 var _power_points:Array = []
+var _power_angle:float = 0.0
+var _power_deg:float = 0.0
+var _angle_diff:float = 0.0
 
 const VELOCITY_MIN = 0.1
 const VELOCITY_MAX = 0.2
@@ -27,6 +30,7 @@ const ROTATION_BASE = 5.0
 const ROTATION_SPEED = 100
 const ROTATION_SPREAD = 100
 var _rotation_start = 0
+var _rotation_end = 10
 var _rotate_clockwise:bool = true
 
 const SCORE_STEP = 3.0
@@ -56,9 +60,13 @@ func _ready():
     _color = Color.green
     
     # Initialize rotation data for target and arc.
-    _rotation_start = randi() % 360
+    _angle_diff = (ROTATION_SPREAD / _relative_size_ratio)
+    _rotation_start = randi() % (360 - int(_angle_diff))
+    _rotation_end = _rotation_start + _angle_diff
+    
     _arc.rotation_degrees = _rotation_start
     _target.rotation_degrees = _arc.rotation_degrees
+    update()
 
     _score = 0.0
     _mouse_points = []
@@ -137,23 +145,33 @@ func _process(delta):
 
 
 func _draw():
-    draw_circle(Vector2.ZERO, RADIUS, Color(1, 1 , 1, 0.1))
+    draw_circle(Vector2.ZERO, RADIUS, Color(1, 1 , 1, 0.5))
+    
+    var angle_half = _angle_diff / 4
+    var start_point = _get_cone_point(_rotation_start - 90 - angle_half)
+    var end_point = _get_cone_point(_rotation_end - 90 + angle_half)
+    
+    draw_line(Vector2.ZERO, start_point, Color.white)
+    draw_line(Vector2.ZERO, end_point, Color.white)
 
 
 func _rotate(delta):
     var direction = 1 if _rotate_clockwise else -1
-    var rotation_end = _rotation_start + (ROTATION_SPREAD / _relative_size_ratio)
-    var rotation_target =  rotation_end if _rotate_clockwise else _rotation_start
     var relative_rotation_speed = clamp(ROTATION_SPEED / (_relative_size_ratio / 0.5), 50, 100)
+    var current_rotation = _arc.rotation_degrees + (relative_rotation_speed * delta * direction)
+    if current_rotation > 360 or current_rotation < -360:
+        current_rotation /= 360
     
-    _arc.rotation_degrees += relative_rotation_speed * delta * direction
-    _power_polygon.rotation_degrees = _arc.rotation_degrees
-    _target.rotation_degrees = _arc.rotation_degrees
+    _arc.rotation_degrees = current_rotation
+    _power_polygon.rotation_degrees = current_rotation
+    _target.rotation_degrees = current_rotation
     
     # Flip the direction of the arc if it is close enough to one end of the spread.
-    if abs(_arc.rotation_degrees - rotation_target) < 10:
-        _rotate_clockwise = !_rotate_clockwise
-    
+    var angle_offset = (_angle_diff / 4) - _power_deg
+    if (_rotate_clockwise and current_rotation >= _rotation_end + angle_offset) or \
+        (!_rotate_clockwise and current_rotation <= _rotation_start - angle_offset):
+            _rotate_clockwise = !_rotate_clockwise
+        
 
 func _get_is_within_area(area:Area2D) -> bool:
     if _is_mouse_down:
@@ -167,11 +185,12 @@ func _get_is_within_area(area:Area2D) -> bool:
 
 
 func _get_points():
-    var angle_half = (MAX_ANGLE - ((_power / 1.5) * MAX_ANGLE)) / 2
+    _power_angle = (MAX_ANGLE - ((_power / 1.5) * MAX_ANGLE)) / 2
+    _power_deg = _power_angle if _power_angle < 360 else _power_angle / 360
     
     var center = _arc.position
-    var b = angle_half
-    var c = angle_half * -1
+    var b = _power_angle
+    var c = _power_angle * -1
     
     _get_arc(center, b, c)
     _arc.polygon = _points
@@ -225,8 +244,9 @@ func _set_collision_polygon():
     _target.add_child(new_collision)
     
     
-func _get_cone_point(angle, distance) -> Vector2 :
-    return Vector2(cos(angle), sin(angle)) * distance
+func _get_cone_point(angle) -> Vector2 :
+    var rad = deg2rad(angle)
+    return Vector2(cos(rad), sin(rad)) * RADIUS
 
 
 func _get_arc(center, angle_from, angle_to):

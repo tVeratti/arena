@@ -99,8 +99,8 @@ func _draw():
     for tile in _attack_points:
         draw_polygon(tile.points, PoolColorArray([ATTACK_COLOR]))
     
-    if _active_tile != null and _show_movement:
-        draw_polyline(_active_tile.points + [_active_tile.points[0]], ACTIVE_COLOR, 3, true)
+    #if _active_tile != null and _show_movement:
+        #draw_polyline(_active_tile.points + [_active_tile.points[0]], ACTIVE_COLOR, 3, true)
 
 
 func _get_range_points():
@@ -190,5 +190,6 @@ func _create_all_collisions():
     
 
 func on_range_tile_entered(tile):
-    _active_tile = tile
-    update()
+    pass
+    #_active_tile = tile
+    #update()

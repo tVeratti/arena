@@ -4,8 +4,8 @@
 [ext_resource path="res://Grid/Tile/floor_tilest.tres" type="TileSet" id=2]
 [ext_resource path="res://Grid/RangeOverlay.gd" type="Script" id=3]
 [ext_resource path="res://Grid/PathOverlay.gd" type="Script" id=4]
-[ext_resource path="res://Battle/Challenge/Arrow.tscn" type="PackedScene" id=5]
-[ext_resource path="res://Grid/Camera.gd" type="Script" id=6]
+[ext_resource path="res://Grid/Camera.gd" type="Script" id=5]
+[ext_resource path="res://Battle/Challenge/Arrow.tscn" type="PackedScene" id=6]
 
 [node name="Grid" type="Node2D"]
 script = ExtResource( 1 )
@@ -27,10 +27,6 @@ script = ExtResource( 4 )
 
 [node name="TelegraphRoot" type="Node2D" parent="."]
 
-[node name="ChallengeOverlay" parent="." instance=ExtResource( 5 )]
-visible = false
-position = Vector2( -49.4677, -89.5535 )
-
 [node name="Camera" type="Camera2D" parent="."]
 current = true
 drag_margin_h_enabled = false
@@ -39,7 +35,7 @@ drag_margin_left = 1.0
 drag_margin_top = 1.0
 drag_margin_right = 1.0
 drag_margin_bottom = 1.0
-script = ExtResource( 6 )
+script = ExtResource( 5 )
 
 [node name="YSort" type="YSort" parent="."]
 position = Vector2( -1, 0 )
@@ -49,6 +45,10 @@ position = Vector2( 257.825, -149.784 )
 
 [node name="EnemyStart" type="Node2D" parent="."]
 position = Vector2( -94.4199, 72.6639 )
+
+[node name="ChallengeOverlay" parent="." instance=ExtResource( 6 )]
+visible = false
+position = Vector2( -49.4677, -89.5535 )
 
 [node name="CinematicTimer" type="Timer" parent="."]
 one_shot = true
