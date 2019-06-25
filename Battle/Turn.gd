@@ -59,10 +59,10 @@ func is_complete() -> bool:
 
 
 func can_take_action(id, type) -> bool:
-    return type == Action.FREEZE or \
-        type == Action.WAIT or \
+    var group = Action.GROUPS[type]
+    return group == Action.FREE or \
         not actions_taken.has(id) or \
-        not actions_taken[id].has(type)
+        not actions_taken[id].has(group)
 
 
 func character_done(id) -> bool:
@@ -70,28 +70,25 @@ func character_done(id) -> bool:
 
 
 func take_action(character:Character, action:String) -> bool:
-    var can_take_action = true
     var c_id = character.id
-    var a_id = action
+    var can_take_action = can_take_action(c_id, action)
+    var group = Action.GROUPS[action]
     
     if actions_taken.has(c_id):
-        if actions_taken[c_id].has(a_id):
-            # This character has already taken this action.
-            # Return false to indicate that the action was not taken.
-            can_take_action = false
-        else:
-            actions_taken[c_id][a_id] = action
+        if can_take_action:
+            actions_taken[c_id][group] = action
     else:
         actions_taken[c_id] = {}
-        actions_taken[c_id][a_id] = action
+        actions_taken[c_id][group] = action
     
     if can_take_action:
         SignalManager.emit_signal("turn_updated", self)
     
-    last_actions[c_id] = a_id
+    last_actions[c_id] = action
     
     # Return true to indicate that the action was taken.
     return can_take_action
+
 
 func can_be_taunted(id) -> bool:
     if !taunts.has(id):

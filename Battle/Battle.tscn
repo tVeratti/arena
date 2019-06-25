@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://Battle/Battle.gd" type="Script" id=1]
 [ext_resource path="res://Grid/Grid.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Battle/Interface/Interface.tscn" type="PackedScene" id=3]
-[ext_resource path="res://Cursor/Cursor.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Battle/Interface/Comparison.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Cursor/Cursor.tscn" type="PackedScene" id=5]
 
 [node name="Battle" type="Node2D"]
 script = ExtResource( 1 )
@@ -25,7 +26,10 @@ popup_exclusive = true
 window_title = "End Turn"
 dialog_text = "You still have actions to take. End turn anyway?"
 
-[node name="Cursor" parent="." instance=ExtResource( 4 )]
+[node name="Comparison" parent="Interface" instance=ExtResource( 4 )]
+visible = false
+
+[node name="Cursor" parent="." instance=ExtResource( 5 )]
 
 [connection signal="timeout" from="ActionTimer" to="." method="_on_ActionTimer_timeout"]
 [connection signal="timeout" from="AttackTimer" to="." method="_on_AttackTimer_timeout"]

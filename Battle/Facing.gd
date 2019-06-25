@@ -20,7 +20,7 @@ const FLANK_LEFT = "LEFT"
 # Get the facing of a directional vector relatic to an incoming direction
 static func get_relative_facing(target, tile:Vector2) -> String:
     var offset = (tile - target.coord).normalized()
-    print(target.facing, " and ", offset)
+    
     match(target.facing):
         UP: # ---------- ^ -----------
             match(offset):

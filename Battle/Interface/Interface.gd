@@ -6,7 +6,7 @@ onready var frames = $Layout/Rows/Columns/Characters/Frames
 onready var turn_count = $Layout/Rows/Columns/BattleInfo/TurnCount
 onready var battle_state = $Layout/Rows/Columns/BattleInfo/ActionState
 
-onready var actions = $Layout/Rows/MarginContainer/ActionsActions
+onready var actions = $Layout/Rows/MarginContainer/Actions
 onready var turn_button = $Layout/Rows/MarginContainer/Actions/Turn
 onready var move_button = $Layout/Rows/MarginContainer/Actions/Move
 onready var attack_button = $Layout/Rows/MarginContainer/Actions/Attack

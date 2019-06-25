@@ -231,8 +231,10 @@ func _on_battle_state_updated(action_state):
 
 
 func _on_Character_mouse_entered():
+    SignalManager.emit_signal("unit_hovered", self)
     set_state(HOVERED)
 
 
 func _on_Character_mouse_exited():
+    SignalManager.emit_signal("unit_hovered", null)
     set_state(prev_state)

@@ -20,6 +20,7 @@ var end_turn_confirmation:bool = false
 
 var active_unit:Unit
 var active_character:Character setget , _get_active_character
+var hovered_unit:Unit
 
 var active_targets:Array = []
 var action_state:String = Action.WAIT
@@ -31,6 +32,7 @@ onready var Grid = $Grid
 onready var ActionTimer = $ActionTimer
 onready var AttackTimer = $AttackTimer
 onready var EndTurnDialog = $Interface/EndTurnDialog
+onready var Comparison = $Interface/Comparison
 
 
 func setup(battle):
@@ -46,6 +48,7 @@ func setup(battle):
 func _ready():
     SignalManager.connect("character_selected", self, "_on_character_selected")
     SignalManager.connect("unit_targeted", self, "_on_unit_targeted")
+    SignalManager.connect("unit_hovered", self, "_on_unit_hovered")
     SignalManager.connect("unit_movement_done", self, "_on_movement_done")
 
 
@@ -267,6 +270,7 @@ func set_action_state(next_state):
         Action.ATTACK:
             if self.active_character.is_enemy: return
             Grid.show_attack_overlay()
+            show_comparison()
         Action.WAIT:
             pass
         Action.FREEZE:
@@ -383,6 +387,14 @@ func get_challenge_bonus(target) -> float:
     return challenge_bonus
 
 
+func show_comparison():
+    if hovered_unit == null:
+        Comparison.hide()
+    elif active_unit != null and action_state == Action.ATTACK:
+        Comparison.set_characters(hovered_unit, active_unit)
+        Comparison.show()
+
+
 # GETTERS
 # -----------------------------
 
@@ -404,6 +416,11 @@ func _on_ai_action_taken():
 
 func _on_character_selected(character):    
     activate_character(character)
+
+
+func _on_unit_hovered(unit):
+    hovered_unit = unit
+    show_comparison()
 
 
 func _on_movement_done():
