@@ -1,5 +1,6 @@
 extends Node
 
+var Colors = load("res://Character/Colors.gd")
 var Character = load("res://Character/Character.gd")
 var Turn = load("res://Battle/Turn.gd")
 var Action = load("res://Battle/Action.gd")
@@ -18,6 +19,9 @@ var current_turn
 var current_turn_count:int = 1
 var end_turn_confirmation:bool = false
 
+var hero_units:Array
+var enemy_units:Array
+
 var active_unit:Unit
 var active_character:Character setget , _get_active_character
 var hovered_unit:Unit
@@ -35,18 +39,20 @@ onready var EndTurnDialog = $Interface/EndTurnDialog
 onready var Comparison = $Interface/Comparison
 
 
-func setup(battle):
-    self.heroes = battle.heroes
-    self.enemies = battle.enemies
-    self.current_turn = Turn.new(battle.heroes, current_turn_count, false)
+func setup(data):
+    heroes = data.heroes
+    enemies = data.enemies
+    
+    hero_units = Grid.add_characters(heroes)
+    enemy_units = Grid.add_characters(enemies, true)
+    
+    current_turn = Turn.new(hero_units, current_turn_count, false)
     
     $Interface.setup()
-    Grid.add_characters(heroes)
-    Grid.add_characters(enemies, true)
 
 
 func _ready():
-    SignalManager.connect("character_selected", self, "_on_character_selected")
+    SignalManager.connect("unit_focused", self, "_on_unit_focused")
     SignalManager.connect("unit_targeted", self, "_on_unit_targeted")
     SignalManager.connect("unit_hovered", self, "_on_unit_hovered")
     SignalManager.connect("unit_movement_done", self, "_on_movement_done")
@@ -55,7 +61,7 @@ func _ready():
 func _input(event):
     if action_state != Action.FREEZE:
         if Input.is_action_pressed("cheat"):
-            self.current_turn = Turn.new(self.heroes, current_turn_count, false)
+            self.current_turn = Turn.new(hero_units, current_turn_count, false)
         if Input.is_action_pressed("actions_attack"):
             set_action_state(Action.ATTACK)
         elif Input.is_action_pressed("actions_move"):
@@ -75,23 +81,23 @@ func _input(event):
                 debounce_actions()
                 Grid.deactivate()
             
-                var living_characters = get_living_characters(heroes)
-                var character_index = living_characters.find(self.active_character)
-                var max_index = living_characters.size() - 1
+                var living_units = get_living_units(hero_units)
+                var index = living_units.find(active_unit)
+                var max_index = living_units.size() - 1
                 
                 if !is_prev:
-                    if character_index < max_index:
-                        character_index += 1
+                    if index < max_index:
+                        index += 1
                     else:
-                        character_index = 0
+                        index = 0
                 else:
-                    if character_index > 0:
-                        character_index -= 1
+                    if index > 0:
+                        index -= 1
                     else:
-                        character_index = max_index
+                        index = max_index
                 
                 set_action_state(Action.WAIT)
-                activate_character(living_characters[character_index])
+                SignalManager.emit_signal("unit_focused", living_units[index])
 
 
 func _notification(event):
@@ -152,13 +158,13 @@ func activate_character(character:Character):
 func next_turn():    
     if current_turn.is_enemy:
         current_turn_count += 1
-        var characters = get_living_characters(heroes)
-        current_turn = Turn.new(characters, current_turn_count, false)
+        var units = get_living_units(hero_units)
+        current_turn = Turn.new(units, current_turn_count, false)
         end_turn_confirmation = false
         
         # If any characters are alive, activate now.
-        if characters.size() > 0:
-            activate_character(characters[0])
+        if units.size() > 0:
+            activate_character(units[0].character)
     else:
         # If there are still remaining actions, ask the player
         # to confirm the end of the turn before continuing.
@@ -166,16 +172,16 @@ func next_turn():
             EndTurnDialog.popup_centered(Vector2.ZERO)
             return
         
-        var characters = get_living_characters(enemies)
-        current_turn = Turn.new(characters, current_turn_count, true)
+        var units = get_living_units(enemy_units)
+        current_turn = Turn.new(units, current_turn_count, true)
         activate_enemies()
 
 
-func get_living_characters(all):
+func get_living_units(units):
     var living = []
-    for character in all:
-        if character.is_alive:
-            living.append(character)
+    for unit in units:
+        if is_instance_valid(unit) and unit.character.is_alive:
+            living.append(unit)
     
     return living
 
@@ -270,7 +276,6 @@ func set_action_state(next_state):
         Action.ATTACK:
             if self.active_character.is_enemy: return
             Grid.show_attack_overlay()
-            show_comparison()
         Action.WAIT:
             pass
         Action.FREEZE:
@@ -292,15 +297,17 @@ func debounce_actions():
 func resolve_attack(multiplier = 1, label = ""):
     if not active_targets or not active_unit:
         return
-        
+    
+    var color = Color.white
+    
     # Reduce damage by how many targets are being hit (spread)
     var aoe_multiplier:float = float(active_targets.size()) / 2
     
     # Calculate final damage after target's mitigation.
     for target in active_targets:
-        var challenge_bonus = get_challenge_bonus(target)
+        var challenge_bonus = get_challenge_multiplier(target)
         if challenge_bonus > 1:
-            label += " BONUS"
+            color = Colors.CHALLENGE
         
         # Calculate final damage.
         var target_character = target.character
@@ -312,10 +319,10 @@ func resolve_attack(multiplier = 1, label = ""):
         target_character.progress_action(Action.ATTACK, final_damage)
         
         target.unlock_targeted()
-        target.show_damage(final_damage, label)
+        target.show_damage(final_damage, label, color)
         
         if !target_character.is_alive:
-            _handle_character_death(target_character)
+            _handle_character_death(target)
             
         SignalManager.emit_signal("health_changed", target_character)
         
@@ -336,15 +343,15 @@ func attempt_taunt(target):
 # When a character dies, remove them fom the turns list
 # and check for a victory/defeat condition of one team
 # being entirely deceased.
-func _handle_character_death(target):
-    var full_list = enemies
-    if !target.is_enemy:
-        full_list = heroes
-        current_turn.characters_total.erase(target)
+func _handle_character_death(target:Unit):
+    var full_list = enemy_units
+    if !target.character.is_enemy:
+        full_list = hero_units
+        current_turn.units_total.erase(target)
     
     var all_dead = true
-    for character in full_list:
-        if character.is_alive:
+    for unit in full_list:
+        if is_instance_valid(unit) and unit is Unit and unit.character.is_alive:
             all_dead = false
             break
     
@@ -372,27 +379,18 @@ func attack_within_range(attacker, victim):
     return abs(distance.x) <= attack_range and abs(distance.y) <= attack_range
 
 
-func get_challenge_bonus(target) -> float:
-    var challenge_bonus = 1
+func get_challenge_multiplier(target) -> float:
+    var challenge_multiplier = 1
     
     # Get challenge bonus if one is present.
     if challenges.keys().has(target.character.id):
         var challenge = challenges[target.character.id]
-        challenge_bonus = challenge.check(target, active_unit)
+        challenge_multiplier = challenge.check(target, active_unit)
         
-        if challenge_bonus > 1:
-            challenge_bonus = (0.1 * challenge_bonus) + 1
+        if challenge_multiplier > 1:
             challenges.erase(target.character.id)
     
-    return challenge_bonus
-
-
-func show_comparison():
-    if hovered_unit == null:
-        Comparison.hide()
-    elif active_unit != null and action_state == Action.ATTACK:
-        Comparison.set_characters(hovered_unit, active_unit)
-        Comparison.show()
+    return challenge_multiplier
 
 
 # GETTERS
@@ -414,13 +412,8 @@ func _on_ai_action_taken():
     activate_enemies()
 
 
-func _on_character_selected(character):    
-    activate_character(character)
-
-
-func _on_unit_hovered(unit):
-    hovered_unit = unit
-    show_comparison()
+func _on_unit_focused(unit):    
+    activate_character(unit.character)
 
 
 func _on_movement_done():

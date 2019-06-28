@@ -55,8 +55,6 @@ func _prepare_textures():
 
     _hit_range = [hit_start, hit_start + hit_size]
     _crit_range = [crit_start, crit_start + crit_size]
-    
-    print(_relative_size_ratio)
 
     # Size all target areas based on speed ranges.
     $Textures/Hit.rect_size.x = hit_size

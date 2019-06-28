@@ -39,7 +39,8 @@ func _ready():
     
 
 # Create the units for the grid based on the characters given.
-func add_characters(characters:Array, is_enemies = false):
+func add_characters(characters:Array, is_enemies = false) -> Array:
+    var units = []
     var walkable_tiles = _pathfinder.walkable_tiles()
     var start_position = map.world_to_map(e_start.position if is_enemies else p_start.position)
 
@@ -51,7 +52,10 @@ func add_characters(characters:Array, is_enemies = false):
         var unit_position =  get_centered(tile_position)
         var unit = Unit.instance()
         unit.setup(unit_position, map, character, is_enemies)
+        units.append(unit)
         y_sort.add_child(unit)
+
+    return units
 
 
 # UNIT ACTICATION
@@ -183,12 +187,6 @@ func select_tile(tile):
         if unit_selected != unit_on_tile:
             if _battle.action_state == Action.ATTACK:
                 return
-            else:
-                pass
-                # Select the character and do NOT start pathfinding.
-                # Wait for battle to initiate movement again.
-                # SignalManager.emit_signal("character_selected", unit_on_tile.character)
-                # activate_unit(unit_on_tile)
     
     elif unit_selected != null and not unit_selected.is_enemy:
         # If a unit is already selected, do pathfinding for that unit.
@@ -265,7 +263,7 @@ func start_cinematic(tile, fade_exceptions:Array, end_callbacks:Array):
     var units = self.units
     for unit in units:
         if not fade_exceptions.has(unit):
-            unit.modulate = Color(1, 1, 1, 0.3)
+            unit.modulate = Color(1, 1, 1, 0.1)
     
     # Move camera to focus the tile
     camera.start_cinematic_target(tile)

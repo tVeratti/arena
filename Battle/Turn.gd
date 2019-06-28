@@ -6,19 +6,19 @@ var Action = preload("res://Battle/Action.gd")
 
 var actions_taken = {}
 var last_actions = {}
-var characters_total = []
+var units_total = []
 var turn_count:int
 
 var is_enemy:bool = false
 var taunts = []
 
-func _init(characters, turn_count, is_enemy):
-    self.characters_total = characters
+func _init(units, turn_count, is_enemy):
+    self.units_total = units
     self.turn_count = turn_count
     self.is_enemy = is_enemy
     
-    for character in characters:
-        last_actions[character.id] = Action.WAIT
+    for unit in units:
+        last_actions[unit.character.id] = Action.WAIT
     
     SignalManager.emit_signal("turn_updated", self)
 
@@ -33,9 +33,9 @@ func next_possible_action(id):
 
 
 func next_character() -> Character:
-    for character in characters_total:
-        if !character_done(character.id):
-            return character
+    for unit in units_total:
+        if !character_done(unit.character.id):
+            return unit.character
     
     return null
 
@@ -45,13 +45,13 @@ func last_action(character):
 
 
 func is_complete() -> bool:
-    for character in characters_total:
+    for unit in units_total:
         # Check if the character has taken any actions.
-        if not actions_taken.has(character.id):
+        if not actions_taken.has(unit.character.id):
             return false
             
         # Check that all actions have been taken by this character.
-        if character_done(character):
+        if character_done(unit.character):
             return false
    
     # All characters have taken all actions.

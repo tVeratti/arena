@@ -91,7 +91,7 @@ func _physics_process(delta):
 
 func activate():
     set_state(SELECTED)
-    SignalManager.emit_signal("character_selected", character)
+    SignalManager.emit_signal("_on_unit_focused", self)
 
 
 func deactivate():
@@ -125,8 +125,8 @@ func set_state(next_state):
     var outline_color = color;
     match(next_state):
         SELECTED, HOVERED, TARGETED:
-            if _lock_state == Action.ANALYZE:
-                outline_color = Color("#e3afff")
+            if _lock_state == Action.ANALYZE or _action_state == Action.ANALYZE:
+                outline_color = Colors.CHALLENGE
             health.show()
         IDLE:
             if !_is_target_locked:
@@ -189,11 +189,11 @@ func set_path(value:PoolVector2Array):
         set_physics_process(true)
 
 
-func show_damage(value, label):
+func show_damage(value, label, color):
     # Render the damage done...
     var damage_text = CombatText.instance()
     anchor.add_child(damage_text)
-    damage_text.setup(value, label)
+    damage_text.setup(value, label, color)
 
 
 func _get_coord() -> Vector2:
@@ -215,7 +215,7 @@ func _on_Character_input_event(viewport, event, shape_idx):
     and event.button_index == BUTTON_LEFT \
     and event.is_pressed():
         if allow_selection:
-            SignalManager.emit_signal("character_selected", character)
+            SignalManager.emit_signal("unit_focused", self)
         elif allow_targeting:
             SignalManager.emit_signal("unit_targeted", self)
 

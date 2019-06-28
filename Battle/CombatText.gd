@@ -7,9 +7,12 @@ func _ready():
     $Values.show()
 
 
-func setup(value, extra):
+func setup(value, extra, color):
     _value.text = String(value)
     _extra.text = String(extra)
+    
+    _value.add_color_override("font_color", color)
+    _extra.add_color_override("font_color", color)
     
     $EndTimer.start(2)
     $FadeTimer.start(1)

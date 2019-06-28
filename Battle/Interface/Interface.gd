@@ -22,7 +22,7 @@ var _battle
 func _ready():
     _battle = get_parent()
     
-    SignalManager.connect("character_selected", self, "_on_character_selected")
+    SignalManager.connect("unit_focused", self, "_on_unit_focused")
     SignalManager.connect("turn_updated", self, "_on_turn_updated")
     SignalManager.connect("battle_state_updated", self, "_on_battle_state_updated")
     SignalManager.connect("unit_movement_done", self, "_on_unit_movement_done")
@@ -33,11 +33,11 @@ func setup():
     active_character = _battle.active_character
     
     # Render character portraits
-    for character in turn.characters_total:
+    for unit in turn.units_total:
         # Create new portrait instance...
         var portrait = Portrait.instance()
         frames.add_child(portrait)
-        portrait.setup(character)
+        portrait.setup(unit)
             
 
 func _update_everything(character = null):
@@ -91,8 +91,8 @@ func _get_portraits():
     return get_tree().get_nodes_in_group("portraits")
 
 
-func _on_character_selected(character):
-    _update_everything(character)
+func _on_unit_focused(unit):
+    _update_everything(unit.character)
 
 
 func _on_turn_updated(turn):
@@ -112,6 +112,7 @@ func _on_unit_movement_done():
 func _on_Turn_pressed():
     _battle.next_turn()
     _update_everything(_battle.active_character)
+
 
 func _on_Move_pressed():
     _battle.set_action_state(Action.MOVE)

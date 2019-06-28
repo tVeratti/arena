@@ -157,7 +157,6 @@ func get_distance(origin, target) -> int:
 
 func has_point(coord):
     var index = _get_point_index(coord)
-    print(_astar.has_point(index))
     return _astar.has_point(index)
 
 
@@ -165,5 +164,4 @@ func get_adjacent_tiles(origin):
     var point = _map.world_to_map(origin)
     var index = _get_point_index(point)
     var points = _astar.get_point_connections(index)
-    print("index (%s), point (%s)" % [index, point])
     return _convert_points_to_world(points)

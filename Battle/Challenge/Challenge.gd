@@ -13,13 +13,12 @@ var _relative_facing:String
 var _bonus:float
 
 func setup(target:Unit, attacker:Unit):
+    _bonus = (.1 * attacker.character.acuity) + 1
     
-    _bonus = attacker.character.acuity
     self.target = target
     # Generate a direction
     tile = DIRECTIONS[randi() % DIRECTIONS.size()]
     _relative_facing = Facing.get_relative_facing(target, target.coord + tile)
-    print("wiat...", _relative_facing)
 
 
 func check(target:Unit, attacker:Unit) -> float:

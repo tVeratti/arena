@@ -4,6 +4,7 @@ const colors_shader = preload("res://Assets/colors.shader")
 
 const FRIENDLY = Color('#0FFF95')
 const ENEMY = Color('#CD533B')
+const CHALLENGE = Color("#e3afff")
 
 const HAIR = [
     '88292F',

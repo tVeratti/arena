@@ -3,7 +3,7 @@ extends Node
 signal teams_loaded(heroes, enemies)
 
 signal tile_focused(path)
-signal character_selected(character)
+signal unit_focused(unit)
 signal unit_targeted(unit)
 signal unit_hovered(unit)
 signal unit_movement_done()

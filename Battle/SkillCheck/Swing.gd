@@ -13,7 +13,7 @@ var _crit_range:Array
 const MAX_ANGLE = 60
 const RADIUS = 100
 
-const POWER_STEP = 0.01
+const POWER_STEP = 0.03
 const POWER_MAX = 1
 const POWER_MIN = 0
 var _power:float = 0.0

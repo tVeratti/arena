@@ -2,12 +2,14 @@ extends Control
 
 var Colors = load("res://Character/Colors.gd")
 
+var unit:Unit
 var character:Character
 
 
-func setup(character):
+func setup(unit):
     # Before _ready
-    self.character = character
+    self.unit = unit
+    character = unit.character
     $Name.text = String(character.name)
     $Head/head.texture = character.textures["head"]
     $Head/hair.texture = character.textures["hair"]
@@ -36,7 +38,7 @@ func set_outline(value):
 func _on_Portrait_gui_input(event):
     if event is InputEventMouseButton and event.is_pressed():
         get_tree().set_input_as_handled()
-        SignalManager.emit_signal("character_selected", character)
+        SignalManager.emit_signal("unit_focused", unit)
 
 
 func _on_health_changed(target):
