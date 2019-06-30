@@ -2,7 +2,7 @@ extends Object
 
 class_name Character
 
-const HEALTH_MAX = 100
+const HEALTH_MAX = 100.0
 const EXPERIENCE_MAX = 1000
 
 # Stat generation (pool range).
@@ -69,7 +69,7 @@ const ACUITY_PROGRESS_FACTOR = 5
 # * improve by taking damage, dealing damage
 var constitution:int setget , _constitution_get
 var constitution_stat:Stat
-const CONSTITUTION_PROGRESS_FACTOR = 5
+const CONSTITUTION_PROGRESS_FACTOR = 100
 
 # Agility
 # + speed
@@ -162,7 +162,9 @@ func _generate_natural_pool() -> Array:
 
 
 func take_damage(value) -> int:
-    var damage = clamp(int(value - constitution), 0, health.value_current)
+    var mitigation_percentage = (self.toughness / (HEALTH_MAX + 10))
+    var mitigation_value = float(value) * mitigation_percentage
+    var damage = value - mitigation_value
     health.value_current -= damage
     return damage
 
@@ -209,7 +211,7 @@ func _agility_get() -> int:
 # ------------------------------
 
 func _toughness_get() -> int:
-    return int(self.constitution - int(self.agility / 3))
+    return int((self.constitution  * 2)- int(self.agility / 3))
 
 
 func _speed_get() -> int:
