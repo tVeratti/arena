@@ -1,11 +1,10 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://Grid/Grid.gd" type="Script" id=1]
 [ext_resource path="res://Grid/Tile/floor_tilest.tres" type="TileSet" id=2]
 [ext_resource path="res://Grid/PathOverlay.gd" type="Script" id=3]
 [ext_resource path="res://Grid/Camera.gd" type="Script" id=4]
-[ext_resource path="res://Assets/textures/light.png" type="Texture" id=5]
-[ext_resource path="res://Battle/Challenge/Arrow.tscn" type="PackedScene" id=6]
+[ext_resource path="res://Battle/Challenge/Arrow.tscn" type="PackedScene" id=5]
 
 [node name="Grid" type="Node2D"]
 script = ExtResource( 1 )
@@ -34,52 +33,6 @@ drag_margin_right = 1.0
 drag_margin_bottom = 1.0
 script = ExtResource( 4 )
 
-[node name="Lights" type="Node2D" parent="."]
-position = Vector2( 766.144, 582.326 )
-scale = Vector2( 1.30023, 1.18527 )
-
-[node name="CanvasModulate" type="CanvasModulate" parent="Lights"]
-position = Vector2( -589.237, -491.302 )
-scale = Vector2( 0.769095, 0.843688 )
-color = Color( 0.890196, 0.890196, 0.890196, 1 )
-
-[node name="Blue" type="Light2D" parent="Lights"]
-position = Vector2( 208.223, -1181.83 )
-texture = ExtResource( 5 )
-texture_scale = 6.0
-color = Color( 0.466667, 1, 0.976471, 1 )
-energy = 0.6
-shadow_gradient_length = 572.6
-shadow_filter = 1
-
-[node name="Pink" type="Light2D" parent="Lights"]
-position = Vector2( -1563.33, -229.71 )
-texture = ExtResource( 5 )
-texture_scale = 6.0
-color = Color( 0.921569, 0.466667, 1, 1 )
-energy = 0.6
-shadow_gradient_length = 572.6
-shadow_filter = 1
-
-[node name="Yellow" type="Light2D" parent="Lights"]
-position = Vector2( -452.453, -659.133 )
-enabled = false
-texture = ExtResource( 5 )
-texture_scale = 6.0
-color = Color( 1, 0.964706, 0.419608, 1 )
-energy = 0.5
-shadow_gradient_length = 572.6
-shadow_filter = 1
-
-[node name="Shadows" type="Light2D" parent="Lights"]
-position = Vector2( 532.282, -17.8553 )
-texture = ExtResource( 5 )
-texture_scale = 6.0
-color = Color( 1, 0.882353, 0.341176, 1 )
-energy = 0.5
-shadow_enabled = true
-shadow_filter = 1
-
 [node name="YSort" type="YSort" parent="."]
 position = Vector2( -1, 0 )
 
@@ -89,7 +42,7 @@ position = Vector2( 257.825, -149.784 )
 [node name="EnemyStart" type="Node2D" parent="."]
 position = Vector2( -94.4199, 72.6639 )
 
-[node name="ChallengeOverlay" parent="." instance=ExtResource( 6 )]
+[node name="ChallengeOverlay" parent="." instance=ExtResource( 5 )]
 visible = false
 position = Vector2( -49.4677, -89.5535 )
 
