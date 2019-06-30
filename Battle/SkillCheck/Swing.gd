@@ -10,8 +10,8 @@ var _speed:int = 3
 var _hit_range:Array
 var _crit_range:Array
 
-const MAX_ANGLE = 60
-const RADIUS = 100
+const MAX_ANGLE = 60.0
+const RADIUS = 100.0
 
 const POWER_STEP = 0.03
 const POWER_MAX = 1
@@ -27,7 +27,7 @@ const VELOCITY_MAX = 0.2
 var _average_velocity:float = 0.0
 
 const ROTATION_BASE = 5.0
-const ROTATION_SPEED = 100
+const ROTATION_SPEED = 200
 const ROTATION_SPREAD = 100
 var _rotation_start = 0
 var _rotation_end = 10
@@ -57,7 +57,6 @@ onready var _arc:Polygon2D = $Arc
 onready var _swoosh:Polygon2D = $Swoosh
 
 func _ready():
-    _color = Color.green
     
     # Initialize rotation data for target and arc.
     _angle_diff = (ROTATION_SPREAD / _relative_size_ratio)
@@ -78,6 +77,15 @@ func _ready():
 
 func start():
     .start()
+    _color = Color.green
+    _arc.show()
+    _power_polygon.show()
+
+
+func setup(battle, unit:Unit, target_speed:float):
+    .setup(battle, unit, target_speed)
+    
+    _get_points()
 
 
 func _process(delta):
@@ -157,7 +165,7 @@ func _draw():
 
 func _rotate(delta):
     var direction = 1 if _rotate_clockwise else -1
-    var relative_rotation_speed = clamp(ROTATION_SPEED / (_relative_size_ratio / 0.5), 50, 100)
+    var relative_rotation_speed = clamp(ROTATION_SPEED / _relative_size_ratio, 50, 100)
     var current_rotation = _arc.rotation_degrees + (relative_rotation_speed * delta * direction)
     if current_rotation > 360 or current_rotation < -360:
         current_rotation /= 360
@@ -185,7 +193,8 @@ func _get_is_within_area(area:Area2D) -> bool:
 
 
 func _get_points():
-    _power_angle = (MAX_ANGLE - ((_power / 1.5) * MAX_ANGLE)) / 2
+    var power_angle = (_power / 1.5) * (MAX_ANGLE)
+    _power_angle = (MAX_ANGLE - power_angle) / 2
     _power_deg = _power_angle if _power_angle < 360 else _power_angle / 360
     
     var center = _arc.position

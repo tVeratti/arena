@@ -7,8 +7,10 @@ mouse_filter = 1
 script = ExtResource( 1 )
 
 [node name="Arc" type="Polygon2D" parent="."]
+visible = false
 
 [node name="Power" type="Polygon2D" parent="."]
+visible = false
 color = Color( 1, 1, 1, 0.784314 )
 
 [node name="Swoosh" type="Polygon2D" parent="."]
