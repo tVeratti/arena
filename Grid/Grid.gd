@@ -35,7 +35,7 @@ func _ready():
     _battle = get_parent()
     _pathfinder = AStarPathfinder.new(map)
     
-    #range_overlay.setup(map, _pathfinder)
+    range_overlay.setup(map, _pathfinder)
     
 
 # Create the units for the grid based on the characters given.
@@ -64,6 +64,7 @@ func add_characters(characters:Array, is_enemies = false) -> Array:
 # Activate the unit that holds the given character.
 func activate_character(character:Character):
     if character == null or (is_instance_valid(unit_selected) and unit_selected.character == character):
+        camera.set_target(unit_selected.position)
         return unit_selected
 
     for unit in self.units:
@@ -86,7 +87,7 @@ func activate_unit(unit):
             
 
 func deactivate():
-    #range_overlay.deactivate()
+    range_overlay.deactivate()
     SignalManager.emit_signal("tile_focused", [])
 
 
@@ -95,13 +96,13 @@ func deactivate():
     
 func show_movement_overlay():    
     # Show the telegraph of the character's movement
-    #range_overlay.activate(unit_selected, _get_unit_positions(), Action.MOVE)
+    range_overlay.activate(unit_selected, _get_unit_positions(), Action.MOVE)
     unit_selected.set_animation("Idle")
     
 
 func show_attack_overlay():
     # Show the telegraph of the character's attack
-    #range_overlay.activate(unit_selected, _get_unit_positions(), Action.ATTACK)
+    range_overlay.activate(unit_selected, _get_unit_positions(), Action.ATTACK)
     unit_selected.set_animation("Attack")
 
 

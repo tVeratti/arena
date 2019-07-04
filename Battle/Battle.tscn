@@ -18,8 +18,10 @@ one_shot = true
 one_shot = true
 
 [node name="Interface" parent="." instance=ExtResource( 3 )]
+editor/display_folded = true
 
 [node name="EndTurnDialog" type="ConfirmationDialog" parent="Interface"]
+visible = true
 margin_right = 316.0
 margin_bottom = 70.0
 popup_exclusive = true

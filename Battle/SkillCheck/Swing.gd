@@ -55,6 +55,7 @@ onready var _target:Area2D = $MouseTargetArea
 onready var _negative = $NegativeTargetArea
 onready var _arc:Polygon2D = $Arc
 onready var _swoosh:Polygon2D = $Swoosh
+onready var _swoosh_timer:Timer = $SwooshTimer
 
 func _ready():
     
@@ -77,7 +78,6 @@ func _ready():
 
 func start():
     .start()
-    _color = Color.green
     _arc.show()
     _power_polygon.show()
 
@@ -109,7 +109,6 @@ func _process(delta):
         
         if !prev_swinging and _is_swinging:
             _score = 0.0
-            _mouse_points = []
 
         # End the skillcheck if the player stopped swinging, or if they've exited the target.
         if (prev_swinging and !_is_swinging and _has_entered_once) or \
@@ -141,7 +140,7 @@ func _process(delta):
         
         _arc.color = _color
         
-        if _is_swinging:
+        if _is_mouse_down:
             # Add a point to draw the mouse's trail while down.
             var mouse_position = get_local_mouse_position()
             _add_mouse_points(mouse_position)
@@ -208,33 +207,49 @@ func _get_points():
 
 func _add_mouse_points(mouse_position:Vector2):
     var angle:float
+    var prev_point
+    
     var num_points = _mouse_points.size()
     if num_points > 0:
-        var prev_position:Vector2 = _mouse_points[num_points - 1].origin;
-        var diff = mouse_position - prev_position
-        
-        if abs(diff.x) + abs(diff.y) < 10: return
+        prev_point = _mouse_points[num_points - 1];
+        var diff = mouse_position - prev_point.origin
         angle = diff.x
     else:
         angle = 0.0
+        prev_point = {
+            "origin": Vector2.ZERO,
+            "offset": Vector2.ZERO,
+            "size": 0
+        }
         
-    var size = _get_velocity_score(_average_velocity) * 3
-    _mouse_points.append({
+        
+    var size = pow(_get_velocity_score(_average_velocity), 2)
+    var new_point = {
         "origin": mouse_position,
-        "size": pow(size, 2),
-        "angle": angle
-    })
+        "offset": Vector2(size, size),
+        "angle": angle,
+        "previous": prev_point
+    }
     
-    var top_points = []
-    var bottom_points = []
-    for point in _mouse_points:
-        var offset = Vector2(point.size, point.size)
-        top_points.append(point.origin + offset)
-        bottom_points.append(point.origin - offset)
+    _mouse_points.append(new_point)
+    _swoosh.add_child(get_mouse_point_shape(new_point))
+
     
-    bottom_points.invert()
-    _swoosh.polygon = top_points + bottom_points
+func get_mouse_point_shape(point):
+    var prev = point.previous
+    var previous_top =  prev.origin + prev.offset
+    var previous_bottom = prev.origin - prev.offset
     
+    var point_shape:Polygon2D = Polygon2D.new()
+    point_shape.polygon = [
+        point.origin + point.offset,
+        point.origin + previous_top,
+        point.origin + previous_bottom,
+        point.origin - point.offset
+    ]
+    
+    return point_shape
+
 
 func _set_negative_collision_shape():
     var negative_shape:CollisionShape2D = CollisionShape2D.new()
@@ -305,3 +320,10 @@ func _get_velocity(delta):
     var velocity = mouse_position - _prev_mouse_position
     _prev_mouse_position = mouse_position
     return (abs(velocity.x) + abs(velocity.y)) * delta
+
+
+func _on_SwooshTimer_timeout():
+    print("swoosh", _mouse_points.size())
+    if _mouse_points.size() > 0:
+        _mouse_points.pop_front()
+        _swoosh.get_child(0).queue_free()

@@ -1,34 +1,44 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://Assets/colors.shader" type="Shader" id=1]
-[ext_resource path="res://Character/textures/spritesheets/head/nin_m_02.png" type="Texture" id=2]
-[ext_resource path="res://Character/textures/spritesheets/hair/nin_m_02.png" type="Texture" id=3]
+[ext_resource path="res://Generator/Rigs/Head.gd" type="Script" id=2]
+[ext_resource path="res://Character/textures/spritesheets/torso/nin_m_03.png" type="Texture" id=3]
+[ext_resource path="res://Character/textures/spritesheets/head/nin_m_02.png" type="Texture" id=4]
+[ext_resource path="res://Character/textures/spritesheets/hair/nin_m_02.png" type="Texture" id=5]
 
 [sub_resource type="ShaderMaterial" id=1]
 shader = ExtResource( 1 )
 shader_param/hair_normal = Color( 0.737255, 0.294118, 0.294118, 1 )
 shader_param/hair_shadow = Color( 0.556863, 0.0941176, 0.0941176, 1 )
 shader_param/skin_normal = Color( 0.537255, 0.372549, 0.372549, 1 )
-shader_param/skin_shadow = null
-shader_param/clothes_normal = null
-shader_param/clothes_shadow = null
-shader_param/eyes = null
-shader_param/tolerance = 0.3
+shader_param/skin_shadow = Color( 0.439216, 0.278431, 0.278431, 1 )
+shader_param/clothes_normal = Color( 0.027451, 0.45098, 0.576471, 1 )
+shader_param/clothes_shadow = Color( 0.101961, 0.282353, 0.498039, 1 )
+shader_param/eyes = Color( 0.976471, 0.513726, 0.0627451, 1 )
+shader_param/tolerance = 0.06
 
 [node name="Head" type="Node2D"]
 material = SubResource( 1 )
+script = ExtResource( 2 )
+
+[node name="torso" type="Sprite" parent="."]
+use_parent_material = true
+position = Vector2( 154.608, 321.902 )
+texture = ExtResource( 3 )
+region_enabled = true
+region_rect = Rect2( 0, 0, 512, 512 )
 
 [node name="head" type="Sprite" parent="."]
 use_parent_material = true
 position = Vector2( 147.757, 169.763 )
-texture = ExtResource( 2 )
+texture = ExtResource( 4 )
 region_enabled = true
 region_rect = Rect2( 0, 0, 512, 512 )
 
 [node name="hair" type="Sprite" parent="."]
 use_parent_material = true
 position = Vector2( 155.913, 188.157 )
-texture = ExtResource( 3 )
+texture = ExtResource( 5 )
 region_enabled = true
 region_rect = Rect2( 0, 0, 512, 512 )
 

@@ -13,11 +13,13 @@ func setup(battle):
     for character in battle.heroes:
         var character_info = CharacterInfo.instance()
         heroList.add_child(character_info)
+        character_info.setup(null, "FULL")
         character_info.set_character(character)
     
     for character in battle.enemies:
         var character_info = CharacterInfo.instance()
         enemyList.add_child(character_info)
+        character_info.setup(null, "FULL")
         character_info.set_character(character)
 
 

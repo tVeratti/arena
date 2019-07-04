@@ -67,18 +67,7 @@ func _manual_camera_input():
     if not _camera_locked:
         _input_target_active = false
         
-        var mouse_position = get_viewport().get_mouse_position()
-        var screen_size = get_viewport_rect().size
-        var tolerance = 30
-        var buffer = Vector2(
-            (screen_size.x) - tolerance,
-            (screen_size.y) - tolerance)
-        
-        
-        if mouse_position.x > buffer.x or mouse_position.y > buffer.y or \
-            mouse_position.x < tolerance or mouse_position.y < tolerance:
-            var velocity = mouse_position - (screen_size / 2)
-            adjust_target(velocity.normalized())
+        #get_mouse_input()
         
         # Manual camera _target movement
         if Input.is_action_pressed("ui_up"):
@@ -91,6 +80,21 @@ func _manual_camera_input():
             adjust_target(Vector2.LEFT)
             
         if _input_target_active: cancel_cinematic()
+        
+        
+func get_mouse_input():
+    var mouse_position = get_viewport().get_mouse_position()
+    var screen_size = get_viewport_rect().size
+    var tolerance = 30
+    var buffer = Vector2(
+        (screen_size.x) - tolerance,
+        (screen_size.y) - tolerance)
+    
+    if mouse_position.x > buffer.x or mouse_position.y > buffer.y or \
+        mouse_position.x < tolerance or mouse_position.y < tolerance:
+        var velocity = mouse_position - (screen_size / 2)
+        adjust_target(velocity.normalized())
+    
 
 func adjust_target(direction:Vector2):
     _target += direction * _manual_speed

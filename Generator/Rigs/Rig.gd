@@ -16,6 +16,7 @@ var textures:Dictionary
 
 
 func _ready():
+    front_node.hide()
     back_node.hide()
 
 

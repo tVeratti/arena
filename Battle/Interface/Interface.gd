@@ -1,16 +1,18 @@
 extends CanvasLayer
 
-var Portrait = preload("res://Battle/Interface/Portrait.tscn")
+var Portrait = preload("res://Battle/Interface/CharacterInfo.tscn")
 
 onready var frames = $Layout/Rows/Columns/Characters/Frames
 onready var turn_count = $Layout/Rows/Columns/BattleInfo/TurnCount
 onready var battle_state = $Layout/Rows/Columns/BattleInfo/ActionState
 
-onready var actions = $Layout/Rows/MarginContainer/Actions
-onready var turn_button = $Layout/Rows/MarginContainer/Actions/Turn
-onready var move_button = $Layout/Rows/MarginContainer/Actions/Move
-onready var attack_button = $Layout/Rows/MarginContainer/Actions/Attack
-onready var analyze_button = $Layout/Rows/MarginContainer/Actions/Analyze
+var actions:HBoxContainer
+var turn_button:Button
+var move_button:Button
+var attack_button:Button
+var analyze_button:Button
+
+onready var character_info = $Layout/Rows/Columns/MarginContainer/CharacterInfo
 
 var actions_showing:bool = false
 
@@ -26,6 +28,13 @@ func _ready():
     SignalManager.connect("turn_updated", self, "_on_turn_updated")
     SignalManager.connect("battle_state_updated", self, "_on_battle_state_updated")
     SignalManager.connect("unit_movement_done", self, "_on_unit_movement_done")
+    
+    actions = get_node("Layout/Rows/MarginContainer/Actions")
+    turn_button = actions.get_node("Turn")
+    move_button = actions.get_node("Move")
+    attack_button = actions.get_node("Primary/MarginContainer/HBoxContainer/Attack")
+    analyze_button = actions.get_node("Primary/MarginContainer/HBoxContainer/Analyze")
+    
 
 
 func setup():
@@ -37,19 +46,15 @@ func setup():
         # Create new portrait instance...
         var portrait = Portrait.instance()
         frames.add_child(portrait)
-        portrait.setup(unit)
+        portrait.setup(unit, "BASIC")
+    
+    character_info.setup(null, "FULL")
+    
             
 
 func _update_everything(character = null):
     if character != null:
         active_character = character
-    
-    var portraits = self.portraits
-    for portrait in portraits:   
-        # Activate the selected portrait by unit    
-        var is_active = active_character != null and active_character.id == portrait.character.id
-        portrait.set_outline(is_active)
-        
     
     for portrait in portraits:
         # Remove any frames tied to characters that are
@@ -92,7 +97,8 @@ func _get_portraits():
 
 
 func _on_unit_focused(unit):
-    _update_everything(unit.character)
+    if unit != null:
+        _update_everything(unit.character)
 
 
 func _on_turn_updated(turn):

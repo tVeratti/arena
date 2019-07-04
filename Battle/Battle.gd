@@ -66,6 +66,8 @@ func _input(event):
             set_action_state(Action.ATTACK)
         elif Input.is_action_pressed("actions_move"):
             set_action_state(Action.MOVE)
+        elif Input.is_action_pressed("actions_analyze"):
+            set_action_state(Action.ANALYZE)
         elif Input.is_action_pressed("actions_cancel"):
             set_action_state(Action.WAIT)
             Grid.deactivate()
@@ -148,6 +150,7 @@ func activate_enemies():
 func activate_character(character:Character):
     if character.is_alive:
         active_unit = Grid.activate_character(character)
+        set_action_state(Action.WAIT)
     
     # Allow auto-selection of next action... maybe a setting later.
     # var next_action = current_turn.next_possible_action(character.id)
@@ -412,8 +415,9 @@ func _on_ai_action_taken():
     activate_enemies()
 
 
-func _on_unit_focused(unit):    
-    activate_character(unit.character)
+func _on_unit_focused(unit):
+    if unit != null:
+        activate_character(unit.character)
 
 
 func _on_movement_done():

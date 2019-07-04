@@ -16,12 +16,14 @@ func start_game():
         "heroes": [
             Character.new("Carol"),
             Character.new("Valeera"),
-            Character.new("Ashe")
+            Character.new("Ashe"),
+            Character.new("Christophe"),
         ],
         "enemies": [
             Character.new("Sovereign", true),
             Character.new("Caleb", true),
-            Character.new("Beastie", true)
+            Character.new("Beastie", true),
+            Character.new("Gracie", true),
         ]
     }
     

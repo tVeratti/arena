@@ -1,64 +1,96 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://Battle/Interface/CharacterInfo.gd" type="Script" id=1]
 [ext_resource path="res://Generator/Rigs/Head.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Battle/Interface/textures/health_under.png" type="Texture" id=3]
 [ext_resource path="res://Battle/Interface/textures/health_progress_flash.png" type="Texture" id=4]
 
+[sub_resource type="ViewportTexture" id=1]
+viewport_path = NodePath("Viewport")
+
 [node name="CharacterInfo" type="VBoxContainer"]
-margin_bottom = 68.0
+margin_right = 100.0
+margin_bottom = 109.0
 script = ExtResource( 1 )
 
-[node name="Head" parent="." instance=ExtResource( 2 )]
+[node name="Viewport" type="Viewport" parent="."]
+editor/display_folded = true
+size = Vector2( 100, 100 )
+transparent_bg = true
+hdr = false
+render_target_v_flip = true
+
+[node name="Head" parent="Viewport" instance=ExtResource( 2 )]
 position = Vector2( 11.0264, 5.14566 )
 scale = Vector2( 0.25, 0.25 )
 
 [node name="Layout" type="HBoxContainer" parent="."]
-margin_right = 100.0
-margin_bottom = 104.0
+margin_right = 224.0
+margin_bottom = 109.0
 rect_min_size = Vector2( 90, 0 )
 
-[node name="spacer" type="Control" parent="Layout"]
-margin_right = 90.0
-margin_bottom = 104.0
-rect_min_size = Vector2( 90, 90 )
-
-[node name="Details" type="VBoxContainer" parent="Layout"]
-margin_left = 94.0
-margin_right = 94.0
-margin_bottom = 104.0
-rect_min_size = Vector2( 0, 80 )
-
-[node name="Name" type="Label" parent="Layout/Details"]
-margin_bottom = 14.0
-
-[node name="Speed" type="Label" parent="Layout/Details"]
-margin_top = 18.0
-margin_bottom = 32.0
-
-[node name="Toughness" type="Label" parent="Layout/Details"]
-margin_top = 36.0
-margin_bottom = 50.0
-
-[node name="Power" type="Label" parent="Layout/Details"]
-margin_top = 54.0
-margin_bottom = 68.0
-
-[node name="Acuity" type="Label" parent="Layout/Details"]
-margin_top = 72.0
-margin_bottom = 86.0
-
-[node name="Rating" type="Label" parent="Layout/Details"]
-margin_top = 90.0
-margin_bottom = 104.0
-
-[node name="Health" type="TextureProgress" parent="."]
-margin_top = 108.0
+[node name="HeadLayout" type="VBoxContainer" parent="Layout"]
 margin_right = 100.0
-margin_bottom = 118.0
-rect_min_size = Vector2( 100, 10 )
-value = 90.0
+margin_bottom = 109.0
+
+[node name="Head" type="TextureRect" parent="Layout/HeadLayout"]
+margin_right = 100.0
+margin_bottom = 100.0
+size_flags_horizontal = 0
+texture = SubResource( 1 )
+
+[node name="Health" type="TextureProgress" parent="Layout/HeadLayout"]
+margin_top = 104.0
+margin_right = 100.0
+margin_bottom = 109.0
+rect_min_size = Vector2( 100, 5 )
+size_flags_horizontal = 0
+value = 100.0
 texture_under = ExtResource( 3 )
 texture_progress = ExtResource( 4 )
 nine_patch_stretch = true
 
+[node name="Details" type="VBoxContainer" parent="Layout"]
+margin_left = 104.0
+margin_right = 224.0
+margin_bottom = 109.0
+rect_min_size = Vector2( 120, 80 )
+alignment = 1
+
+[node name="Name" type="Label" parent="Layout/Details"]
+margin_top = 2.0
+margin_right = 120.0
+margin_bottom = 16.0
+text = "Name"
+
+[node name="Speed" type="Label" parent="Layout/Details"]
+margin_top = 20.0
+margin_right = 120.0
+margin_bottom = 34.0
+text = "Speed"
+
+[node name="Toughness" type="Label" parent="Layout/Details"]
+margin_top = 38.0
+margin_right = 120.0
+margin_bottom = 52.0
+text = "Toughness"
+
+[node name="Power" type="Label" parent="Layout/Details"]
+margin_top = 56.0
+margin_right = 120.0
+margin_bottom = 70.0
+text = "Power"
+
+[node name="Acuity" type="Label" parent="Layout/Details"]
+margin_top = 74.0
+margin_right = 120.0
+margin_bottom = 88.0
+text = "Acuity"
+
+[node name="Rating" type="Label" parent="Layout/Details"]
+margin_top = 92.0
+margin_right = 120.0
+margin_bottom = 106.0
+text = "**"
+
+[connection signal="gui_input" from="." to="." method="_on_CharacterInfo_gui_input"]
