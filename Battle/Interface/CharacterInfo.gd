@@ -13,7 +13,6 @@ var _type:String = BASIC
 onready var _sprite_head = $Layout/HeadLayout/Head
 onready var _viewport_head = $Viewport/Head
 
-
 # Stats
 onready var _details = $Layout/Details
 onready var _name = $Layout/Details/Name
@@ -102,7 +101,9 @@ func _on_unit_focused(unit:Unit):
 
 
 func _on_stat_changed(character):
-    update_stats(character)
+    if character == _unit.character:
+        update_stats(character)
+
 
 func _on_CharacterInfo_gui_input(event):
     if event is InputEventMouseButton \

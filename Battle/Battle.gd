@@ -37,6 +37,7 @@ onready var ActionTimer = $ActionTimer
 onready var AttackTimer = $AttackTimer
 onready var EndTurnDialog = $Interface/EndTurnDialog
 onready var Comparison = $Interface/Comparison
+onready var AITimer = $AITimer
 
 
 func setup(data):
@@ -142,7 +143,7 @@ func activate_enemies():
                     active_unit.turn_rig(nearest_unit.position)
                     resolve_attack(1, "")
       
-    activate_enemies()
+    AITimer.start()
 
 
 # When a character is selected, activate it on the grid
@@ -438,3 +439,7 @@ func _on_EndTurnDialog_confirmed():
 
 func _on_AttackTimer_timeout():
     set_action_state(Action.WAIT)
+
+
+func _on_AITimer_timeout():
+    activate_enemies()

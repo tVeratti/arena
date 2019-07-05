@@ -1,6 +1,6 @@
 extends CanvasLayer
 
-var Portrait = preload("res://Battle/Interface/CharacterInfo.tscn")
+var CharacterInfo = preload("res://Battle/Interface/CharacterInfo.tscn")
 
 onready var frames = $Layout/Rows/Columns/Characters/Frames
 onready var turn_count = $Layout/Rows/Columns/BattleInfo/TurnCount
@@ -44,7 +44,7 @@ func setup():
     # Render character portraits
     for unit in turn.units_total:
         # Create new portrait instance...
-        var portrait = Portrait.instance()
+        var portrait = CharacterInfo.instance()
         frames.add_child(portrait)
         portrait.setup(unit, "BASIC")
     

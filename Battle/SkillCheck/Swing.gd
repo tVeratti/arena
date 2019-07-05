@@ -223,7 +223,7 @@ func _add_mouse_points(mouse_position:Vector2):
         }
         
         
-    var size = pow(_get_velocity_score(_average_velocity), 2)
+    var size = pow(_get_velocity_score(_average_velocity) * 3, 2)
     var new_point = {
         "origin": mouse_position,
         "offset": Vector2(size, size),
@@ -239,12 +239,13 @@ func get_mouse_point_shape(point):
     var prev = point.previous
     var previous_top =  prev.origin + prev.offset
     var previous_bottom = prev.origin - prev.offset
+    print(point.offset)
     
     var point_shape:Polygon2D = Polygon2D.new()
     point_shape.polygon = [
         point.origin + point.offset,
-        point.origin + previous_top,
-        point.origin + previous_bottom,
+        point.origin + Vector2(point.offset.x, 0), #previous_top,
+        point.origin - Vector2(0, point.offset.y),#previous_bottom,
         point.origin - point.offset
     ]
     
@@ -323,7 +324,6 @@ func _get_velocity(delta):
 
 
 func _on_SwooshTimer_timeout():
-    print("swoosh", _mouse_points.size())
     if _mouse_points.size() > 0:
         _mouse_points.pop_front()
         _swoosh.get_child(0).queue_free()

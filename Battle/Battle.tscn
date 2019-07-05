@@ -17,6 +17,9 @@ one_shot = true
 [node name="AttackTimer" type="Timer" parent="."]
 one_shot = true
 
+[node name="AITimer" type="Timer" parent="."]
+one_shot = true
+
 [node name="Interface" parent="." instance=ExtResource( 3 )]
 editor/display_folded = true
 
@@ -34,4 +37,5 @@ dialog_text = "You still have actions to take. End turn anyway?"
 
 [connection signal="timeout" from="ActionTimer" to="." method="_on_ActionTimer_timeout"]
 [connection signal="timeout" from="AttackTimer" to="." method="_on_AttackTimer_timeout"]
+[connection signal="timeout" from="AITimer" to="." method="_on_AITimer_timeout"]
 [connection signal="confirmed" from="Interface/EndTurnDialog" to="." method="_on_EndTurnDialog_confirmed"]
