@@ -1,5 +1,7 @@
 extends "res://Battle/SkillCheck/SkillCheck.gd"
 
+var Colors = load("res://Character/Colors.gd")
+
 const METER_PADDING = 15
 const HIT_BASE_SIZE = 50
 const CRIT_BASE_SIZE = 10
@@ -13,7 +15,7 @@ var _crit_range:Array
 const MAX_ANGLE = 60.0
 const RADIUS = 100.0
 
-const POWER_STEP = 0.03
+const POWER_STEP = 0.015
 const POWER_MAX = 1
 const POWER_MIN = 0
 var _power:float = 0.0
@@ -152,7 +154,9 @@ func _process(delta):
 
 
 func _draw():
-    draw_circle(Vector2.ZERO, RADIUS, Color(1, 1 , 1, 0.5))
+    var color = Colors.ENEMY
+    color.a = 0.4
+    draw_circle(Vector2.ZERO, RADIUS, color)
     
     var angle_half = _angle_diff / 4
     var start_point = _get_cone_point(_rotation_start - 90 - angle_half)
@@ -244,8 +248,8 @@ func get_mouse_point_shape(point):
     var point_shape:Polygon2D = Polygon2D.new()
     point_shape.polygon = [
         point.origin + point.offset,
-        point.origin + Vector2(point.offset.x, 0), #previous_top,
-        point.origin - Vector2(0, point.offset.y),#previous_bottom,
+        point.origin + Vector2(previous_top.x, 0), #previous_top,
+        point.origin - Vector2(0, previous_bottom.y),#previous_bottom,
         point.origin - point.offset
     ]
     

@@ -122,23 +122,38 @@ func set_state(next_state):
     material.shader = shader_outline
     material.set_shader_param("outline_width", 10.0)
     
-    var outline_color = color;
+    var outline_color = Color(0,0,0,0);
+    
     match(next_state):
-        SELECTED, HOVERED, TARGETED:
-            if _lock_state == Action.ANALYZE or _action_state == Action.ANALYZE:
-                outline_color = Colors.CHALLENGE
+        SELECTED, TARGETED:
+            outline_color = color
+            health.show()
+        HOVERED:
+            outline_color = get_color(_action_state, color)
             health.show()
         IDLE:
             if !_is_target_locked:
-                outline_color = Color(0,0,0,0)
                 rig.set_animation("Idle")
                 health.try_hide()
+    
+    outline_color = get_color(_lock_state, outline_color)
     
     material.set_shader_param("outline_color", outline_color)
     sprite.material = material
     
     prev_state = state
     state = next_state
+
+
+func get_color(state, current_color):
+    var outline_color = current_color
+    match(state):
+        Action.ANALYZE:
+            outline_color = Colors.CHALLENGE
+        Action.ATTACK:
+            outline_color = color
+    
+    return outline_color
 
 
 func turn_rig(target_world_position):

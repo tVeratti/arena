@@ -219,6 +219,9 @@ func character_move(distance) -> bool:
 # Telgegraph has completed and the targets are chosen,
 # so continue with the skillcheck.
 func character_attack(targets:Array):
+    if targets.has(active_unit):
+        return
+    
     if targets.size() == 0:
         AttackTimer.start(0.3)
         return
@@ -247,6 +250,7 @@ func character_attack(targets:Array):
         skill_check.setup(self, active_unit, target_speed)
         set_action_state(Action.FREEZE)
         Grid.deactivate()
+        Grid.camera.start_cinematic_target(first_target.position + Vector2(0, -150))
 
 
 func character_action(type):
@@ -299,7 +303,7 @@ func debounce_actions():
 
 # Skill check completed, calculate damage(s)
 func resolve_attack(multiplier = 1, label = ""):
-    if not active_targets or not active_unit:
+    if not active_targets or not active_unit or active_targets[0] == active_unit:
         return
     
     var color = Color.white
@@ -335,6 +339,8 @@ func resolve_attack(multiplier = 1, label = ""):
         
     active_targets = []
     active_unit.set_animation("Idle")
+    Grid.camera.end_cinematic_target()
+
 
 # The first time a character is attacked in a turn,
 # they will turn to face their attacker.

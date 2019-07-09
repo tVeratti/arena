@@ -115,16 +115,18 @@ func set_zoom_target(target:Vector2):
     _zoom_target = target
 
 
-func start_cinematic_target(target):
+func start_cinematic_target(target, lock = false, offset = Vector2.ZERO):
     _playing_cinematic = true
     _prev_target = _target
     _prev_zoom_target = _zoom_target
-    set_target(target)
+    set_target(target + offset)
     set_zoom_target(Vector2(1.5, 1.5))
+    if lock: _camera_locked = true
 
 
 func end_cinematic_target():
     _playing_cinematic = false
+    _camera_locked = false
     if !_canceled_by_target: set_target(_prev_target)
     if !_canceled_by_zoom: set_zoom_target(_prev_zoom_target)
 

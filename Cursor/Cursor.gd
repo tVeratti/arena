@@ -5,8 +5,10 @@ var Action = load("res://Battle/Action.gd")
 var default_icon = preload("res://Cursor/textures/default.png")
 var move_icon = preload("res://Cursor/textures/move.png")
 var attack_icon = preload("res://Cursor/textures/attack.png")
+var analyze_icon = preload("res://Cursor/textures/eye.png")
 
 onready var sprite = $Sprite
+
 
 func _ready():
     # Hide default cursor
@@ -29,5 +31,6 @@ func _on_battle_state_updated(state):
     match(state):
         Action.MOVE: sprite.texture = move_icon
         Action.ATTACK: sprite.texture = attack_icon
+        Action.ANALYZE: sprite.texture = analyze_icon
         _: sprite.texture = default_icon
             
