@@ -250,7 +250,7 @@ func character_attack(targets:Array):
         skill_check.setup(self, active_unit, target_speed)
         set_action_state(Action.FREEZE)
         Grid.deactivate()
-        Grid.camera.start_cinematic_target(first_target.position + Vector2(0, -150))
+        Grid.camera.start_cinematic_target(first_target.position + Vector2(0, -150), true)
 
 
 func character_action(type):

@@ -1,6 +1,7 @@
 extends "res://Battle/SkillCheck/SkillCheck.gd"
 
 var Colors = load("res://Character/Colors.gd")
+var FadeShape = load("res://Battle/SkillCheck/FadeShape.tscn")
 
 const METER_PADDING = 15
 const HIT_BASE_SIZE = 50
@@ -25,7 +26,7 @@ var _power_deg:float = 0.0
 var _angle_diff:float = 0.0
 
 const VELOCITY_MIN = 0.1
-const VELOCITY_MAX = 0.2
+const VELOCITY_MAX = 0.5
 var _average_velocity:float = 0.0
 
 const ROTATION_BASE = 5.0
@@ -58,6 +59,7 @@ onready var _negative = $NegativeTargetArea
 onready var _arc:Polygon2D = $Arc
 onready var _swoosh:Polygon2D = $Swoosh
 onready var _swoosh_timer:Timer = $SwooshTimer
+onready var _tween:Tween = $Tween
 
 func _ready():
     
@@ -154,9 +156,7 @@ func _process(delta):
 
 
 func _draw():
-    var color = Colors.ENEMY
-    color.a = 0.4
-    draw_circle(Vector2.ZERO, RADIUS, color)
+    draw_circle(Vector2.ZERO, RADIUS, Color(1, 1, 1, 0.4))
     
     var angle_half = _angle_diff / 4
     var start_point = _get_cone_point(_rotation_start - 90 - angle_half)
@@ -226,34 +226,44 @@ func _add_mouse_points(mouse_position:Vector2):
             "size": 0
         }
         
-        
-    var size = pow(_get_velocity_score(_average_velocity) * 3, 2)
+    var size = pow(_get_velocity_score(_average_velocity) * 5, 2)
     var new_point = {
         "origin": mouse_position,
+        "size": size,
         "offset": Vector2(size, size),
         "angle": angle,
         "previous": prev_point
     }
     
     _mouse_points.append(new_point)
-    _swoosh.add_child(get_mouse_point_shape(new_point))
+    var shape_points = get_mouse_point_shape(new_point)
+    var fade_shape = FadeShape.instance()
+    var fade_polygon = fade_shape.get_node("Polygon2D")
+    fade_polygon.polygon = shape_points
+    fade_polygon.color = Color.yellow.blend(Color(1.0, 1.0 * (size/10), 0, 1))
+    _swoosh.add_child(fade_shape)
 
     
 func get_mouse_point_shape(point):
-    var prev = point.previous
+    var prev = point.previous if point.previous.origin != Vector2.ZERO else point
+    var distance = prev.origin - point.origin
+    if abs(distance.x) + abs(distance.y) > 100 and point.size < 20: prev = point
+    
     var previous_top =  prev.origin + prev.offset
     var previous_bottom = prev.origin - prev.offset
-    print(point.offset)
     
-    var point_shape:Polygon2D = Polygon2D.new()
-    point_shape.polygon = [
+    return [
         point.origin + point.offset,
-        point.origin + Vector2(previous_top.x, 0), #previous_top,
-        point.origin - Vector2(0, previous_bottom.y),#previous_bottom,
+        previous_top,
+        previous_bottom,
         point.origin - point.offset
     ]
-    
-    return point_shape
+
+
+func reset_swoosh():
+    _mouse_points = []
+    for child in _swoosh.get_children():
+        child.free()
 
 
 func _set_negative_collision_shape():

@@ -17,7 +17,7 @@ color = Color( 0.972549, 0.760784, 0.0392157, 1 )
 [node name="Swoosh" type="Node2D" parent="."]
 
 [node name="SwooshTimer" type="Timer" parent="."]
-wait_time = 0.05
+wait_time = 0.03
 autostart = true
 
 [node name="NegativeTargetArea" type="Area2D" parent="."]
