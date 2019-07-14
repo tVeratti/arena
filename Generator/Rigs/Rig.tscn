@@ -7,18 +7,18 @@
 
 [sub_resource type="ShaderMaterial" id=1]
 shader = ExtResource( 1 )
-shader_param/hair_normal = Color( 1, 1, 1, 1 )
-shader_param/hair_shadow = Color( 0.619608, 0.631373, 0.639216, 1 )
-shader_param/skin_normal = Color( 0.905882, 0.686275, 0.494118, 1 )
-shader_param/skin_shadow = Color( 0.745098, 0.541176, 0.360784, 1 )
-shader_param/clothes_normal = Color( 0.286275, 0.329412, 0.560784, 1 )
-shader_param/clothes_shadow = Color( 0.184314, 0.184314, 0.392157, 1 )
-shader_param/eyes = Color( 0.27451, 0.635294, 0.372549, 1 )
+shader_param/hair_normal = Color( 0.917647, 0.333333, 0.772549, 1 )
+shader_param/hair_shadow = Color( 0.664063, 0.18158, 0.544251, 1 )
+shader_param/skin_normal = Color( 0.564706, 0.419608, 0.294118, 1 )
+shader_param/skin_shadow = Color( 0.421875, 0.29109, 0.177979, 1 )
+shader_param/clothes_normal = Color( 0.647059, 0.87451, 0.239216, 1 )
+shader_param/clothes_shadow = Color( 0.419608, 0.580392, 0.133333, 1 )
+shader_param/eyes = Color( 0.858824, 0.858824, 0.858824, 1 )
 shader_param/tolerance = 0.15
 
 [node name="Rig" type="Node2D"]
 material = SubResource( 1 )
-position = Vector2( 56.2588, -26.3713 )
+position = Vector2( 56.2588, -24.7011 )
 script = ExtResource( 2 )
 
 [node name="Front" parent="." instance=ExtResource( 3 )]

@@ -1,21 +1,21 @@
 [gd_scene load_steps=18 format=2]
 
-[ext_resource path="res://Character/textures/spritesheets/r_hand/nin_m_02.png" type="Texture" id=1]
-[ext_resource path="res://Character/textures/spritesheets/r_forearm/nin_m_02.png" type="Texture" id=2]
-[ext_resource path="res://Character/textures/spritesheets/r_arm/nin_m_02.png" type="Texture" id=3]
-[ext_resource path="res://Character/textures/spritesheets/r_foot/nin_m_02.png" type="Texture" id=4]
-[ext_resource path="res://Character/textures/spritesheets/r_thigh/nin_m_02.png" type="Texture" id=5]
-[ext_resource path="res://Character/textures/spritesheets/r_shin/nin_m_02.png" type="Texture" id=6]
+[ext_resource path="res://Character/textures/spritesheets/r_hand/nin_m_03.png" type="Texture" id=1]
+[ext_resource path="res://Character/textures/spritesheets/r_forearm/nin_m_03.png" type="Texture" id=2]
+[ext_resource path="res://Character/textures/spritesheets/r_arm/nin_m_03.png" type="Texture" id=3]
+[ext_resource path="res://Character/textures/spritesheets/r_foot/nin_m_03.png" type="Texture" id=4]
+[ext_resource path="res://Character/textures/spritesheets/r_thigh/nin_m_03.png" type="Texture" id=5]
+[ext_resource path="res://Character/textures/spritesheets/r_shin/nin_m_03.png" type="Texture" id=6]
 [ext_resource path="res://Character/textures/spritesheets/waist/nin_m_02.png" type="Texture" id=7]
-[ext_resource path="res://Character/textures/spritesheets/l_foot/nin_m_02.png" type="Texture" id=8]
-[ext_resource path="res://Character/textures/spritesheets/l_thigh/nin_m_02.png" type="Texture" id=9]
-[ext_resource path="res://Character/textures/spritesheets/l_shin/nin_m_02.png" type="Texture" id=10]
-[ext_resource path="res://Character/textures/spritesheets/torso/nin_m_02.png" type="Texture" id=11]
-[ext_resource path="res://Character/textures/spritesheets/head/nin_m_02.png" type="Texture" id=12]
-[ext_resource path="res://Character/textures/spritesheets/hair/nin_m_02.png" type="Texture" id=13]
-[ext_resource path="res://Character/textures/spritesheets/l_hand/nin_m_02.png" type="Texture" id=14]
-[ext_resource path="res://Character/textures/spritesheets/l_forearm/nin_m_02.png" type="Texture" id=15]
-[ext_resource path="res://Character/textures/spritesheets/l_arm/nin_m_02.png" type="Texture" id=16]
+[ext_resource path="res://Character/textures/spritesheets/l_foot/nin_m_03.png" type="Texture" id=8]
+[ext_resource path="res://Character/textures/spritesheets/l_thigh/nin_m_03.png" type="Texture" id=9]
+[ext_resource path="res://Character/textures/spritesheets/l_shin/nin_m_03.png" type="Texture" id=10]
+[ext_resource path="res://Character/textures/spritesheets/torso/nin_m_03.png" type="Texture" id=11]
+[ext_resource path="res://Character/textures/spritesheets/head/nin_m_03.png" type="Texture" id=12]
+[ext_resource path="res://Character/textures/spritesheets/hair/extra_hair_02.png" type="Texture" id=13]
+[ext_resource path="res://Character/textures/spritesheets/l_hand/nin_m_03.png" type="Texture" id=14]
+[ext_resource path="res://Character/textures/spritesheets/l_forearm/extra_Lforearm_02.png" type="Texture" id=15]
+[ext_resource path="res://Character/textures/spritesheets/l_arm/extra_arm_02.png" type="Texture" id=16]
 
 [sub_resource type="ShaderMaterial" id=1]
 
@@ -141,7 +141,7 @@ region_rect = Rect2( 0, 0, 512, 512 )
 
 [node name="hair" type="Sprite" parent="parts/waist/torso/head"]
 use_parent_material = true
-position = Vector2( 8.05984, 15.7996 )
+position = Vector2( 4.88662, 11.0396 )
 texture = ExtResource( 13 )
 region_enabled = true
 region_rect = Rect2( 0, 0, 512, 512 )

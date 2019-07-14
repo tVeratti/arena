@@ -50,6 +50,7 @@ func setup(data):
     current_turn = Turn.new(hero_units, current_turn_count, false)
     
     $Interface.setup()
+    SignalManager.emit_signal("unit_focused", hero_units[0])
 
 
 func _ready():
@@ -57,6 +58,7 @@ func _ready():
     SignalManager.connect("unit_targeted", self, "_on_unit_targeted")
     SignalManager.connect("unit_hovered", self, "_on_unit_hovered")
     SignalManager.connect("unit_movement_done", self, "_on_movement_done")
+    SignalManager.connect("ranked_up", self, "_on_ranked_up")
 
 
 func _input(event):
@@ -434,6 +436,10 @@ func _on_movement_done():
         set_action_state(Action.WAIT)
 
 
+func _on_ranked_up(character, stat):
+    pass
+    
+
 func _on_ActionTimer_timeout():
     action_debounce = false
 
@@ -449,3 +455,4 @@ func _on_AttackTimer_timeout():
 
 func _on_AITimer_timeout():
     activate_enemies()
+    

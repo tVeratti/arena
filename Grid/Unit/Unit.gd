@@ -42,6 +42,9 @@ onready var click_collider = $ClickCollision
 var allow_selection:bool = true
 var allow_targeting:bool = false
 
+var _combat_text_showing:bool = false
+var _combat_text_queue:Array = []
+
 
 func _ready():
     set_physics_process(false)
@@ -49,6 +52,7 @@ func _ready():
     
     SignalManager.connect("health_changed", self, "_on_health_changed")
     SignalManager.connect("battle_state_updated", self, "_on_battle_state_updated")
+    SignalManager.connect("ranked_up", self, "_on_ranked_up")
     
     rig.set_textures(character.textures)
     rig.set_colors(character.colors)
@@ -204,20 +208,28 @@ func set_path(value:PoolVector2Array):
         set_physics_process(true)
 
 
+func show_combat_text(combat_text):
+    if _combat_text_showing:
+        _combat_text_queue.append(combat_text)
+        _combat_text_showing = true
+    else: anchor.add_child(combat_text)
+
+
 func show_damage(value, label, color):
     # Render the damage done...
     var damage_text = CombatText.instance()
-    anchor.add_child(damage_text)
     damage_text.setup(value, label, color)
+    show_combat_text(damage_text)    
 
 
 func _get_coord() -> Vector2:
     return map.world_to_map(position)
 
+
 func _on_health_changed(target):
     if character == target and not target.is_alive:
         # Start the death timer (allow animations to finish)
-        $Timer.start(2)
+        $DeathTimer.start(2)
 
 
 func _on_Timer_timeout():
@@ -253,3 +265,18 @@ func _on_Character_mouse_entered():
 func _on_Character_mouse_exited():
     SignalManager.emit_signal("unit_hovered", null)
     set_state(prev_state)
+
+
+func _on_ranked_up(character, stat):
+    if character != self.character or character.is_enemy: return
+    
+    var rank_text = CombatText.instance()
+    rank_text.setup(stat.name, "RANK %s" % stat.rank, Colors.FRIENDLY)
+    show_combat_text(rank_text)
+
+
+func _on_CombatTextQueue_timeout():
+    if _combat_text_queue.size() > 0:
+        var current_text = _combat_text_queue.pop_front()
+        anchor.add_child(current_text)
+    else: _combat_text_showing = false

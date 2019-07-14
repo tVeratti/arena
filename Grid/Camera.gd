@@ -1,7 +1,7 @@
 extends Camera2D
 
-const MIN_ZOOM = Vector2.ZERO
-const MAX_ZOOM = Vector2(10, 10)
+const MIN_ZOOM = 1.0
+const MAX_ZOOM = 3.0
 const DEFAULT_ZOOM = Vector2(2, 2)
 
 # Target
@@ -47,8 +47,8 @@ func _process(delta):
     var zoom_distance = zoom.distance_to(_zoom_target)
     if zoom_distance >= _zoom_tolerance:
         zoom = Vector2(\
-        clamp(lerp(zoom.x, _zoom_target.x, _zoom_speed * delta), MIN_ZOOM.x, MAX_ZOOM.x), \
-        clamp(lerp(zoom.y, _zoom_target.y, _zoom_speed * delta), MIN_ZOOM.y, MAX_ZOOM.y))
+        clamp(lerp(zoom.x, _zoom_target.x, _zoom_speed * delta), MIN_ZOOM, MAX_ZOOM), \
+        clamp(lerp(zoom.y, _zoom_target.y, _zoom_speed * delta), MIN_ZOOM, MAX_ZOOM))
 
 
 func _input(event):

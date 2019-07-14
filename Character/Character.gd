@@ -106,9 +106,9 @@ func _init(name, is_enemy = false):
     self.id = "%s_%s" % [name, randi()]
     self.is_enemy = is_enemy
     
-    acuity_stat = Stat.new(ACUITY, ACUITY_PROGRESS_FACTOR)
-    constitution_stat = Stat.new(CONSTITUTION, CONSTITUTION_PROGRESS_FACTOR)
-    agility_stat = Stat.new(AGILITY, AGILITY_PROGRESS_FACTOR)
+    acuity_stat = Stat.new(ACUITY, ACUITY_PROGRESS_FACTOR, self)
+    constitution_stat = Stat.new(CONSTITUTION, CONSTITUTION_PROGRESS_FACTOR, self)
+    agility_stat = Stat.new(AGILITY, AGILITY_PROGRESS_FACTOR, self)
     
     # Load character or create new one...
     # _load_stats or

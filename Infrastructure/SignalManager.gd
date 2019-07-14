@@ -14,3 +14,4 @@ signal battle_state_updated(state)
 
 signal health_changed(character)
 signal stat_changed(character)
+signal ranked_up(character, stat)

@@ -1,22 +1,30 @@
 extends Node2D
 
-onready var _value = $Values/Value
-onready var _extra = $Values/Extra
+
+var _value
+var _extra
+var _color
+
+onready var _value_label = $Values/Value
+onready var _extra_label = $Values/Extra
 
 func _ready():
+    _value_label.text = _value
+    _extra_label.text = _extra
+    
+    _value_label.add_color_override("font_color", _color)
+    _extra_label.add_color_override("font_color", _color)
+    
     $Values.show()
-
-
-func setup(value, extra, color):
-    _value.text = String(value)
-    _extra.text = String(extra)
-    
-    _value.add_color_override("font_color", color)
-    _extra.add_color_override("font_color", color)
-    
     $EndTimer.start(2)
     $FadeTimer.start(1)
     $AnimationPlayer.play("Fade")
+
+
+func setup(value, extra, color = Color.white):
+    _value = String(value)
+    _extra = String(extra)
+    _color = color
 
 
 func _on_EndTimer_timeout():
