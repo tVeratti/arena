@@ -1,4 +1,4 @@
-extends Node2D
+extends Control
 
 onready var _tween = $Tween
 onready var _background = $Background
@@ -13,7 +13,7 @@ var is_animating:bool = false
 
 func _ready():
     SignalManager.connect("health_changed", self, "_on_health_changed")
-    hide()
+    #hide()
 
 
 func setup(character, color):
@@ -64,4 +64,4 @@ func _on_FlashTimer_timeout():
     
 func _on_Timer_timeout():
     is_animating = false
-    hide()
+    #hide()

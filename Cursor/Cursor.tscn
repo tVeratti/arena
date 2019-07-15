@@ -3,7 +3,7 @@
 [ext_resource path="res://Cursor/Cursor.gd" type="Script" id=1]
 [ext_resource path="res://Cursor/textures/default.png" type="Texture" id=2]
 
-[sub_resource type="ConvexPolygonShape2D" id=1]
+[sub_resource type="ConvexPolygonShape2D" id=2]
 
 [node name="Cursor" type="CanvasLayer"]
 
@@ -19,5 +19,5 @@ offset = Vector2( 11.2304, 15.6228 )
 position = Vector2( 5.55951, 6.94934 )
 rotation = -3.52193
 scale = Vector2( 0.614981, -0.643207 )
-shape = SubResource( 1 )
+shape = SubResource( 2 )
 

@@ -34,7 +34,7 @@ var _prev_target_locked:bool
 var _lock_state:String
 
 onready var rig = $Viewport/Rig
-onready var health = $HealthBar
+onready var health = $Status/HealthBar
 onready var anchor = $PopupAnchor
 onready var sprite = $Sprite
 
@@ -72,7 +72,8 @@ func setup(tile_position, map, character, is_enemy = false):
     self.is_enemy = is_enemy
     self.color = Colors.ENEMY if character.is_enemy else Colors.FRIENDLY
     
-    $HealthBar.setup(character, self.color)
+    $Status/HealthBar.setup(character, self.color)
+    $Status/Name.text = character.name
 
 
 func _physics_process(delta):
@@ -131,14 +132,14 @@ func set_state(next_state):
     match(next_state):
         SELECTED, TARGETED:
             outline_color = color
-            health.show()
+            #health.show()
         HOVERED:
             outline_color = get_color(_action_state, color)
-            health.show()
+            #health.show()
         IDLE:
             if !_is_target_locked:
                 rig.set_animation("Idle")
-                health.try_hide()
+                #health.try_hide()
     
     outline_color = get_color(_lock_state, outline_color)
     

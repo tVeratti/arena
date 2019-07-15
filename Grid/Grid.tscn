@@ -41,10 +41,10 @@ script = ExtResource( 5 )
 position = Vector2( -1, 0 )
 
 [node name="PlayerStart" type="Node2D" parent="."]
-position = Vector2( 1.04181, -826.757 )
+position = Vector2( -540.031, -579.409 )
 
 [node name="EnemyStart" type="Node2D" parent="."]
-position = Vector2( -1814.09, 243.853 )
+position = Vector2( -1578.34, -111.709 )
 
 [node name="ChallengeOverlay" parent="." instance=ExtResource( 6 )]
 visible = false

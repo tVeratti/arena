@@ -226,7 +226,7 @@ func _add_mouse_points(mouse_position:Vector2):
             "size": 0
         }
         
-    var size = pow(_get_velocity_score(_average_velocity) * 5, 2)
+    var size = pow(_get_velocity_score(_average_velocity) * 4, 2)
     var new_point = {
         "origin": mouse_position,
         "size": size,

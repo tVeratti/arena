@@ -1,9 +1,10 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://Grid/Unit/Unit.gd" type="Script" id=1]
 [ext_resource path="res://Generator/Rigs/Rig.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Assets/outline.shader" type="Shader" id=3]
-[ext_resource path="res://Battle/Interface/HealthBar.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Assets/fonts/KronaOne_small.tres" type="DynamicFont" id=4]
+[ext_resource path="res://Battle/Interface/HealthBar.tscn" type="PackedScene" id=5]
 
 [sub_resource type="CircleShape2D" id=1]
 radius = 37.9766
@@ -64,8 +65,23 @@ texture = SubResource( 4 )
 [node name="PopupAnchor" type="Node2D" parent="."]
 position = Vector2( 78.1563, -177.805 )
 
-[node name="HealthBar" parent="." instance=ExtResource( 4 )]
-position = Vector2( -102.073, -375.504 )
+[node name="Status" type="VBoxContainer" parent="."]
+margin_left = -102.123
+margin_top = -400.114
+margin_right = 97.8766
+margin_bottom = -372.114
+
+[node name="Name" type="Label" parent="Status"]
+margin_right = 200.0
+margin_bottom = 34.0
+size_flags_horizontal = 3
+custom_fonts/font = ExtResource( 4 )
+text = "Name"
+align = 1
+
+[node name="HealthBar" parent="Status" instance=ExtResource( 5 )]
+margin_top = 38.0
+margin_bottom = 48.0
 
 [connection signal="input_event" from="." to="." method="_on_Character_input_event"]
 [connection signal="mouse_entered" from="." to="." method="_on_Character_mouse_entered"]
